@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">留声</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="hello_world">Hello world!</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="cancel">取消</string>
+    <string name="setting">设置</string>
+    <string name="title_settings_dialog">权限提醒</string>
+    <string name="rationale_ask_again">需要权限</string>
+    <string name="returned_from_app_settings_to_activity">从设置界面返回</string>
+    <string name="camera_and_wifi_rationale">需要相机和wifi权限</string>
+
+
+
+
+
+</resources>
