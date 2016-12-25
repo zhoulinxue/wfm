@@ -32,4 +32,13 @@ public class Videobean extends Basebean{
     public void setAddress(String address) {
         this.address = address;
     }
+
+    @Override
+    public String toString() {
+        return "Videobean{" +
+                "videoName='" + videoName + '\'' +
+                ", headUrl='" + headUrl + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }
