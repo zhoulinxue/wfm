@@ -1,4 +1,4 @@
-package com.zx.wfm.ui.View;
+package com.zx.wfm.ui.Widget;
 
 import android.content.Context;
 import android.util.AttributeSet;

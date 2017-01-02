@@ -3,8 +3,6 @@ package com.zx.wfm.ui;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.apache.http.params.HttpParams;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,54 +15,68 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.Gravity;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.DownloadListener;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zx.wfm.Application.WFMApplication;
 import com.zx.wfm.R;
+import com.zx.wfm.ui.Widget.TopPmd;
+import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.ToastUtil;
 
-public class WebActivity extends Activity {
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
-	private WebView webview;
+import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
+
+public class WebActivity extends Activity {
+	@InjectView(R.id.webview)
+	 WebView webview;
 	private ProgressDialog mDialog;
 	private Context mContext;
-	private ImageButton backBtn = null;
-	private Handler mHandler = new Handler();
-	private RelativeLayout topbar = null;
 	private View customView;
-	private FrameLayout fullScreenView;
 	String home="http://player.youku.com/embed/XMTk3MjA0MjIw";
-//	String home ="<iframe height=498 width=510 src='http://player.youku.com/embed/XMTk3MjA0MjIw' frameborder=0 'allowfullscreen'></iframe>";
 	private Context context;
 	private String[] hostStr;
 	private int index=0;
 	private boolean hasPress = false;
 	private long firstTouchBackBt;
+	@InjectView(R.id.right_bottom_view)
+	 TextView rightbottomView;
+	@InjectView(R.id.fresh_video)
+	 Button refreshbtn;
+	@InjectView(R.id.left_tv)
+	 TextView leftTv;
+	@InjectView(R.id.right_tv)
+	TextView rightTv;
+	@InjectView(R.id.container)
+	 RelativeLayout container;
+	private Paint paint;
+	private Handler mHandler=new Handler();
+	private boolean isAlph=false;
 	@SuppressLint("JavascriptInterface")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,12 +85,21 @@ public class WebActivity extends Activity {
 		hostStr=getHostStr();
 		getWindow().requestFeature(Window.FEATURE_PROGRESS);
 		setContentView(R.layout.web_activity);
+		ButterKnife.inject(this);
 		mContext = this;
 		SharedPreferences share = PreferenceManager
 				.getDefaultSharedPreferences(mContext);
-		fullScreenView= (FrameLayout) findViewById(R.id.fullScreen);
 		mDialog = new ProgressDialog(mContext);
-		webview = (WebView) findViewById(R.id.webview);
+		mDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+			@Override
+			public void onShow(DialogInterface dialog) {
+				if(TextUtils.isEmpty(webview.getUrl())) {
+					webview.loadUrl(home);
+				}else {
+					webview.reload();
+				}
+			}
+		});
 		webview.setVerticalScrollBarEnabled(false);
 		webview.setDownloadListener(new WebViewDownLoadListener());
 		webview.setWebViewClient(new WeweWebViewClient());
@@ -103,23 +124,50 @@ public class WebActivity extends Activity {
 		ws.setSupportZoom(false);
 		ws.setDisplayZoomControls(false);
 		ws.setSupportMultipleWindows(true);
+		try {
+			mDialog.setMessage(getString(R.string.web_loading));
+			mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			mDialog.setOnCancelListener(new OnCancelListener() {
 
-
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// webview.stopLoading();
+					// finish();
+				}
+			});
+			if (!mDialog.isShowing())
+				mDialog.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		// -------------------------------------------------------------------------
-
-//		webview.loadData("<iframe height="+ PhoneUtils.getScreenHight(this)+" width="+PhoneUtils.getScreenWidth(this)+"src='http://player.youku.com/embed/XMTk3MjA0MjIw' frameborder=0 'allowfullscreen'></iframe>","text/html","utf-8");
-		webview.loadUrl(home);
-
 		webview.addJavascriptInterface(new Object(){
 			public void click(){
 				Log.i("点击","!!!!!!!!!!!");
 			}
 		},"resize");
-
-
+		refreshbtn.bringToFront();
+		mHandler.postDelayed(freshbtnRunable,20*1000);
+		initpaintPmdView();
 	}
+
+	Runnable freshbtnRunable=new Runnable() {
+		@Override
+		public void run() {
+			if(isAlph) {
+				refreshbtn.setAlpha(0f);
+				animate(refreshbtn).setDuration(2000).alpha(1f);
+				isAlph=false;
+			}else {
+				isAlph=true;
+				refreshbtn.setAlpha(1f);
+				animate(refreshbtn).setDuration(2000).alpha(0f);
+			}
+		}
+	};
 	public  String[] getHostStr() {
+
 		String hostStr="";
 		try {
 			InputStream in= getAssets().open("hosts.txt");
@@ -133,35 +181,27 @@ public class WebActivity extends Activity {
 		}
 		return hostStr.trim().split("0.0.0.0");
 	}
+	@OnClick(R.id.fresh_video)
+	public void BtnRefresh(Button refreshbtn){
+		index=0;
+		mDialog.show();
+	}
+
+	@OnClick(R.id.right_bottom_view) void fullScreen(){
+		ToastUtil.showToastLong(WebActivity.this,R.string.already_fullscreen);
+	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		// WebView.enablePlatformNotifications();
 		webview.onResume();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		// WebView.disablePlatformNotifications();
 		webview.onPause();
 	}
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if ((keyCode == KeyEvent.KEYCODE_BACK) && webview.canGoBack()) {
-			if (mDialog != null && mDialog.isShowing()) {
-				mDialog.dismiss();
-			} else {
-				webview.goBack();
-			}
-
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
-
 	public int clearCacheFolder(File dir, long numDays) {
 		int deletedFiles = 0;
 		if (dir != null && dir.isDirectory()) {
@@ -188,6 +228,7 @@ public class WebActivity extends Activity {
 		super.onDestroy();
 		clearCacheFolder(mContext.getCacheDir(), System.currentTimeMillis());
 		webview.destroy();
+		mHandler.removeCallbacks(null);
 	}
 
 	public  boolean hasAd(Context context, String url) {
@@ -210,47 +251,21 @@ public class WebActivity extends Activity {
 		public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
 			index++;
 			url = url.toLowerCase();
-//			Log.i("广告",hostStr.length+"@"+hasAd(context, url)+"!!!"+url);
-//			if(!url.contains(home)){
-//				 if (!hasAd(context, url)) {
-//					 return super.shouldInterceptRequest(view, url);
-//					 }else{
-			if(index%7==0||index%5==0) {
+			if((index%7==0||index%5==0)&&!url.equals("http://player.youku.com/h5player/img/xplayerv4.png")) {
+				Log.i("广告",index+"  url"+url);
 				return new WebResourceResponse(null, null, null);
 			}
-//					 }
-//				 }else{
-				Log.i("广告",url+"");
-				 return super.shouldInterceptRequest(view, url);
-//				 }
+			return super.shouldInterceptRequest(view, url);
 		}
 
 		@Override
 		public void onLoadResource(WebView view, String url) {
-//			Log.i("广告","开始"+url);
 			super.onLoadResource(view, url);
 		}
 
 		@Override
 		public void onPageStarted(WebView view, String url, Bitmap favicon) {
 			super.onPageStarted(view, url, favicon);
-			try {
-				mDialog.setMessage(getString(R.string.web_loading));
-				mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-				mDialog.setOnCancelListener(new OnCancelListener() {
-
-					@Override
-					public void onCancel(DialogInterface dialog) {
-						// webview.stopLoading();
-						// finish();
-					}
-				});
-				if (!mDialog.isShowing())
-					mDialog.show();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
 		}
 
 		@Override
@@ -317,10 +332,9 @@ public class WebActivity extends Activity {
 				callback.onCustomViewHidden();
 				return;
 			}
-			fullScreenView.addView(view);
+
 			customView = view;
 			customViewCallback = callback;
-			fullScreenView.setVisibility(View.VISIBLE);
 		}
 
 		@Override
@@ -329,9 +343,8 @@ public class WebActivity extends Activity {
 				return;
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 			customView.setVisibility(View.GONE);
-			fullScreenView.removeView(customView);
+
 			customView = null;
-			fullScreenView.setVisibility(View.GONE);
 			customViewCallback.onCustomViewHidden();
 			webview.setVisibility(View.VISIBLE);
 
@@ -341,6 +354,12 @@ public class WebActivity extends Activity {
 		@Override
 		public View getVideoLoadingProgressView() {
 			return super.getVideoLoadingProgressView();
+		}
+
+		@Override
+		public void onProgressChanged(WebView view, int newProgress) {
+			Log.i("进度","进度"+newProgress);
+			super.onProgressChanged(view, newProgress);
 		}
 	}
 
@@ -365,5 +384,47 @@ public class WebActivity extends Activity {
 					ToastUtil.showToastLong(this, "再次点击退出");
 				}
 			}
+	}
+
+	private void setPmd(String text) {
+		final TopPmd danmu = new TopPmd(this, PhoneUtils.getScreenWidth(this),
+				(int) -paint.measureText(text));
+		danmu.setTextSize(15);
+		danmu.setPadding(10, 5, 10, 5);
+		danmu.setText(text);
+		danmu.setTextColor(Color.parseColor("#fffa7a"));
+		danmu.setOnAnimationEndListener(new TopPmd.OnAnimationEndListener() {
+			@Override
+			public void clearPosition() {
+
+			}
+
+			@Override
+			public void animationEnd() {
+				container.removeView(danmu);
+				setPmd(danmu.getText().toString());
+			}
+
+		});
+			RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.WRAP_CONTENT,
+					RelativeLayout.LayoutParams.MATCH_PARENT);
+			lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+			danmu.setGravity(Gravity.CENTER);
+			if (danmu.getParent() == null) {
+				container.addView(danmu, lp);
+				danmu.send();
+			}
+	}
+	/**
+	 * 弹幕
+	 */
+	private void initpaintPmdView() {
+		// TODO Auto-generated method stub
+		TextView textView = new TextView(this);
+		textView.setTextSize(15);
+		textView.setPadding(10, 3, 10, 3);
+		paint = textView.getPaint();
+		setPmd("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
 	}
 }

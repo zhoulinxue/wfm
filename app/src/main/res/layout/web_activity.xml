@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/black">
+
     <WebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
@@ -13,9 +14,64 @@
         android:hardwareAccelerated="true"
         android:layerType="hardware"
         />
-    <FrameLayout
-        android:id="@+id/fullScreen"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+    <LinearLayout
+        android:layout_alignParentLeft="true"
+        android:layout_width="24dp"
+        android:layout_height="match_parent"
+        android:background="@color/style_color_primary_dark"
+        android:gravity="center">
+        <TextView
+            android:id="@id/left_tv"
+            android:layout_width="21dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/time_for_younth"
+            android:gravity="center" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/right_layout"
+        android:layout_alignParentRight="true"
+        android:layout_width="24dp"
+        android:layout_height="match_parent"
+        android:background="@color/style_color_primary_dark"
+        android:gravity="center">
+        <TextView
+            android:id="@id/right_tv"
+            android:layout_width="21dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/time_for_younth"
+            android:gravity="center" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/right_bottom_view"
+        android:layout_width="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_height="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@android:color/transparent"/>
+    <Button
+        android:id="@+id/fresh_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fresh_video"
+        android:textColor="@color/white"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:background="@drawable/shape_corner_red"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="23dp"
+        />
 
-</LinearLayout>
+    <RelativeLayout
+        android:id="@id/container"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:background="@android:color/transparent"
+        android:layout_alignParentTop="true"
+        />
+</RelativeLayout>

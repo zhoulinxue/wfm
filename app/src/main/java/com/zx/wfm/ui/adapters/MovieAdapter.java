@@ -1,21 +1,11 @@
 package com.zx.wfm.ui.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.request.animation.ViewPropertyAnimation;
-import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.view.ViewHelper;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Videobean;
-import com.zx.wfm.ui.View.ViewHolder;
 
 import java.util.List;
 

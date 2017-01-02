@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zx.wfm.R;
-import com.zx.wfm.ui.View.ViewHolder;
 
 import java.util.List;
 
