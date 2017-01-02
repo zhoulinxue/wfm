@@ -1,6 +1,9 @@
 package com.zx.wfm.ui;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.http.params.HttpParams;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,12 +15,16 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,15 +32,21 @@ import android.view.Window;
 import android.webkit.DownloadListener;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.zx.wfm.Application.WFMApplication;
 import com.zx.wfm.R;
+import com.zx.wfm.utils.PhoneUtils;
+import com.zx.wfm.utils.ToastUtil;
 
 public class WebActivity extends Activity {
 
@@ -43,56 +56,96 @@ public class WebActivity extends Activity {
 	private ImageButton backBtn = null;
 	private Handler mHandler = new Handler();
 	private RelativeLayout topbar = null;
-
+	private View customView;
+	private FrameLayout fullScreenView;
+	String home="http://player.youku.com/embed/XMTk3MjA0MjIw";
+//	String home ="<iframe height=498 width=510 src='http://player.youku.com/embed/XMTk3MjA0MjIw' frameborder=0 'allowfullscreen'></iframe>";
+	private Context context;
+	private String[] hostStr;
+	private int index=0;
+	private boolean hasPress = false;
+	private long firstTouchBackBt;
 	@SuppressLint("JavascriptInterface")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		context=this;
+		hostStr=getHostStr();
 		getWindow().requestFeature(Window.FEATURE_PROGRESS);
 		setContentView(R.layout.web_activity);
 		mContext = this;
 		SharedPreferences share = PreferenceManager
 				.getDefaultSharedPreferences(mContext);
-
-		backBtn = (ImageButton) findViewById(R.id.web_back_btn);
-		backBtn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
+		fullScreenView= (FrameLayout) findViewById(R.id.fullScreen);
 		mDialog = new ProgressDialog(mContext);
 		webview = (WebView) findViewById(R.id.webview);
 		webview.setVerticalScrollBarEnabled(false);
-		webview.getSettings().setBuiltInZoomControls(true);
 		webview.setDownloadListener(new WebViewDownLoadListener());
 		webview.setWebViewClient(new WeweWebViewClient());
 		webview.setWebChromeClient(new MyWebChromeClient());
+		webview.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+		webview.setBackgroundColor(0);
+		WebSettings ws = webview.getSettings();
+		//自适应屏幕
+		ws.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+		ws.setLoadWithOverviewMode(true);
+		ws.setJavaScriptEnabled(true);
+		ws.setAllowFileAccess(true);
+		ws.setDatabaseEnabled(true);
+		ws.setDomStorageEnabled(true);
+		ws.setSaveFormData(false);
+		ws.setAppCacheEnabled(true);
+		ws.setCacheMode(WebSettings.LOAD_DEFAULT);
+//		ws.setLoadWithOverviewMode(false);//<==== 一定要设置为false，不然有声音没图像
+		ws.setUseWideViewPort(true);
+		ws.setPluginState(WebSettings.PluginState.ON);
+		ws.setBuiltInZoomControls(false);
+		ws.setSupportZoom(false);
+		ws.setDisplayZoomControls(false);
+		ws.setSupportMultipleWindows(true);
 
-		WebSettings setting = webview.getSettings();
-		setting.setJavaScriptEnabled(true);
-		String url = null;
-		String key = getIntent().getStringExtra("key");
-		String postDate = getIntent().getStringExtra("param");
+
 
 		// -------------------------------------------------------------------------
 
-			webview.loadUrl(url);
+//		webview.loadData("<iframe height="+ PhoneUtils.getScreenHight(this)+" width="+PhoneUtils.getScreenWidth(this)+"src='http://player.youku.com/embed/XMTk3MjA0MjIw' frameborder=0 'allowfullscreen'></iframe>","text/html","utf-8");
+		webview.loadUrl(home);
+
+		webview.addJavascriptInterface(new Object(){
+			public void click(){
+				Log.i("点击","!!!!!!!!!!!");
+			}
+		},"resize");
 
 
+	}
+	public  String[] getHostStr() {
+		String hostStr="";
+		try {
+			InputStream in= getAssets().open("hosts.txt");
+			int size=in.available();
+			byte[] bytes=new byte[size];
+			in.read(bytes);
+			in.close();
+			hostStr=new String(bytes,"utf-8");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return hostStr.trim().split("0.0.0.0");
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		// WebView.enablePlatformNotifications();
+		webview.onResume();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		// WebView.disablePlatformNotifications();
+		webview.onPause();
 	}
 
 	@Override
@@ -134,14 +187,48 @@ public class WebActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		clearCacheFolder(mContext.getCacheDir(), System.currentTimeMillis());
+		webview.destroy();
 	}
+
+	public  boolean hasAd(Context context, String url) {
+		 for (String adUrl : hostStr) {
+			 if (url.contains(adUrl)) {
+				 return true;
+				 }
+			 }
+		 return false;
+		 }
 
 	private class WeweWebViewClient extends WebViewClient {
 
 		@Override
 		public boolean shouldOverrideUrlLoading(WebView view, String url) {
+			return true;
+		}
 
-			return super.shouldOverrideUrlLoading(view, url);
+		@Override
+		public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+			index++;
+			url = url.toLowerCase();
+//			Log.i("广告",hostStr.length+"@"+hasAd(context, url)+"!!!"+url);
+//			if(!url.contains(home)){
+//				 if (!hasAd(context, url)) {
+//					 return super.shouldInterceptRequest(view, url);
+//					 }else{
+			if(index%7==0||index%5==0) {
+				return new WebResourceResponse(null, null, null);
+			}
+//					 }
+//				 }else{
+				Log.i("广告",url+"");
+				 return super.shouldInterceptRequest(view, url);
+//				 }
+		}
+
+		@Override
+		public void onLoadResource(WebView view, String url) {
+//			Log.i("广告","开始"+url);
+			super.onLoadResource(view, url);
 		}
 
 		@Override
@@ -205,6 +292,7 @@ public class WebActivity extends Activity {
 	}
 
 	final class MyWebChromeClient extends WebChromeClient {
+		private CustomViewCallback customViewCallback;
 		@Override
 		public boolean onJsAlert(WebView view, String url, String message,
 				JsResult result) {
@@ -219,6 +307,63 @@ public class WebActivity extends Activity {
 			// TODO Auto-generated method stub
 			super.onConsoleMessage(message, lineNumber, sourceID);
 		}
+
+		@Override
+		public void onShowCustomView(View view, CustomViewCallback callback) {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			webview.setVisibility(View.INVISIBLE);
+			// 如果一个视图已经存在，那么立刻终止并新建一个
+			if (customView != null) {
+				callback.onCustomViewHidden();
+				return;
+			}
+			fullScreenView.addView(view);
+			customView = view;
+			customViewCallback = callback;
+			fullScreenView.setVisibility(View.VISIBLE);
+		}
+
+		@Override
+		public void onHideCustomView() {
+			if (customView == null)// 不是全屏播放状态
+				return;
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			customView.setVisibility(View.GONE);
+			fullScreenView.removeView(customView);
+			customView = null;
+			fullScreenView.setVisibility(View.GONE);
+			customViewCallback.onCustomViewHidden();
+			webview.setVisibility(View.VISIBLE);
+
+
+		}
+
+		@Override
+		public View getVideoLoadingProgressView() {
+			return super.getVideoLoadingProgressView();
+		}
 	}
 
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+	}
+
+	@Override
+	public void onBackPressed() {
+			if (!hasPress) {
+				firstTouchBackBt = System.currentTimeMillis();
+				ToastUtil.showToastLong(this, "再次点击退出");
+				hasPress = true;
+			} else {
+				if ((System.currentTimeMillis() - firstTouchBackBt) < 2000) {
+					hasPress = false;
+					this.moveTaskToBack(true);
+				} else {
+					hasPress = true;
+					firstTouchBackBt = System.currentTimeMillis();
+					ToastUtil.showToastLong(this, "再次点击退出");
+				}
+			}
+	}
 }
