@@ -3,11 +3,12 @@ package com.zx.wfm.ui;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -18,6 +19,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,11 +42,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zx.wfm.Application.WFMApplication;
 import com.zx.wfm.R;
+import com.zx.wfm.bean.TrafficInfo;
 import com.zx.wfm.ui.Widget.TopPmd;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.ToastUtil;
+import com.zx.wfm.utils.TrafficManagerUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -58,7 +63,8 @@ public class WebActivity extends Activity {
 	private ProgressDialog mDialog;
 	private Context mContext;
 	private View customView;
-	String home="http://player.youku.com/embed/XMTk3MjA0MjIw";
+	String home="http://player.youku.com/embed/XMTg4NTkzNDg4";
+
 	private Context context;
 	private String[] hostStr;
 	private int index=0;
@@ -77,6 +83,12 @@ public class WebActivity extends Activity {
 	private Paint paint;
 	private Handler mHandler=new Handler();
 	private boolean isAlph=false;
+	private List<TrafficInfo> infoList=new ArrayList<>();
+	TrafficInfo myinfo;
+	private long lastTotal;
+	private Long moble;
+
+
 	@SuppressLint("JavascriptInterface")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,15 +101,13 @@ public class WebActivity extends Activity {
 		mContext = this;
 		SharedPreferences share = PreferenceManager
 				.getDefaultSharedPreferences(mContext);
+		moble=share.getLong(Constants.MOBLE_TRAFFIC_DATA,0l);
 		mDialog = new ProgressDialog(mContext);
 		mDialog.setOnShowListener(new DialogInterface.OnShowListener() {
 			@Override
 			public void onShow(DialogInterface dialog) {
-				if(TextUtils.isEmpty(webview.getUrl())) {
+				Log.i("index",index+"");
 					webview.loadUrl(home);
-				}else {
-					webview.reload();
-				}
 			}
 		});
 		webview.setVerticalScrollBarEnabled(false);
@@ -150,7 +160,36 @@ public class WebActivity extends Activity {
 		refreshbtn.bringToFront();
 		mHandler.postDelayed(freshbtnRunable,20*1000);
 		initpaintPmdView();
+		new Thread(refreshTrafficRunable).start();
 	}
+	Runnable refreshTrafficRunable =new Runnable(){
+
+		@Override
+		public void run() {
+			if(myinfo!=null){
+				Long total=TrafficStats.getUidRxBytes(myinfo.getUid())+TrafficStats.getUidTxBytes(myinfo.getUid());
+				if(WFMApplication.preferences.getBoolean(Constants.MOBLE_TRAFFIC,false)){
+					moble=moble+total-lastTotal;
+				}
+			String text=PhoneUtils.formatTrafficByte(total);
+//				setPmd(PhoneUtils.formatTrafficByte(TrafficStats.getUidRxBytes(myinfo.getUid())+TrafficStats.getUidTxBytes(myinfo.getUid())));
+			  leftTv.setText(text);
+
+				WFMApplication.editor.putLong(Constants.MOBLE_TRAFFIC_DATA,moble);
+				WFMApplication.editor.commit();
+				lastTotal=total;
+			}else {
+				TrafficManagerUtils utils=new TrafficManagerUtils(WebActivity.this);
+				infoList=utils.getInternetTrafficInfos();
+				for (TrafficInfo info:infoList){
+					if(info.getPackname().equals(getPackageName())){
+						myinfo=info;
+					};
+				}
+			}
+			mHandler.postDelayed(refreshTrafficRunable,3000);
+		}
+	};
 
 	Runnable freshbtnRunable=new Runnable() {
 		@Override
@@ -251,7 +290,7 @@ public class WebActivity extends Activity {
 		public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
 			index++;
 			url = url.toLowerCase();
-			if((index%7==0||index%5==0)&&!url.equals("http://player.youku.com/h5player/img/xplayerv4.png")) {
+			if((index%7==0||index%11==0)&&!url.equals("http://player.youku.com/h5player/img/xplayerv4.png")) {
 				Log.i("广告",index+"  url"+url);
 				return new WebResourceResponse(null, null, null);
 			}

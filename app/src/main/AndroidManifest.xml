@@ -4,6 +4,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
 
     <application
         android:name=".Application.WFMApplication"
@@ -33,6 +34,14 @@
             <intent-filter>
                 <action android:name="com.wilddog.wilddogauth.signinsuccess"/>
                 <action android:name="com.wilddog.wilddogauth.signoutsuccess"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".service.EventBroadCastRecevier">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.CONNECTIVITY_ACTION"/>
+                <action android:name="android.intent.action.Intent.ACTION_USER_PRESENT"/>
             </intent-filter>
         </receiver>
     </application>

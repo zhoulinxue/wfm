@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.PopupWindow;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by zhouxue on 2016/6/21.
  */
@@ -83,6 +85,26 @@ public class PhoneUtils {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0); //强制隐藏键盘
+        }
+    }
+
+    /**
+     * 格式化数据
+     * @param data
+     * @return
+     */
+    public static String formatTrafficByte(long data){
+        DecimalFormat format = new DecimalFormat("##.##");
+        if(data < 1024){
+            return data+"bytes";
+        }else if(data < 1024 * 1024){
+            return format.format(data/1024f) +"KB";
+        }else if(data < 1024 * 1024 * 1024){
+            return format.format(data/1024f/1024f) +"MB";
+        }else if(data < 1024 * 1024 * 1024 * 1024){
+            return format.format(data/1024f/1024f/1024f) +"GB";
+        }else{
+            return "超出统计范围";
         }
     }
 
