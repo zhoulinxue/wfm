@@ -19,5 +19,6 @@
     <color name="yalantis_saffron">#F4B63E</color>
     <color name="yalantis_eggplant">#663D4E</color>
     <color name="yalantis_sienna">#EB6460</color>
+    <color name="transparent">#00000000</color>
 
 </resources>

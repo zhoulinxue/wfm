@@ -1,20 +1,20 @@
 package com.zx.wfm.Application;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.support.multidex.MultiDex;
+import android.widget.Toast;
 
-import com.wilddog.client.SyncReference;
-import com.wilddog.client.WilddogSync;
-import com.wilddog.wilddogauth.WilddogAuth;
-import com.wilddog.wilddogauth.core.Task;
-import com.wilddog.wilddogauth.core.listener.OnCompleteListener;
-import com.wilddog.wilddogauth.core.result.AuthResult;
-import com.wilddog.wilddogauth.model.WilddogUser;
-import com.wilddog.wilddogcore.WilddogApp;
-import com.wilddog.wilddogcore.WilddogOptions;
-import com.zx.wfm.utils.ApiManager;
+import com.alibaba.fastjson.JSONObject;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.LogInCallback;
+import com.avos.avoscloud.SignUpCallback;
+import com.zx.wfm.bean.AVErrorbean;
+import com.zx.wfm.bean.Userbean;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.NetWorkUtils;
 import com.zx.wfm.utils.PhoneUtils;
@@ -37,13 +37,25 @@ public class WFMApplication extends Application {
         wfmApplication=this;
         preferences= PreferenceManager.getDefaultSharedPreferences(this);
         editor=preferences.edit();
-        ApiManager.init(this);
-        WilddogOptions options = new WilddogOptions.Builder().setSyncUrl("https://zx-app.wilddogio.com").build();
-        WilddogApp.initializeApp(this, options);
-        SyncReference ref = WilddogSync.getInstance().getReference();
-        ref.setValue("name", "hello word");
-        ref.push();
+        AVOSCloud.initialize(this,"2zBSbem5VbsxPa1dou5nH8EQ-gzGzoHsz","ra2GN4GM8uypJQ8khu7H2wqg");
         setnetWorkType();
+        logintoServer();
+//        rigisterUser();
+    }
+
+    private void registerUser() {
+        Userbean user=new Userbean();
+        user.getAvUser().setUsername(PhoneUtils.getImeiInfo(this));
+        user.getAvUser().put("deviceId",PhoneUtils.getImeiInfo(this));
+        user.getAvUser().setPassword(Constants.DEFAULT_PASS_WORD);
+        user.getAvUser().signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(AVException e) {
+                if(e==null){
+
+                }
+            }
+        });
     }
 
     /**
@@ -56,5 +68,26 @@ public class WFMApplication extends Application {
             editor.putBoolean(Constants.MOBLE_TRAFFIC,false);
         }
         editor.commit();
+    }
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
+    public void logintoServer() {
+        AVUser.logInInBackground(PhoneUtils.getImeiInfo(this), Constants.DEFAULT_PASS_WORD, new LogInCallback<AVUser>() {
+            @Override
+            public void done(AVUser avUser, AVException e) {
+                if (e == null) {
+                    Toast.makeText(wfmApplication,"欢迎小主",Toast.LENGTH_SHORT).show();
+                } else {
+                    AVErrorbean errorBean= JSONObject.parseObject(e.getMessage(), AVErrorbean.class);
+                    if(errorBean.getCode()==211||"Could not find user".equals(errorBean.getError())){
+                        registerUser();
+                    }
+                }
+            }
+        });
     }
 }

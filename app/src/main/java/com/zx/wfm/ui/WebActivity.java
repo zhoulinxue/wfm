@@ -24,11 +24,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.DownloadListener;
 import android.webkit.JsResult;
@@ -45,6 +43,7 @@ import android.widget.Toast;
 import com.zx.wfm.Application.WFMApplication;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.TrafficInfo;
+import com.zx.wfm.bean.VideoItembean;
 import com.zx.wfm.ui.Widget.TopPmd;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
@@ -99,6 +98,7 @@ public class WebActivity extends Activity {
 		setContentView(R.layout.web_activity);
 		ButterKnife.inject(this);
 		mContext = this;
+		home= ((VideoItembean) getIntent().getSerializableExtra(Constants.VIDEO_ITEM_OBJ)).getItemUrl();
 		SharedPreferences share = PreferenceManager
 				.getDefaultSharedPreferences(mContext);
 		moble=share.getLong(Constants.MOBLE_TRAFFIC_DATA,0l);
@@ -188,6 +188,7 @@ public class WebActivity extends Activity {
 				}
 			}
 			mHandler.postDelayed(refreshTrafficRunable,3000);
+
 		}
 	};
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.Intent;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -22,23 +23,31 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.SaveCallback;
 import com.bumptech.glide.Glide;
 import com.zx.wfm.R;
+import com.zx.wfm.bean.VideoItembean;
 import com.zx.wfm.bean.Videobean;
 import com.zx.wfm.ui.BaseActivity;
+import com.zx.wfm.ui.adapters.BaseRecycleViewAdapter;
 import com.zx.wfm.ui.adapters.MovieAdapter;
+import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.DuzheUtils;
 import com.zx.wfm.utils.SpacesItemDecoration;
 import com.zx.wfm.utils.UKutils;
 
 
-public class MainActivity extends BaseActivity implements OnRefreshListener, OnLoadMoreListener {
+public class MainActivity extends BaseActivity implements OnRefreshListener, OnLoadMoreListener,BaseRecycleViewAdapter.OnItemClickListener {
     private List<Videobean> list;
     private RecyclerView mRecyclerView;
     private MovieAdapter movieAdapter;
@@ -51,6 +60,7 @@ public class MainActivity extends BaseActivity implements OnRefreshListener, OnL
         swipeToLoadLayout = (SwipeToLoadLayout) findViewById(R.id.swipeToLoadLayout);
         mRecyclerView= (RecyclerView) findViewById(R.id.swipe_target);
         movieAdapter=new MovieAdapter(this,list,R.layout.movie_item);
+        movieAdapter.setOnItemClickListener(this);
         final StaggeredGridLayoutManager manager=new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         mRecyclerView.setLayoutManager(manager);
@@ -112,11 +122,6 @@ public class MainActivity extends BaseActivity implements OnRefreshListener, OnL
         new Thread(new Runnable() {
             @Override
             public void run() {
-//                try {
-//                    DuzheUtils.BolgBody();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
                 list= UKutils.getVideoInfo("http://www.soku.com/channel/teleplaylist_0_0_0_1_1.html");
                 Log.i("数据",list.size()+"");
                 runOnUiThread(new Runnable() {
@@ -131,5 +136,12 @@ public class MainActivity extends BaseActivity implements OnRefreshListener, OnL
 
             }
         }).start();
+    }
+
+    @Override
+    public void OnItemClickListener(View view, int position) {
+        Intent intent=new Intent(this,VideoDetailActivity.class);
+        intent.putExtra(Constants.VIDEO_OBJ,movieAdapter.getmList().get(position));
+        startActivity(intent);
     }
 }

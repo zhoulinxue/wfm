@@ -15,7 +15,7 @@ import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
  * Created by ${zhouxue} on 16/12/19 01: 33.
  * QQ:515278502
  */
-public class MovieAdapter extends BaseRecycleViewAdapter<Videobean>{
+public class MovieAdapter extends BaseRecycleViewAdapter<Videobean> {
     private boolean isUpScrolling=false;
     public MovieAdapter(Context mContext, List<Videobean> mDatas, int mLayoutId) {
         super(mContext, mDatas, mLayoutId);
@@ -28,12 +28,12 @@ public class MovieAdapter extends BaseRecycleViewAdapter<Videobean>{
         target.setAlpha(0f);
         animate(target).setDuration(1000).alpha(1f);
         holder.setImageNet(R.id.movie_head,data.getHeadUrl()).setText(R.id.movie_name,data.getVideoName());
-
     }
 
     @Override
     public int getItemCount() {
         return mList==null?0:mList.size();
     }
+
 
 }

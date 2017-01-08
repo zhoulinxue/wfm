@@ -25,6 +25,9 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
     protected List<T> mList;
     protected int mLayoutId;
     protected LayoutInflater mInflater;
+    public static final int TYPE_HEADER = 0;
+    public static final int TYPE_NORMAL = 1;
+
 
     private OnItemClickListener onItemClickListener;
 
@@ -36,7 +39,6 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
     }
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         //这里是创建ViewHolder的地方，RecyclerAdapter内部已经实现了ViewHolder的重用
         //这里我们直接new就好了
         return new RecyclerViewHolder(mInflater.inflate(mLayoutId, parent, false),mContext);
@@ -63,7 +65,7 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
         return mList==null?0:mList.size();
     }
     /**自定义RecyclerView item的点击事件的点击事件*/
-    interface OnItemClickListener {
+  public  interface OnItemClickListener {
         void OnItemClickListener(View view, int position);
     }
 
@@ -74,6 +76,14 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
     public void setmList(List<T> mList) {
         this.mList = mList;
         notifyDataSetChanged();
+    }
+
+    public OnItemClickListener getOnItemClickListener() {
+        return onItemClickListener;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 }
 class RecyclerViewHolder extends RecyclerView.ViewHolder {
