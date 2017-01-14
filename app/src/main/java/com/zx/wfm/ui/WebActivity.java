@@ -49,6 +49,11 @@ import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.ToastUtil;
 import com.zx.wfm.utils.TrafficManagerUtils;
+import com.zx.wfm.utils.UKutils;
+
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -106,8 +111,9 @@ public class WebActivity extends Activity {
 		mDialog.setOnShowListener(new DialogInterface.OnShowListener() {
 			@Override
 			public void onShow(DialogInterface dialog) {
-				Log.i("index",index+"");
-					webview.loadUrl(home);
+				    Log.i("index",index+"");
+//					webview.loadUrl(home);
+				new Thread(getRealUrl).start();
 			}
 		});
 		webview.setVerticalScrollBarEnabled(false);
@@ -134,33 +140,26 @@ public class WebActivity extends Activity {
 		ws.setSupportZoom(false);
 		ws.setDisplayZoomControls(false);
 		ws.setSupportMultipleWindows(true);
-		try {
+
 			mDialog.setMessage(getString(R.string.web_loading));
 			mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			mDialog.setOnCancelListener(new OnCancelListener() {
-
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					// webview.stopLoading();
-					// finish();
-				}
-			});
 			if (!mDialog.isShowing())
 				mDialog.show();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
 		// -------------------------------------------------------------------------
 		webview.addJavascriptInterface(new Object(){
 			public void click(){
 				Log.i("点击","!!!!!!!!!!!");
+
+
+
+
+				
 			}
 		},"resize");
 		refreshbtn.bringToFront();
 		mHandler.postDelayed(freshbtnRunable,20*1000);
 		initpaintPmdView();
-		new Thread(refreshTrafficRunable).start();
+//		new Thread(refreshTrafficRunable).start();
 	}
 	Runnable refreshTrafficRunable =new Runnable(){
 
@@ -279,6 +278,29 @@ public class WebActivity extends Activity {
 			 }
 		 return false;
 		 }
+
+	Runnable getRealUrl=new Runnable() {
+		@Override
+		public void run() {
+			Document doc= UKutils.getDoc(home);
+			Elements elements= doc.getElementsByClass("item");
+			if(elements!=null&&elements.size()!=0){
+				Element element=elements.get(0);
+				Element ele= element.getElementById("link4");
+				String str= ele.attr("value");
+				int start=str.indexOf("src");
+				int end=str.indexOf("frameborder");
+				final  String url=str.substring(start+5,end-2);
+				Log.i("内容",url);
+				mHandler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						webview.loadUrl(url);
+					}
+				},0);
+			}
+		}
+	};
 
 	private class WeweWebViewClient extends WebViewClient {
 

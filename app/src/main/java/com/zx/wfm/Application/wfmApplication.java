@@ -13,6 +13,7 @@ import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
 import com.avos.avoscloud.SignUpCallback;
+import com.tencent.bugly.Bugly;
 import com.zx.wfm.bean.AVErrorbean;
 import com.zx.wfm.bean.Userbean;
 import com.zx.wfm.utils.Constants;
@@ -34,6 +35,7 @@ public class WFMApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Bugly.init(getApplicationContext(), "7a23adc558", false);
         wfmApplication=this;
         preferences= PreferenceManager.getDefaultSharedPreferences(this);
         editor=preferences.edit();

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.LogUtil;
 import com.bartoszlipinski.recyclerviewheader.RecyclerViewHeader;
 import com.bumptech.glide.Glide;
 import com.zx.wfm.R;
@@ -26,7 +28,10 @@ import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.UKutils;
 
-import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -95,9 +100,24 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     @Override
-    public void OnItemClickListener(View view, int position) {
+    public void OnItemClickListener(View view, final int position) {
+//         HttpUnitOptions.setScriptingEnabled(false);
+//                // 建立一个WebConversation实例
+//                WebConversation wc = new WebConversation();
+//                // 向指定的URL发出请求，获取响应
+//        try {
+//            WebResponse wr = wc.getResponse(movieItemAdapter.getmList().get(position).getItemUrl());
+//            Log.i("input元素",wr.getText()+"");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (SAXException e) {
+//            e.printStackTrace();
+//        }
+//        UKutils.getRealUrl(movieItemAdapter.getmList().get(position).getItemUrl());
+
         Intent intent=new Intent(this,WebActivity.class);
         intent.putExtra(Constants.VIDEO_ITEM_OBJ,movieItemAdapter.getmList().get(position));
         startActivity(intent);
+
     }
 }

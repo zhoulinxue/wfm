@@ -7,6 +7,7 @@ import com.zx.wfm.R;
 import com.zx.wfm.bean.VideoItembean;
 import com.zx.wfm.ui.VideoDetailActivity;
 import com.zx.wfm.utils.PhoneUtils;
+import com.zx.wfm.utils.RecyclerViewHolder;
 
 import java.util.List;
 

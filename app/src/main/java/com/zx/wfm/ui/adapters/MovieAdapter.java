@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Videobean;
+import com.zx.wfm.utils.RecyclerViewHolder;
 
 import java.util.List;
 

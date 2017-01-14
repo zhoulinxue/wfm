@@ -2,6 +2,7 @@ package com.zx.wfm.utils;
 
 import android.util.Log;
 
+import com.alibaba.fastjson.JSONObject;
 import com.avos.avoscloud.LogUtil;
 import com.zx.wfm.bean.VideoItembean;
 import com.zx.wfm.bean.Videobean;
@@ -25,21 +26,10 @@ import java.util.regex.Pattern;
  */
 public class UKutils {
     public static List<Videobean> getVideoInfo(String pageUrl) {// 一页调用一次
-        Document doc = null;
+        Document doc =getDoc(pageUrl);
         List<Videobean> list=new ArrayList<>();
         List<String> pages=new ArrayList<>();
-        try {
-            doc = Jsoup.connect(pageUrl).timeout(6000).get();
-            // Added a maximum body response size to Jsoup.Connection, to
-            // prevent running out of memory when trying to read extremely
-            // large
-            // documents. The default is 1MB.
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            getVideoInfo(pageUrl);
-            System.out.println("connect error");
-            e.printStackTrace();
-        }
+
         if (doc == null) {
             Log.e("Jsoup", "doc==null");
             return null;
@@ -111,56 +101,22 @@ public class UKutils {
     }
 
     private static List<VideoItembean> getVideoList(Videobean vbean) {
-        Document doc = null;
+        Document doc = getDoc(vbean.getAddress());
         List<VideoItembean> list=new ArrayList<>();
-        try {
-            doc = Jsoup.connect(vbean.getAddress()).timeout(6000).get();
-            // Added a maximum body response size to Jsoup.Connection, to
-            // prevent running out of memory when trying to read extremely
-            // large
-            // documents. The default is 1MB.
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            System.out.println("connect error");
-            e.printStackTrace();
-        }
         Elements link_info = doc.getElementsByClass("linkpanel");
         Log.i("link_info",link_info.size()+"");
-        if(link_info!=null){
+        if(link_info!=null&&link_info.size()!=0){
             Elements urls = link_info.get(0).select("a[href]");
             for(Element e:urls) {
                 VideoItembean bean=new VideoItembean();
-
                 bean.setItemUrl(e.attr("abs:href"));
                 bean.setVideoName(vbean.getVideoName());
                 bean.setDesc(vbean.getDesc());
                 bean.setVideoHeadUrl(vbean.getHeadUrl());
-//                getAspect(bean);
                 list.add(bean);
             }
         }
         return list;
-    }
-    public  static void getAspect(VideoItembean bean){
-        Document doc = null;
-        List<VideoItembean> list=new ArrayList<>();
-        try {
-            doc = Jsoup.connect(bean.getItemUrl()).timeout(6000).get();
-            // Added a maximum body response size to Jsoup.Connection, to
-            // prevent running out of memory when trying to read extremely
-            // large
-            // documents. The default is 1MB.
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            System.out.println("connect error");
-            e.printStackTrace();
-        }
-        Elements show_aspect = doc.getElementsByClass("show_aspect");
-        Log.i("show_aspect",bean.getItemUrl()+"!!!"+show_aspect.size()+"@@");
-        for(Element element:show_aspect){
-
-        }
-
     }
 
     /**
@@ -171,7 +127,7 @@ public class UKutils {
     public static List<String> getVideoPages() throws Exception{
         List<String> pages=new ArrayList<>();
        String firsturl= "http://www.soku.com/channel/teleplaylist_0_0_0_1_1.html";
-        Document  doc = Jsoup.connect(firsturl).timeout(6000).get();
+        Document  doc =getDoc(firsturl);
         Elements pages_info=doc.getElementsByClass("pages");
         if(pages_info!=null){
             Elements elements=pages_info.select("a[href]");
@@ -188,4 +144,28 @@ public class UKutils {
     }
 
 
+    public static void getRealUrl(final String itemUrl) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Document doc=getDoc(itemUrl);
+                Elements element=doc.getElementsByClass("panels");
+                Log.i("input元素",itemUrl+"!"+ doc.outerHtml());
+            }
+        }).start();
+    }
+
+    public static Document getDoc(String url) {
+        try {
+           return Jsoup.connect(url).timeout(6000).get();
+            // Added a maximum body response size to Jsoup.Connection, to
+            // prevent running out of memory when trying to read extremely
+            // large
+            // documents. The default is 1MB.
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
