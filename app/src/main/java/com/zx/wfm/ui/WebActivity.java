@@ -284,21 +284,37 @@ public class WebActivity extends Activity {
 		public void run() {
 			Document doc= UKutils.getDoc(home);
 			Elements elements= doc.getElementsByClass("item");
+
 			if(elements!=null&&elements.size()!=0){
 				Element element=elements.get(0);
-				Element ele= element.getElementById("link4");
-				String str= ele.attr("value");
+				final Element ele= element.getElementById("link4");
+				 String str= ele.attr("value");
+//				final	String url=str.replace("height=498","height="+PhoneUtils.getScreenHight(WebActivity.this)).replace("width=510","width="+PhoneUtils.getScreenWidth(WebActivity.this));
+
 				int start=str.indexOf("src");
 				int end=str.indexOf("frameborder");
 				final  String url=str.substring(start+5,end-2);
-				Log.i("内容",url);
+				for(Element element1:elements){
+					Log.i("内容",element1.html());
+				}
+
 				mHandler.postDelayed(new Runnable() {
 					@Override
 					public void run() {
 						webview.loadUrl(url);
+//						webview.loadData(url,"text/html","utf-8");
 					}
 				},0);
 			}
+
+
+//			Element element=doc.getElementById("Drama");
+//			Elements elements1=element.getElementsByClass("show_aspect");
+//			if(elements1!=null&&elements1.size()!=0){
+//				for(Element ele:elements1){
+//					Log.i("元素",ele.html());
+//				}
+//			}
 		}
 	};
 
@@ -434,16 +450,20 @@ public class WebActivity extends Activity {
 	public void onBackPressed() {
 			if (!hasPress) {
 				firstTouchBackBt = System.currentTimeMillis();
-				ToastUtil.showToastLong(this, "再次点击退出");
+				ToastUtil.showToastLong(this, "再次点击退出播放");
 				hasPress = true;
 			} else {
 				if ((System.currentTimeMillis() - firstTouchBackBt) < 2000) {
 					hasPress = false;
-					this.moveTaskToBack(true);
+					if(webview.canGoBack()) {
+						this.moveTaskToBack(true);
+					}else {
+						super.onBackPressed();
+					}
 				} else {
 					hasPress = true;
 					firstTouchBackBt = System.currentTimeMillis();
-					ToastUtil.showToastLong(this, "再次点击退出");
+					ToastUtil.showToastLong(this, "再次点击退出播放");
 				}
 			}
 	}

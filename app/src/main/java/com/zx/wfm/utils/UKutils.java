@@ -94,6 +94,9 @@ public class UKutils {
             @Override
             public void run() {
                 List<VideoItembean> list=getVideoList(bean);
+                if(list==null){
+                    return;
+                }
                 bean.setAddrDetail(list);
                 Log.i("总集数：",bean.getVideoName()+":"+list.size());
             }
@@ -102,6 +105,9 @@ public class UKutils {
 
     private static List<VideoItembean> getVideoList(Videobean vbean) {
         Document doc = getDoc(vbean.getAddress());
+        if(doc==null){
+            return null;
+        }
         List<VideoItembean> list=new ArrayList<>();
         Elements link_info = doc.getElementsByClass("linkpanel");
         Log.i("link_info",link_info.size()+"");
