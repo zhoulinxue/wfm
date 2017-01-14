@@ -1,0 +1,10 @@
+apply plugin: 'java'
+apply plugin:'application'
+
+mainClassName = "com.czlapp.lingyu.greendao.GeneratorTool"
+
+dependencies {
+    compile 'de.greenrobot:greendao-generator:2.0.0'
+}
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
