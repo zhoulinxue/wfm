@@ -44,8 +44,9 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
         swipeToLoadLayout = (SwipeToLoadLayout) findViewById(R.id.swipeToLoadLayout);
         mRecyclerView= (RecyclerView) findViewById(R.id.swipe_target);
         pageNum=preferences.getInt(Constants.PAGE_NUM,Constants.PAGE_MIN_NUM);
+        netPage=preferences.getInt(Constants.NET_PAGE_NUM,0);
         list=DBManager.getInstance().getTelevisionList(pageNum,page);
-        movieAdapter=new MovieAdapter(this,DBManager.getInstance().getAllTelevisionList(),R.layout.movie_item);
+        movieAdapter=new MovieAdapter(this,list,R.layout.movie_item);
         movieAdapter.setOnItemClickListener(this);
         final StaggeredGridLayoutManager manager=new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
@@ -108,6 +109,8 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
                 @Override
                 public void run() {
                     List<Televisionbean> newlist=UKutils.getVideoInfo(url.get(netPage));
+                    editor.putInt(Constants.NET_PAGE_NUM,netPage);
+                    editor.commit();
                     loadMoreCompelete();
                     DBManager.getInstance().saveTelevisions(newlist);
                     movieAdapter.addAll(newlist);
@@ -115,6 +118,7 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
                 }
             });
         }else {
+            page++;
             if(netPage>=url.size()){
                 ToastUtil.showToastShort(this,"没有更多了");
             }
@@ -130,7 +134,6 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
         }else {
           refreshCompelete();
         }
-        page++;
     }
   private void   getDataFromNet(){
       ThreadUtil.runOnNewThread( new Runnable() {
@@ -146,9 +149,8 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
                       editor.putInt(Constants.PAGE_NUM, list.size());
                       editor.commit();
                   }
-                  movieAdapter.setmList(list);
                   DBManager.getInstance().saveTelevisions(list);
-
+                  movieAdapter.setmList(DBManager.getInstance().getTelevisionList(pageNum,page));
               } catch (Exception e) {
                   e.printStackTrace();
               }

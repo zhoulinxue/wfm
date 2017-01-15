@@ -113,7 +113,7 @@ public class DBManager {
 
     private   QueryBuilder<Televisionbean> getTelevisionbeanQueryBuilder(){
         QueryBuilder<Televisionbean> builder=mTelevisionbeanDao.queryBuilder();
-        return builder.orderDesc(TelevisionbeanDao.Properties.Time);
+        return builder.orderAsc(TelevisionbeanDao.Properties.Time);
     }
 
 }

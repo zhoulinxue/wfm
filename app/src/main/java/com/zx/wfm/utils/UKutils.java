@@ -54,6 +54,7 @@ public class UKutils {
                 for (int i=0;i<urls.size();i++) {
                    Element urlElement=urls.get(i);
                     Televisionbean bean=new Televisionbean();
+                    bean.setTime(System.currentTimeMillis());
                     bean.setDesc(desc_info.get(i).text());
                             bean.setVideoName(urlElement.attr("title"));
                     bean.setAddressUrl(urlElement.attr("abs:href"));

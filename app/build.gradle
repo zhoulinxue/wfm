@@ -22,6 +22,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
     android.applicationVariants.all {
         variant ->
             variant.outputs.each {
@@ -42,6 +45,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 }
+
 allprojects {
     repositories {
         jcenter()
