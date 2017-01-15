@@ -12,7 +12,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -43,7 +42,7 @@ import android.widget.Toast;
 import com.zx.wfm.Application.WFMApplication;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.TrafficInfo;
-import com.zx.wfm.bean.VideoItembean;
+import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.ui.Widget.TopPmd;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
@@ -103,7 +102,7 @@ public class WebActivity extends Activity {
 		setContentView(R.layout.web_activity);
 		ButterKnife.inject(this);
 		mContext = this;
-		home= ((VideoItembean) getIntent().getSerializableExtra(Constants.VIDEO_ITEM_OBJ)).getItemUrl();
+		home= ((Moviebean) getIntent().getSerializableExtra(Constants.VIDEO_ITEM_OBJ)).getItemUrl();
 		SharedPreferences share = PreferenceManager
 				.getDefaultSharedPreferences(mContext);
 		moble=share.getLong(Constants.MOBLE_TRAFFIC_DATA,0l);

@@ -6,8 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.zx.wfm.R;
+import com.zx.wfm.bean.Televisionbean;
 import com.zx.wfm.utils.RecyclerViewHolder;
+import com.zx.wfm.utils.ThreadUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,6 +62,36 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
     public int getItemCount() {
         return mList==null?0:mList.size();
     }
+
+    public int addAll(List<T> list) {
+        if(mList==null){
+            mList=new ArrayList<>();
+        }
+        if(list!=null&&list.size()!=0){
+            if(!mList.containsAll(list)) {
+                mList.addAll(list);
+                return 0;
+            }
+            notifymyData();
+        }
+        return 1;
+    }
+    
+
+    public int addAll(List<T> list,int position) {
+        if(mList==null){
+            mList=new ArrayList<>();
+        }
+        if(list!=null&&list.size()!=0){
+            if(!mList.containsAll(list)) {
+                mList.addAll(position, list);
+                return 0;
+            }
+            notifymyData();
+        }
+        return 1;
+    }
+
     /**自定义RecyclerView item的点击事件的点击事件*/
   public  interface OnItemClickListener {
         void OnItemClickListener(View view, int position);
@@ -70,7 +103,16 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
 
     public void setmList(List<T> mList) {
         this.mList = mList;
-        notifyDataSetChanged();
+        notifymyData();
+    }
+
+    private void notifymyData() {
+        ThreadUtil.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
     }
 
     public OnItemClickListener getOnItemClickListener() {
@@ -80,5 +122,6 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
+    
 }
 

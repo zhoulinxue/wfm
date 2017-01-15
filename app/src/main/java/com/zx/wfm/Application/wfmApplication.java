@@ -17,9 +17,11 @@ import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.zx.wfm.bean.AVErrorbean;
 import com.zx.wfm.bean.Userbean;
+import com.zx.wfm.dao.DBManager;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.NetWorkUtils;
 import com.zx.wfm.utils.PhoneUtils;
+import com.zx.wfm.utils.ThreadUtil;
 
 
 /**
@@ -36,14 +38,23 @@ public class WFMApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-       initBugly();
         wfmApplication=this;
         preferences= PreferenceManager.getDefaultSharedPreferences(this);
         editor=preferences.edit();
-        AVOSCloud.initialize(this,"2zBSbem5VbsxPa1dou5nH8EQ-gzGzoHsz","ra2GN4GM8uypJQ8khu7H2wqg");
-        setnetWorkType();
-        logintoServer();
-//        rigisterUser();
+        AVOSCloud.initialize(WFMApplication.this,"2zBSbem5VbsxPa1dou5nH8EQ-gzGzoHsz","ra2GN4GM8uypJQ8khu7H2wqg");
+        initData();
+    }
+
+    private void initData() {
+        ThreadUtil.runOnNewThread(new Runnable() {
+            @Override
+            public void run() {
+                initBugly();
+                DBManager.init(WFMApplication.this);
+                setnetWorkType();
+                logintoServer();
+            }
+        });
     }
 
     private void initBugly() {

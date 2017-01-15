@@ -1,57 +1,41 @@
 package com.zx.wfm.ui;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 
 import android.content.Intent;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.TextView;
 
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.SaveCallback;
 import com.bumptech.glide.Glide;
 import com.zx.wfm.R;
-import com.zx.wfm.bean.VideoItembean;
-import com.zx.wfm.bean.Videobean;
-import com.zx.wfm.ui.BaseActivity;
+import com.zx.wfm.bean.Televisionbean;
+import com.zx.wfm.dao.DBManager;
 import com.zx.wfm.ui.adapters.BaseRecycleViewAdapter;
 import com.zx.wfm.ui.adapters.MovieAdapter;
 import com.zx.wfm.utils.Constants;
-import com.zx.wfm.utils.DuzheUtils;
+import com.zx.wfm.utils.NetWorkUtils;
 import com.zx.wfm.utils.SpacesItemDecoration;
+import com.zx.wfm.utils.ThreadUtil;
+import com.zx.wfm.utils.ToastUtil;
 import com.zx.wfm.utils.UKutils;
 
 
-public class MainActivity extends BaseActivity implements OnRefreshListener, OnLoadMoreListener,BaseRecycleViewAdapter.OnItemClickListener {
-    private List<Videobean> list;
+public class UKMainActivity extends BaseActivity implements OnRefreshListener, OnLoadMoreListener,BaseRecycleViewAdapter.OnItemClickListener {
+    private List<Televisionbean> list;
     private RecyclerView mRecyclerView;
     private MovieAdapter movieAdapter;
     private SwipeToLoadLayout swipeToLoadLayout;
+    private int page=0;
+    private int pageNum;
+    private int netPage=0;
+    private  List<String> url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +43,9 @@ public class MainActivity extends BaseActivity implements OnRefreshListener, OnL
         setContentView(R.layout.activity_main);
         swipeToLoadLayout = (SwipeToLoadLayout) findViewById(R.id.swipeToLoadLayout);
         mRecyclerView= (RecyclerView) findViewById(R.id.swipe_target);
-        movieAdapter=new MovieAdapter(this,list,R.layout.movie_item);
+        pageNum=preferences.getInt(Constants.PAGE_NUM,Constants.PAGE_MIN_NUM);
+        list=DBManager.getInstance().getTelevisionList(pageNum,page);
+        movieAdapter=new MovieAdapter(this,DBManager.getInstance().getAllTelevisionList(),R.layout.movie_item);
         movieAdapter.setOnItemClickListener(this);
         final StaggeredGridLayoutManager manager=new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
@@ -76,12 +62,12 @@ public class MainActivity extends BaseActivity implements OnRefreshListener, OnL
                 super.onScrollStateChanged(recyclerView,newState);
                 manager.invalidateSpanAssignments(); //防止第一行到顶部有空白区域
                 if (newState == RecyclerView.SCROLL_STATE_IDLE ){
-                    Glide.with(MainActivity.this).resumeRequests();
+                    Glide.with(UKMainActivity.this).resumeRequests();
                     if (!ViewCompat.canScrollVertically(recyclerView, 1)){
                         swipeToLoadLayout.setLoadingMore(true);
                     }
                 }else {
-                    Glide.with(MainActivity.this).pauseRequests();
+                    Glide.with(UKMainActivity.this).pauseRequests();
                 }
             }
 
@@ -114,28 +100,79 @@ public class MainActivity extends BaseActivity implements OnRefreshListener, OnL
 
     @Override
     public void onLoadMore() {
-        swipeToLoadLayout.setLoadingMore(false);
+        List<Televisionbean> list=DBManager.getInstance().getTelevisionList(pageNum,page);
+       int status= movieAdapter.addAll(list);
+        if(status==1&&netPage<url.size()){
+            ToastUtil.showToastShort(UKMainActivity.this,netPage+"!"+netPage+"@"+status);
+            ThreadUtil.runOnNewThread(new Runnable() {
+                @Override
+                public void run() {
+                    List<Televisionbean> newlist=UKutils.getVideoInfo(url.get(netPage));
+                    loadMoreCompelete();
+                    DBManager.getInstance().saveTelevisions(newlist);
+                    movieAdapter.addAll(newlist);
+                    netPage++;
+                }
+            });
+        }else {
+            if(netPage>=url.size()){
+                ToastUtil.showToastShort(this,"没有更多了");
+            }
+            loadMoreCompelete();
+        }
     }
 
     @Override
     public void onRefresh() {
-        new Thread(new Runnable() {
+        page=0;
+        if(NetWorkUtils.isNetworkConnected(this)){
+            getDataFromNet();
+        }else {
+          refreshCompelete();
+        }
+        page++;
+    }
+  private void   getDataFromNet(){
+      ThreadUtil.runOnNewThread( new Runnable() {
+          @Override
+          public void run() {
+              try {
+                  url =UKutils.getVideoPages();
+                  refreshCompelete();
+                  List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.TELEVISION_URL);
+                  if(list!=null&&list.size()>=Constants.PAGE_MIN_NUM) {
+                      pageNum = list.size();
+                      netPage++;
+                      editor.putInt(Constants.PAGE_NUM, list.size());
+                      editor.commit();
+                  }
+                  movieAdapter.setmList(list);
+                  DBManager.getInstance().saveTelevisions(list);
+
+              } catch (Exception e) {
+                  e.printStackTrace();
+              }
+          }
+      });
+  }
+
+    private void refreshCompelete() {
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                list= UKutils.getVideoInfo("http://www.soku.com/channel/teleplaylist_0_0_0_1_1.html");
-                Log.i("数据",list.size()+"");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeToLoadLayout.setRefreshing(false);
-                        if(list!=null&&list.size()!=0){
-                            movieAdapter.setmList(list);
-                        }
-                    }
-                });
-
+                if(swipeToLoadLayout!=null)
+                swipeToLoadLayout.setRefreshing(false);
             }
-        }).start();
+        });
+    }
+    private void loadMoreCompelete() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(swipeToLoadLayout!=null)
+                    swipeToLoadLayout.setLoadingMore(false);
+            }
+        });
     }
 
     @Override

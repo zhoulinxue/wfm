@@ -1,14 +1,9 @@
 package com.zx.wfm.ui;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -16,22 +11,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.avos.avoscloud.LogUtil;
 import com.bartoszlipinski.recyclerviewheader.RecyclerViewHeader;
 import com.bumptech.glide.Glide;
 import com.zx.wfm.R;
-import com.zx.wfm.bean.VideoItembean;
-import com.zx.wfm.bean.Videobean;
+import com.zx.wfm.bean.Televisionbean;
 import com.zx.wfm.ui.adapters.BaseRecycleViewAdapter;
 import com.zx.wfm.ui.adapters.MovieItemAdapter;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
-import com.zx.wfm.utils.UKutils;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -45,7 +32,7 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     @InjectView(R.id.video_numn_recycal)
      RecyclerView mRecyclerView;
     MovieItemAdapter movieItemAdapter;
-    private Videobean videobean;
+    private Televisionbean videobean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +41,9 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         setContentView(R.layout.video_detail_layout);
         ButterKnife.inject(this);
         Intent intent=getIntent();
-        videobean= (Videobean) intent.getSerializableExtra(Constants.VIDEO_OBJ);
+        videobean= (Televisionbean) intent.getSerializableExtra(Constants.VIDEO_OBJ);
         new Thread(videoDetailrunable).start();
-        movieItemAdapter=new MovieItemAdapter(this,videobean.getAddrDetail(),R.layout.video_num_item_layout);
+        movieItemAdapter=new MovieItemAdapter(this,videobean.getMoviebeans(),R.layout.video_num_item_layout);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         RecyclerViewHeader header = (RecyclerViewHeader) findViewById(R.id.header);
         ImageView headimg= (ImageView) header.findViewById(R.id.video_header_head_img);

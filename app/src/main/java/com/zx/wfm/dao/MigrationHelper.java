@@ -15,7 +15,7 @@ import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.internal.DaoConfig;
 
 /**
- * Created by chenshaolin on 2016/12/13.
+ * Created by zx on 2016/12/13.
  */
 public class MigrationHelper {
     /**

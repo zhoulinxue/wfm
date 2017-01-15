@@ -8,6 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
+        android:minHeight="200dp"
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_launcher"/>
     <TextView
@@ -16,7 +17,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="mingzi"
-
-        android:textColor="@color/red"/>
+        android:textColor="@color/white"/>
 
 </LinearLayout>

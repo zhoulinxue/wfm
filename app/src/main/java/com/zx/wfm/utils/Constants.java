@@ -11,10 +11,16 @@ public class Constants {
     public static String ERROR="return_msg";
     public static String VIDEO_OBJ="video_obj";
     public static String VIDEO_ITEM_OBJ="video_item_obj";
+    public static int PAGE_MAX_NUM=20;
+    public static int PAGE_MIN_NUM=10;
+    public static String PAGE_NUM="page_num";
 
     public static class Request_Code{
         public static  final  int RC_SETTINGS_SCREEN=1000;
         public static  final  int RC_CAMERA_AND_WIFI=1001;
     }
 
+    public static class Net {
+        public static String TELEVISION_URL="http://www.soku.com/channel/teleplaylist_0_0_0_1_1.html";
+    }
 }

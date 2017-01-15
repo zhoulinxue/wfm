@@ -2,6 +2,10 @@ package com.zx.wfm.ui;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -21,6 +25,16 @@ import pub.devrel.easypermissions.EasyPermissions;
  */
 public class BaseActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
     private String TAG=BaseActivity.class.getSimpleName();
+    protected SharedPreferences preferences;
+    protected SharedPreferences.Editor editor;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        preferences= PreferenceManager.getDefaultSharedPreferences(this);
+        editor=preferences.edit();
+
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
