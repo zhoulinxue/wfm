@@ -133,7 +133,7 @@ public class UKutils {
             Elements urls = link_info.get(0).select("a[href]");
             for(Element e:urls) {
                 Moviebean bean=new Moviebean();
-                bean.setTelevisionId(bean.getTelevisionId());
+                bean.setTelevisionId(vbean.getTelevisionId());
                 bean.setItemUrl(e.attr("abs:href"));
                 bean.setMovieId(bean.getItemUrl());
                 bean.setVideoName(vbean.getVideoName());

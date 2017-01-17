@@ -14,11 +14,15 @@ import android.widget.TextView;
 import com.bartoszlipinski.recyclerviewheader.RecyclerViewHeader;
 import com.bumptech.glide.Glide;
 import com.zx.wfm.R;
+import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.bean.Televisionbean;
+import com.zx.wfm.dao.DBManager;
 import com.zx.wfm.ui.adapters.BaseRecycleViewAdapter;
 import com.zx.wfm.ui.adapters.MovieItemAdapter;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -42,8 +46,9 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         ButterKnife.inject(this);
         Intent intent=getIntent();
         videobean= (Televisionbean) intent.getSerializableExtra(Constants.VIDEO_OBJ);
+        List<Moviebean> list= DBManager.getInstance().getMovieListByTeleId(videobean.getTelevisionId());
         new Thread(videoDetailrunable).start();
-        movieItemAdapter=new MovieItemAdapter(this,videobean.getMoviebeans(),R.layout.video_num_item_layout);
+        movieItemAdapter=new MovieItemAdapter(this,list,R.layout.video_num_item_layout);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         RecyclerViewHeader header = (RecyclerViewHeader) findViewById(R.id.header);
         ImageView headimg= (ImageView) header.findViewById(R.id.video_header_head_img);

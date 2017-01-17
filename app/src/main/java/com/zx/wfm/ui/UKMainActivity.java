@@ -140,6 +140,9 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
                   refreshCompelete();
                   List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.TELEVISION_URL);
                   DBManager.getInstance().saveTelevisions(list);
+                  if(movieAdapter.getItemCount()==0) {
+                      movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL));
+                  }
               } catch (Exception e) {
                   e.printStackTrace();
               }
