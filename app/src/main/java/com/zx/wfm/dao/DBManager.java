@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.avos.avoscloud.LogUtil;
+import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.bean.Televisionbean;
 import com.zx.wfm.utils.Constants;
 
@@ -89,16 +90,40 @@ public class DBManager {
         if(list==null){
             return;
         }
+        Log.i(TAG,"保存集合"+list.size());
         mTelevisionbeanDao.insertOrReplaceInTx(list);
     }
+
+    /**
+     * 获取 指定页数得电影
+     * @param num
+     * @param page
+     * @return
+     */
     public   List<Televisionbean> getTelevisionList(int num,int page){
-        
+        Log.i(TAG,"num=:"+num+"  page=:"+page);
         QueryBuilder<Televisionbean> builder=getTelevisionbeanQueryBuilder();
         builder.limit(getNum(num));
         builder.offset(getNum(num)*page);
         return builder.list();
     }
 
+    /**
+     * 获取 指定页数得电影
+     * @param netPage
+     * @return
+     */
+
+    public   List<Televisionbean> getTelevisionList(String netPage){
+        QueryBuilder<Televisionbean> builder=getTelevisionbeanQueryBuilder();
+        builder.where(TelevisionbeanDao.Properties.NetPage.eq(netPage));
+        return builder.list();
+    }
+
+    /**
+     * 获取所有电影
+     * @return
+     */
     public   List<Televisionbean> getAllTelevisionList(){
         QueryBuilder<Televisionbean> builder=getTelevisionbeanQueryBuilder();
         return builder.list();
@@ -111,9 +136,38 @@ public class DBManager {
         return  num;
     }
 
+    /**
+     * 获取 电影查询对象
+     * @return
+     */
     private   QueryBuilder<Televisionbean> getTelevisionbeanQueryBuilder(){
         QueryBuilder<Televisionbean> builder=mTelevisionbeanDao.queryBuilder();
         return builder.orderAsc(TelevisionbeanDao.Properties.Time);
     }
 
+    /**
+     * 按id 查询 电影
+     * @param televisionId
+     * @return
+     */
+    public Televisionbean getTelevisionById(String televisionId) {
+        QueryBuilder<Televisionbean> builder=getTelevisionbeanQueryBuilder();
+        builder.where(TelevisionbeanDao.Properties.TelevisionId.eq(televisionId));
+        return builder.unique();
+    }
+
+    /**
+     * 保存 剧集
+     * @param list
+     */
+    public void saveMoveBean(List<Moviebean> list) {
+        if(list==null){
+            return;
+        }
+        moviebeanDao.insertOrReplaceInTx(list);
+    }
+
+    public List<Moviebean> getMovieListByTeleId(String televisionId) {
+     return    moviebeanDao.queryBuilder().where(MoviebeanDao.Properties.TelevisionId.eq(televisionId)).list();
+    }
 }

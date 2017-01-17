@@ -25,6 +25,7 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
     private String rating;
     private String from;
     private Long time;
+    private String netPage;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -45,7 +46,7 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
         this.TelevisionId = TelevisionId;
     }
 
-    public Televisionbean(String TelevisionId, String addressUrl, String desc, String videoName, String headUrl, String rating, String from, Long time) {
+    public Televisionbean(String TelevisionId, String addressUrl, String desc, String videoName, String headUrl, String rating, String from, Long time, String netPage) {
         this.TelevisionId = TelevisionId;
         this.addressUrl = addressUrl;
         this.desc = desc;
@@ -54,6 +55,7 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
         this.rating = rating;
         this.from = from;
         this.time = time;
+        this.netPage = netPage;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -124,6 +126,14 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
 
     public void setTime(Long time) {
         this.time = time;
+    }
+
+    public String getNetPage() {
+        return netPage;
+    }
+
+    public void setNetPage(String netPage) {
+        this.netPage = netPage;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */

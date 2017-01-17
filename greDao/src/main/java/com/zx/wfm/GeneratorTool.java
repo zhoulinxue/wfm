@@ -64,6 +64,7 @@ public class GeneratorTool {
         tele.addStringProperty("rating");// 评分
         tele.addStringProperty("from");// 来源
         tele.addLongProperty("time");// 保存时间
+        tele.addStringProperty("netPage");// 网页上页数
 
 
         // 电影或电视剧单集

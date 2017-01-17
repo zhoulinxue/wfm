@@ -13,6 +13,7 @@ import android.view.View;
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
+import com.avos.avoscloud.LogUtil;
 import com.bumptech.glide.Glide;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Televisionbean;
@@ -45,7 +46,8 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
         mRecyclerView= (RecyclerView) findViewById(R.id.swipe_target);
         pageNum=preferences.getInt(Constants.PAGE_NUM,Constants.PAGE_MIN_NUM);
         netPage=preferences.getInt(Constants.NET_PAGE_NUM,0);
-        list=DBManager.getInstance().getTelevisionList(pageNum,page);
+        list=DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL);
+        Log.i("下一页",UKutils.getNextPageUrl(Constants.Net.TELEVISION_URL));
         movieAdapter=new MovieAdapter(this,list,R.layout.movie_item);
         movieAdapter.setOnItemClickListener(this);
         final StaggeredGridLayoutManager manager=new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -101,29 +103,23 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
 
     @Override
     public void onLoadMore() {
-        List<Televisionbean> list=DBManager.getInstance().getTelevisionList(pageNum,page);
-       int status= movieAdapter.addAll(list);
-        if(status==1&&netPage<url.size()){
-            ToastUtil.showToastShort(UKMainActivity.this,netPage+"!"+netPage+"@"+status);
-            ThreadUtil.runOnNewThread(new Runnable() {
-                @Override
-                public void run() {
-                    List<Televisionbean> newlist=UKutils.getVideoInfo(url.get(netPage));
-                    editor.putInt(Constants.NET_PAGE_NUM,netPage);
-                    editor.commit();
-                    loadMoreCompelete();
-                    DBManager.getInstance().saveTelevisions(newlist);
-                    movieAdapter.addAll(newlist);
-                    netPage++;
-                }
-            });
-        }else {
-            page++;
-            if(netPage>=url.size()){
-                ToastUtil.showToastShort(this,"没有更多了");
+        List<Televisionbean> currentlist=movieAdapter.getmList();
+        final String urlpage=UKutils.getNextPageUrl(currentlist.get(currentlist.size()-1).getNetPage());
+        final List<Televisionbean> list=DBManager.getInstance().getTelevisionList(urlpage);
+            if(list==null||list.size()==0){
+                ThreadUtil.runOnNewThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<Televisionbean> newlist=UKutils.getVideoInfo(urlpage);
+                        loadMoreCompelete();
+                        DBManager.getInstance().saveTelevisions(newlist);
+                        movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
+                    }
+                });
+            }else {
+                loadMoreCompelete();
+                movieAdapter.addAll(list);
             }
-            loadMoreCompelete();
-        }
     }
 
     @Override
@@ -143,14 +139,7 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
                   url =UKutils.getVideoPages();
                   refreshCompelete();
                   List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.TELEVISION_URL);
-                  if(list!=null&&list.size()>=Constants.PAGE_MIN_NUM) {
-                      pageNum = list.size();
-                      netPage++;
-                      editor.putInt(Constants.PAGE_NUM, list.size());
-                      editor.commit();
-                  }
                   DBManager.getInstance().saveTelevisions(list);
-                  movieAdapter.setmList(DBManager.getInstance().getTelevisionList(pageNum,page));
               } catch (Exception e) {
                   e.printStackTrace();
               }
@@ -179,8 +168,9 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
 
     @Override
     public void OnItemClickListener(View view, int position) {
+        Televisionbean bean=DBManager.getInstance().getTelevisionById(movieAdapter.getmList().get(position).getTelevisionId());
         Intent intent=new Intent(this,VideoDetailActivity.class);
-        intent.putExtra(Constants.VIDEO_OBJ,movieAdapter.getmList().get(position));
+        intent.putExtra(Constants.VIDEO_OBJ,bean);
         startActivity(intent);
     }
 }

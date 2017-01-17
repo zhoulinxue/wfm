@@ -1,9 +1,11 @@
 package com.zx.wfm.utils;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.zx.wfm.bean.Televisionbean;
 import com.zx.wfm.bean.Moviebean;
+import com.zx.wfm.dao.DBManager;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,6 +22,7 @@ import java.util.List;
  */
 public class UKutils {
     public static List<Televisionbean> getVideoInfo(String pageUrl) {// 一页调用一次
+
         Document doc =getDoc(pageUrl);
         List<Televisionbean> list=new ArrayList<>();
         List<String> pages=new ArrayList<>();
@@ -32,18 +35,6 @@ public class UKutils {
         Elements desc_info = doc.getElementsByClass("p_desc");// 视频描述
         Elements link_info = doc.getElementsByClass("p_panels");// 视频集数
         Elements rating_info = doc.getElementsByClass("ranking");// 视频评分
-        Elements pages_info=doc.getElementsByClass("pages");
-//        if(pages_info!=null){
-//            Elements elements=pages_info.select("a[href]");
-//            for(Element element:elements){
-//                String url=element.attr("abs:href");
-//                if(!pages.contains(url)) {
-//                    Log.i("多少页",url);
-//                    pages.add(url);
-//                }
-//            }
-//
-//        }
         if (divs_info != null) {
             Log.d("size",desc_info.size()+"#"+link_info.size()+"@"+divs_info.size());
             if (divs_info.size() <= 0) {
@@ -59,6 +50,7 @@ public class UKutils {
                             bean.setVideoName(urlElement.attr("title"));
                     bean.setAddressUrl(urlElement.attr("abs:href"));
                     bean.setTelevisionId(bean.getAddressUrl());
+                    bean.setNetPage(pageUrl);
                     getDetailaddres(bean);
                     if(i<rating_info.size()) {
                         bean.setRating(rating_info.get(i).text());
@@ -89,6 +81,33 @@ public class UKutils {
         return list;
     }
 
+    public static String getPage(String pageUrl) {
+        String[] strs=null;
+        if(!TextUtils.isEmpty(pageUrl)) {
+            strs = pageUrl.split("/");
+            if(strs!=null)
+            return strs[strs.length-1];
+        }
+      return "no";
+    }
+
+    public static String getNextPageUrl(String pageUrl) {
+        String[] strs=null;
+        String lastStr="";
+        StringBuilder builder=new StringBuilder();
+        if(!TextUtils.isEmpty(pageUrl)) {
+            strs = pageUrl.split("_");
+            lastStr =strs[strs.length-1];
+            String urlpage=lastStr.replace(Constants.Net.HIML,"");
+            if(!TextUtils.isEmpty(urlpage)){
+                int page=Integer.parseInt(urlpage)+1;
+                builder.append(page);
+                builder.append(Constants.Net.HIML);
+            }
+        }
+        return pageUrl.replace(lastStr,builder.toString());
+    }
+
     private static void getDetailaddres(final Televisionbean bean) {
         new Thread(new Runnable() {
             @Override
@@ -97,8 +116,7 @@ public class UKutils {
                 if(list==null){
                     return;
                 }
-                bean.setMoviebeans(list);
-                Log.i("总集数：",bean.getVideoName()+":"+bean.childrens().size());
+                DBManager.getInstance().saveMoveBean(list);
             }
         }).start();
     }
@@ -115,6 +133,7 @@ public class UKutils {
             Elements urls = link_info.get(0).select("a[href]");
             for(Element e:urls) {
                 Moviebean bean=new Moviebean();
+                bean.setTelevisionId(bean.getTelevisionId());
                 bean.setItemUrl(e.attr("abs:href"));
                 bean.setMovieId(bean.getItemUrl());
                 bean.setVideoName(vbean.getVideoName());

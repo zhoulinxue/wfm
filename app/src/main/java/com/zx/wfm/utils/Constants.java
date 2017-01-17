@@ -23,5 +23,6 @@ public class Constants {
 
     public static class Net {
         public static String TELEVISION_URL="http://www.soku.com/channel/teleplaylist_0_0_0_1_1.html";
+        public static String HIML=".html";
     }
 }
