@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.zx.wfm.ui.Widget.TwitterRefreshHeaderView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.zx.wfm.ui.widget.TwitterRefreshHeaderView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -43,4 +43,4 @@
             android:gravity="center"
             android:textColor="?attr/colorPrimary" />
     </RelativeLayout>
-</com.zx.wfm.ui.Widget.TwitterRefreshHeaderView>
+</com.zx.wfm.ui.widget.TwitterRefreshHeaderView>

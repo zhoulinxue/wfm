@@ -43,7 +43,7 @@ import com.zx.wfm.Application.WFMApplication;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.TrafficInfo;
 import com.zx.wfm.bean.Moviebean;
-import com.zx.wfm.ui.Widget.TopPmd;
+import com.zx.wfm.ui.widget.TopPmd;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.ToastUtil;

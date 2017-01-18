@@ -1,4 +1,4 @@
-package com.zx.wfm.ui.Widget;
+package com.zx.wfm.ui.widget;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;

@@ -1,10 +1,7 @@
-package com.zx.wfm.ui.Widget;
+package com.zx.wfm.ui.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.text.TextUtils;
 import android.widget.TextView;
 
 /**
