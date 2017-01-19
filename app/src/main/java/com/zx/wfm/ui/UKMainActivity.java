@@ -36,7 +36,7 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
     private int page=0;
     private int pageNum;
     private int netPage=0;
-    private  List<String> url;
+//    private  List<String> url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +136,7 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
           @Override
           public void run() {
               try {
-                  url =UKutils.getVideoPages();
+//                  url =UKutils.getVideoPages();
                   refreshCompelete();
                   List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.TELEVISION_URL);
                   DBManager.getInstance().saveTelevisions(list);
@@ -145,6 +145,7 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
                   }
               } catch (Exception e) {
                   e.printStackTrace();
+                  refreshCompelete();
               }
           }
       });

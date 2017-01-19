@@ -32,7 +32,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
-        android_custom:roundColor="@color/white"
+        android_custom:roundColor="@color/trsnswhite"
         android_custom:roundProgressColor="@color/style_color_primary_dark"
         android_custom:textColor="@color/white"
         android_custom:roundWidth="3dip"

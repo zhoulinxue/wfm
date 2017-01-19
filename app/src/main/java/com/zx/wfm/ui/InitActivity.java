@@ -123,6 +123,7 @@ public class InitActivity extends BaseActivity{
                 mHandler.removeCallbacks(null);
                 Intent intent = new Intent(InitActivity.this, UKMainActivity.class);
                 startActivity(intent);
+                finish();
             }else {
                 bar.setProgress(second/50);
 //                if(second%1000==0) {

@@ -8,6 +8,7 @@
     <color name="style_window_background_light">#ffffff</color>
 
     <color name="white">#ffffff</color>
+    <color name="trsnswhite">#70ffffff</color>
     <color name="black">#000000</color>
     <color name="red">#ff0000</color>
 
