@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -39,10 +40,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gongwen.marqueen.MarqueeFactory;
+import com.gongwen.marqueen.MarqueeView;
 import com.zx.wfm.Application.WFMApplication;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.TrafficInfo;
 import com.zx.wfm.bean.Moviebean;
+import com.zx.wfm.factory.NoticeMF;
+import com.zx.wfm.factory.VerticalMF;
 import com.zx.wfm.ui.widget.TopPmd;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
@@ -60,7 +65,7 @@ import butterknife.OnClick;
 
 import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 
-public class WebActivity extends Activity {
+public class WebActivity extends BaseActivity {
 	@InjectView(R.id.webview)
 	 WebView webview;
 	private ProgressDialog mDialog;
@@ -77,12 +82,14 @@ public class WebActivity extends Activity {
 	 TextView rightbottomView;
 	@InjectView(R.id.fresh_video)
 	 Button refreshbtn;
-	@InjectView(R.id.left_tv)
-	 TextView leftTv;
-	@InjectView(R.id.right_tv)
-	TextView rightTv;
-	@InjectView(R.id.container)
-	 RelativeLayout container;
+
+	@InjectView(R.id.marqueeView)
+	MarqueeView marqueeView;
+	@InjectView(R.id.marqueeView_left)
+	MarqueeView marqueeViewLeft;
+	@InjectView(R.id.marqueeView_right)
+	MarqueeView marqueeViewRight;
+
 	private Paint paint;
 	private Handler mHandler=new Handler();
 	private boolean isAlph=false;
@@ -96,11 +103,9 @@ public class WebActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.web_activity);
 		context=this;
 		hostStr=getHostStr();
-		getWindow().requestFeature(Window.FEATURE_PROGRESS);
-		setContentView(R.layout.web_activity);
-		ButterKnife.inject(this);
 		mContext = this;
 		home= ((Moviebean) getIntent().getSerializableExtra(Constants.VIDEO_ITEM_OBJ)).getItemUrl();
 		SharedPreferences share = PreferenceManager
@@ -139,27 +144,67 @@ public class WebActivity extends Activity {
 		ws.setSupportZoom(false);
 		ws.setDisplayZoomControls(false);
 		ws.setSupportMultipleWindows(true);
+		mDialog.setMessage(getString(R.string.web_loading));
+		mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		if (mDialog!=null&&!mDialog.isShowing()) {
+			mDialog.show();
+		}
 
-			mDialog.setMessage(getString(R.string.web_loading));
-			mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			if (!mDialog.isShowing())
-				mDialog.show();
 		// -------------------------------------------------------------------------
 		webview.addJavascriptInterface(new Object(){
 			public void click(){
 				Log.i("点击","!!!!!!!!!!!");
 
-
-
-
-				
 			}
 		},"resize");
 		refreshbtn.bringToFront();
 		mHandler.postDelayed(freshbtnRunable,20*1000);
-		initpaintPmdView();
-//		new Thread(refreshTrafficRunable).start();
+		initMaqueeView();
 	}
+
+	private void initMaqueeView() {
+		final List<String> fresh = Arrays.asList("加载失败?", "有广告?");
+		MarqueeFactory<TextView, String> marqueeFactory = new NoticeMF(this);
+		marqueeView.setMarqueeFactory(marqueeFactory);
+		marqueeView.setAnimDuration(3000);
+		marqueeView.setInterval(6000);
+		marqueeView.startFlipping();
+		marqueeFactory.setOnItemClickListener(new MarqueeFactory.OnItemClickListener<TextView, String>() {
+			@Override
+			public void onItemClickListener(MarqueeFactory.ViewHolder<TextView, String> holder) {
+				mDialog.show();
+			}
+		});
+		marqueeFactory.setData(fresh);
+		final List<String> datas = Arrays.asList("《赋得古原草送别》", "离离原上草，一岁一枯荣。", "野火烧不尽，春风吹又生。", "远芳侵古道，晴翠接荒城。", "又送王孙去，萋萋满别情。");
+		MarqueeFactory<TextView, String> marqueeFactoryleft = new VerticalMF(this);
+		marqueeViewLeft.setMarqueeFactory(marqueeFactoryleft);
+		marqueeViewLeft.setAnimDuration(3000);
+		marqueeViewLeft.setInterval(6000);
+		marqueeViewLeft.startFlipping();
+		marqueeFactoryleft.setOnItemClickListener(new MarqueeFactory.OnItemClickListener<TextView, String>() {
+			@Override
+			public void onItemClickListener(MarqueeFactory.ViewHolder<TextView, String> holder) {
+				Toast.makeText(WebActivity.this, holder.data, Toast.LENGTH_SHORT).show();
+			}
+		});
+		marqueeFactoryleft.setData(datas);
+
+		MarqueeFactory<TextView, String> marqueeFactoryRight = new VerticalMF(this);
+		marqueeViewRight.setMarqueeFactory(marqueeFactoryRight);
+		marqueeViewRight.startFlipping();
+		marqueeViewRight.setAnimDuration(3000);
+		marqueeViewRight.setInterval(6000);
+		marqueeFactoryRight.setOnItemClickListener(new MarqueeFactory.OnItemClickListener<TextView, String>() {
+			@Override
+			public void onItemClickListener(MarqueeFactory.ViewHolder<TextView, String> holder) {
+				Toast.makeText(WebActivity.this, holder.data, Toast.LENGTH_SHORT).show();
+			}
+		});
+		marqueeFactoryRight.setData(datas);
+
+	}
+
 	Runnable refreshTrafficRunable =new Runnable(){
 
 		@Override
@@ -170,8 +215,6 @@ public class WebActivity extends Activity {
 					moble=moble+total-lastTotal;
 				}
 			String text=PhoneUtils.formatTrafficByte(total);
-//				setPmd(PhoneUtils.formatTrafficByte(TrafficStats.getUidRxBytes(myinfo.getUid())+TrafficStats.getUidTxBytes(myinfo.getUid())));
-			  leftTv.setText(text);
 
 				WFMApplication.editor.putLong(Constants.MOBLE_TRAFFIC_DATA,moble);
 				WFMApplication.editor.commit();
@@ -288,11 +331,11 @@ public class WebActivity extends Activity {
 				Element element=elements.get(0);
 				final Element ele= element.getElementById("link4");
 				 String str= ele.attr("value");
-//				final	String url=str.replace("height=498","height="+PhoneUtils.getScreenHight(WebActivity.this)).replace("width=510","width="+PhoneUtils.getScreenWidth(WebActivity.this));
+				final	String url=str.replace("height=498","height="+PhoneUtils.getScreenHight(WebActivity.this)).replace("width=510","width="+PhoneUtils.getScreenWidth(WebActivity.this));
 
-				int start=str.indexOf("src");
-				int end=str.indexOf("frameborder");
-				final  String url=str.substring(start+5,end-2);
+//				int start=str.indexOf("src");
+//				int end=str.indexOf("frameborder");
+//				final  String url=str.substring(start+5,end-2);
 				for(Element element1:elements){
 					Log.i("内容",element1.html());
 				}
@@ -300,8 +343,8 @@ public class WebActivity extends Activity {
 				mHandler.postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						webview.loadUrl(url);
-//						webview.loadData(url,"text/html","utf-8");
+//						webview.loadUrl(url);
+						webview.loadData(url,"text/html","utf-8");
 					}
 				},0);
 			}
@@ -465,47 +508,5 @@ public class WebActivity extends Activity {
 					ToastUtil.showToastLong(this, "再次点击退出播放");
 				}
 			}
-	}
-
-	private void setPmd(String text) {
-		final TopPmd danmu = new TopPmd(this, PhoneUtils.getScreenWidth(this),
-				(int) -paint.measureText(text));
-		danmu.setTextSize(15);
-		danmu.setPadding(10, 5, 10, 5);
-		danmu.setText(text);
-		danmu.setTextColor(Color.parseColor("#fffa7a"));
-		danmu.setOnAnimationEndListener(new TopPmd.OnAnimationEndListener() {
-			@Override
-			public void clearPosition() {
-
-			}
-
-			@Override
-			public void animationEnd() {
-				container.removeView(danmu);
-				setPmd(danmu.getText().toString());
-			}
-
-		});
-			RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-					RelativeLayout.LayoutParams.WRAP_CONTENT,
-					RelativeLayout.LayoutParams.MATCH_PARENT);
-			lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-			danmu.setGravity(Gravity.CENTER);
-			if (danmu.getParent() == null) {
-				container.addView(danmu, lp);
-				danmu.send();
-			}
-	}
-	/**
-	 * 弹幕
-	 */
-	private void initpaintPmdView() {
-		// TODO Auto-generated method stub
-		TextView textView = new TextView(this);
-		textView.setTextSize(15);
-		textView.setPadding(10, 3, 10, 3);
-		paint = textView.getPaint();
-		setPmd("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
 	}
 }

@@ -19,14 +19,15 @@
         android:layout_width="24dp"
         android:layout_height="match_parent"
         android:background="@color/style_color_primary_dark"
-        android:gravity="center">
-        <TextView
-            android:id="@id/left_tv"
-            android:layout_width="21dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="@string/time_for_younth"
-            android:gravity="center" />
+        android:gravity="top"
+        >
+        <com.gongwen.marqueen.MarqueeView
+            android:id="@+id/marqueeView_left"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"></com.gongwen.marqueen.MarqueeView>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/right_layout"
@@ -34,14 +35,14 @@
         android:layout_width="24dp"
         android:layout_height="match_parent"
         android:background="@color/style_color_primary_dark"
-        android:gravity="center">
-        <TextView
-            android:id="@id/right_tv"
-            android:layout_width="21dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="@string/time_for_younth"
-            android:gravity="center" />
+        android:gravity="top">
+        <com.gongwen.marqueen.MarqueeView
+            android:id="@+id/marqueeView_right"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"></com.gongwen.marqueen.MarqueeView>
     </LinearLayout>
     <TextView
         android:id="@+id/right_bottom_view"
@@ -63,15 +64,16 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="23dp"
+        android:visibility="gone"
         />
 
-    <RelativeLayout
-        android:id="@id/container"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:background="@android:color/transparent"
-        android:layout_alignParentTop="true"
-        />
+    <com.gongwen.marqueen.MarqueeView
+        android:id="@+id/marqueeView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="23dp"
+        android:background="@color/transparent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true">
+    </com.gongwen.marqueen.MarqueeView>
 </RelativeLayout>

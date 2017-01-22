@@ -6,24 +6,6 @@
     android:fitsSystemWindows="true"
     android:layout_height="match_parent"
     android:background="@color/style_color_primary_dark">
-
-    <!--<ImageView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@drawable/fu_w"/>-->
-    <!--<TextView-->
-        <!--android:id="@+id/time_tv"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textColor="@color/white"-->
-        <!--android:text="5s"-->
-        <!--android:textSize="20sp"-->
-        <!--android:padding="5dp"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_marginRight="20dp"-->
-        <!--android:layout_marginTop="20dp"-->
-        <!--/>-->
     <com.zx.wfm.ui.widget.RoundProgressBar
         android:id="@+id/roundProgressBar"
         android:layout_width="40dip"
@@ -38,4 +20,58 @@
         android_custom:roundWidth="3dip"
         android_custom:textSize="18sp"
         />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="60dp"
+        >
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/sui"
+            android:alpha="0"
+            android:textSize="30sp"
+            android:text="@string/sui"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            />
+        <TextView
+            android:id="@+id/yue"
+            android:alpha="0"
+            android:layout_weight="1"
+            android:textSize="30sp"
+            android:text="@string/yue"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            />
+        <TextView
+            android:id="@+id/liu"
+            android:text="@string/liu"
+            android:textSize="30sp"
+            android:alpha="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center|center_vertical"
+            android:textColor="@color/white"
+            />
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/sheng"
+            android:textSize="30sp"
+            android:text="@string/sheng"
+            android:alpha="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:gravity="center"
+            />
+    </LinearLayout>
 </RelativeLayout>

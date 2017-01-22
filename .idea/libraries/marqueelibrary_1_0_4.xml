@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="marqueelibrary-1.0.4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.gongwen/marqueelibrary/1.0.4/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.gongwen/marqueelibrary/1.0.4/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.gongwen/marqueelibrary/1.0.4/400a29a303ee0717c82639ac46d01af3e511ba5c/marqueelibrary-1.0.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

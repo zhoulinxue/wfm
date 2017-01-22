@@ -27,12 +27,16 @@ import com.zx.wfm.utils.ThreadUtil;
 import com.zx.wfm.utils.ToastUtil;
 import com.zx.wfm.utils.UKutils;
 
+import butterknife.InjectView;
+
 
 public class UKMainActivity extends BaseActivity implements OnRefreshListener, OnLoadMoreListener,BaseRecycleViewAdapter.OnItemClickListener {
     private List<Televisionbean> list;
-    private RecyclerView mRecyclerView;
-    private MovieAdapter movieAdapter;
-    private SwipeToLoadLayout swipeToLoadLayout;
+    @InjectView(R.id.swipe_target)
+    protected RecyclerView mRecyclerView;
+    protected MovieAdapter movieAdapter;
+    @InjectView(R.id.swipeToLoadLayout)
+    protected SwipeToLoadLayout swipeToLoadLayout;
     private int page=0;
     private int pageNum;
     private int netPage=0;
@@ -42,8 +46,6 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        swipeToLoadLayout = (SwipeToLoadLayout) findViewById(R.id.swipeToLoadLayout);
-        mRecyclerView= (RecyclerView) findViewById(R.id.swipe_target);
         pageNum=preferences.getInt(Constants.PAGE_NUM,Constants.PAGE_MIN_NUM);
         netPage=preferences.getInt(Constants.NET_PAGE_NUM,0);
         list=DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL);

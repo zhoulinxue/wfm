@@ -41,9 +41,7 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.video_detail_layout);
-        ButterKnife.inject(this);
         Intent intent=getIntent();
         videobean= (Televisionbean) intent.getSerializableExtra(Constants.VIDEO_OBJ);
         List<Moviebean> list= DBManager.getInstance().getMovieListByTeleId(videobean.getTelevisionId());

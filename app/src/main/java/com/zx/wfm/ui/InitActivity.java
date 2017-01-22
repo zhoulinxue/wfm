@@ -4,6 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
@@ -12,6 +17,7 @@ import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
 import com.avos.avoscloud.SignUpCallback;
+import com.nineoldandroids.animation.Animator;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.zx.wfm.R;
@@ -24,22 +30,78 @@ import com.zx.wfm.utils.NetWorkUtils;
 import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.ThreadUtil;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
+import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
+
 /**
  * Created by Administrator on 2017/1/17.
  */
 
 public class InitActivity extends BaseActivity{
+    private static final long DURATION_TIME =1500 ;
     private Handler mHandler;
     private  int second=0;
     private RoundProgressBar bar;
+    boolean isOnPause=false;
+    @InjectView(R.id.sui)
+    TextView suitv;
+    @InjectView(R.id.yue)
+    TextView yuetv;
+    @InjectView(R.id.liu)
+    TextView liutv;
+    @InjectView(R.id.sheng)
+    TextView sheng;
+    private int width;
+    private int hight;
+    private int index=0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.init_layout);
         AVOSCloud.initialize(this,"2zBSbem5VbsxPa1dou5nH8EQ-gzGzoHsz","ra2GN4GM8uypJQ8khu7H2wqg");
-
         mHandler=new Handler();
         bar = (RoundProgressBar) findViewById(R.id.roundProgressBar);
+        width=PhoneUtils.getScreenWidth(this);
+        hight=PhoneUtils.getScreenHight(this);
+        mHandler.postDelayed(gotoMainRunable,1000);
+        initData();
+    }
+    Animator.AnimatorListener listener=new Animator.AnimatorListener() {
+        @Override
+        public void onAnimationStart(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            index++;
+            switch (index){
+                case 1:
+                    animateView(yuetv);
+                    break;
+                case 2:
+                    animateView(liutv);
+                    break;
+                case 3:
+                    animateView(sheng);
+                    break;
+            }
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
+    };
+    void animateView(View view){
+        animate(view).setDuration(DURATION_TIME).alpha(1f).setListener(listener);
     }
 
     private void initData() {
@@ -52,6 +114,7 @@ public class InitActivity extends BaseActivity{
                 logintoServer();
             }
         });
+        animateView(suitv);
     }
 
     public void logintoServer() {
@@ -75,6 +138,7 @@ public class InitActivity extends BaseActivity{
         Bugly.init(getApplicationContext(), "7a23adc558", false);
     }
 
+
     private void registerUser() {
         Userbean user=new Userbean();
         user.getAvUser().setUsername(PhoneUtils.getImeiInfo(this));
@@ -88,6 +152,11 @@ public class InitActivity extends BaseActivity{
                 }
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     /**
@@ -105,17 +174,13 @@ public class InitActivity extends BaseActivity{
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        mHandler.postDelayed(gotoMainRunable,1000);
-        initData();
-
+    protected void onRestart() {
+        super.onRestart();
+        isOnPause=false;
     }
-
     Runnable gotoMainRunable=new Runnable() {
         @Override
         public void run() {
@@ -125,13 +190,15 @@ public class InitActivity extends BaseActivity{
                 startActivity(intent);
                 finish();
             }else {
-                bar.setProgress(second/50);
+
+                    bar.setProgress(second / 50);
 //                if(second%1000==0) {
 //                    bar.setProgressText(second / 100 + "s");
 //                }
-
-                mHandler.postDelayed(gotoMainRunable,10);
-                second+=10;
+                    mHandler.postDelayed(gotoMainRunable, 10);
+                if(!isOnPause) {
+                    second += 10;
+                }
             }
         }
     };

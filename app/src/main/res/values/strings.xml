@@ -20,5 +20,9 @@
     <string name="time_for_younth">岁月留声</string>
     <string name="fresh_video">加载失败 或 有广告点我</string>
     <string name="item_desc">节目简介</string>
+    <string name="sui">岁</string>
+    <string name="yue">月</string>
+    <string name="liu">留</string>
+    <string name="sheng">声</string>
 
 </resources>
