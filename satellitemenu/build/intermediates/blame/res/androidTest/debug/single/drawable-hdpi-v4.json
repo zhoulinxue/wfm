@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "G:\\studio_workplace\\wfm\\satellitemenu\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\ic_launcher.png",
+        "source": "G:\\studio_workplace\\wfm\\satellitemenu\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\ic_launcher.png"
+    },
+    {
+        "merged": "G:\\studio_workplace\\wfm\\satellitemenu\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\sat_item.png",
+        "source": "G:\\studio_workplace\\wfm\\satellitemenu\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\sat_item.png"
+    },
+    {
+        "merged": "G:\\studio_workplace\\wfm\\satellitemenu\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\sat_main.png",
+        "source": "G:\\studio_workplace\\wfm\\satellitemenu\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\sat_main.png"
+    }
+]
