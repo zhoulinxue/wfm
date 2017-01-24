@@ -45,7 +45,7 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.uk_activity_main);
         pageNum=preferences.getInt(Constants.PAGE_NUM,Constants.PAGE_MIN_NUM);
         netPage=preferences.getInt(Constants.NET_PAGE_NUM,0);
         list=DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL);

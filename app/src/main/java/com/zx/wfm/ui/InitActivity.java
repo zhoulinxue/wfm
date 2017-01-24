@@ -1,9 +1,11 @@
 package com.zx.wfm.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -20,6 +22,7 @@ import com.avos.avoscloud.SignUpCallback;
 import com.nineoldandroids.animation.Animator;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
+import com.zx.wfm.MainActivity;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.AVErrorbean;
 import com.zx.wfm.bean.Userbean;
@@ -39,7 +42,7 @@ import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
  * Created by Administrator on 2017/1/17.
  */
 
-public class InitActivity extends BaseActivity{
+public class InitActivity extends Activity{
     private static final long DURATION_TIME =1500 ;
     private Handler mHandler;
     private  int second=0;
@@ -60,7 +63,7 @@ public class InitActivity extends BaseActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.init_layout);
-        AVOSCloud.initialize(this,"2zBSbem5VbsxPa1dou5nH8EQ-gzGzoHsz","ra2GN4GM8uypJQ8khu7H2wqg");
+        ButterKnife.inject(this);
         mHandler=new Handler();
         bar = (RoundProgressBar) findViewById(R.id.roundProgressBar);
         width=PhoneUtils.getScreenWidth(this);
@@ -115,6 +118,7 @@ public class InitActivity extends BaseActivity{
             }
         });
         animateView(suitv);
+        AVOSCloud.initialize(InitActivity.this,"2zBSbem5VbsxPa1dou5nH8EQ-gzGzoHsz","ra2GN4GM8uypJQ8khu7H2wqg");
     }
 
     public void logintoServer() {
@@ -134,7 +138,7 @@ public class InitActivity extends BaseActivity{
     }
 
     private void initBugly() {
-        Beta.initDelay = 10 * 1000;
+        Beta.initDelay = 2 * 1000;
         Bugly.init(getApplicationContext(), "7a23adc558", false);
     }
 
@@ -163,12 +167,12 @@ public class InitActivity extends BaseActivity{
      * 当前网络类型
      */
     private void setnetWorkType() {
-        if(NetWorkUtils.getNetworkType(this)!=NetWorkUtils.NETTYPE_WIFI&&NetWorkUtils.isNetworkConnected(this)){
-            editor.putBoolean(Constants.MOBLE_TRAFFIC,true);
-        }else {
-            editor.putBoolean(Constants.MOBLE_TRAFFIC,false);
-        }
-        editor.commit();
+//        if(NetWorkUtils.getNetworkType(this)!=NetWorkUtils.NETTYPE_WIFI&&NetWorkUtils.isNetworkConnected(this)){
+//            editor.putBoolean(Constants.MOBLE_TRAFFIC,true);
+//        }else {
+//            editor.putBoolean(Constants.MOBLE_TRAFFIC,false);
+//        }
+//        editor.commit();
     }
 
     @Override
@@ -186,7 +190,7 @@ public class InitActivity extends BaseActivity{
         public void run() {
             if(second>=5000) {
                 mHandler.removeCallbacks(null);
-                Intent intent = new Intent(InitActivity.this, UKMainActivity.class);
+                Intent intent = new Intent(InitActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }else {

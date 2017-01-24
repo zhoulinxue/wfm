@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,7 +16,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.TrafficStats;
 import android.net.Uri;
@@ -25,9 +23,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
 import android.webkit.DownloadListener;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
@@ -36,19 +32,17 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gongwen.marqueen.MarqueeFactory;
 import com.gongwen.marqueen.MarqueeView;
-import com.zx.wfm.Application.WFMApplication;
+import com.zx.wfm.Application.App;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.TrafficInfo;
 import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.factory.NoticeMF;
 import com.zx.wfm.factory.VerticalMF;
-import com.zx.wfm.ui.widget.TopPmd;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.ToastUtil;
@@ -59,7 +53,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -211,13 +204,13 @@ public class WebActivity extends BaseActivity {
 		public void run() {
 			if(myinfo!=null){
 				Long total=TrafficStats.getUidRxBytes(myinfo.getUid())+TrafficStats.getUidTxBytes(myinfo.getUid());
-				if(WFMApplication.preferences.getBoolean(Constants.MOBLE_TRAFFIC,false)){
+				if(App.preferences.getBoolean(Constants.MOBLE_TRAFFIC,false)){
 					moble=moble+total-lastTotal;
 				}
 			String text=PhoneUtils.formatTrafficByte(total);
 
-				WFMApplication.editor.putLong(Constants.MOBLE_TRAFFIC_DATA,moble);
-				WFMApplication.editor.commit();
+				App.editor.putLong(Constants.MOBLE_TRAFFIC_DATA,moble);
+				App.editor.commit();
 				lastTotal=total;
 			}else {
 				TrafficManagerUtils utils=new TrafficManagerUtils(WebActivity.this);
@@ -331,11 +324,11 @@ public class WebActivity extends BaseActivity {
 				Element element=elements.get(0);
 				final Element ele= element.getElementById("link4");
 				 String str= ele.attr("value");
-				final	String url=str.replace("height=498","height="+PhoneUtils.getScreenHight(WebActivity.this)).replace("width=510","width="+PhoneUtils.getScreenWidth(WebActivity.this));
+//				final	String url=str.replace("height=498","height="+(PhoneUtils.getScreenHight(WebActivity.this))).replace("width=510","width="+PhoneUtils.getScreenWidth(WebActivity.this));
 
-//				int start=str.indexOf("src");
-//				int end=str.indexOf("frameborder");
-//				final  String url=str.substring(start+5,end-2);
+				int start=str.indexOf("src");
+				int end=str.indexOf("frameborder");
+				final  String url=str.substring(start+5,end-2);
 				for(Element element1:elements){
 					Log.i("内容",element1.html());
 				}
@@ -343,8 +336,13 @@ public class WebActivity extends BaseActivity {
 				mHandler.postDelayed(new Runnable() {
 					@Override
 					public void run() {
-//						webview.loadUrl(url);
-						webview.loadData(url,"text/html","utf-8");
+
+
+
+
+
+						webview.loadUrl(url);
+//						webview.loadData(url,"text/html","utf-8");
 					}
 				},0);
 			}

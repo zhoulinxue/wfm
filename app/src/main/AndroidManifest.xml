@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
 
     <application
-        android:name=".Application.WFMApplication"
+        android:name=".Application.App"
         android:allowBackup="true"
         android:icon="@mipmap/icon"
         android:hardwareAccelerated="true"
@@ -23,6 +23,12 @@
                 <category android:name="android.intent.category.LAUNCHER"></category>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.zx.wfm.MainActivity"
+            android:label="@string/app_name">
+        </activity>
+        <activity android:name="com.zx.wfm.AboutActivity"></activity>
         <activity
             android:name=".ui.WebActivity"
             android:label="@string/app_name"

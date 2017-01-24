@@ -21,13 +21,14 @@
         android_custom:textSize="18sp"
         />
     <LinearLayout
+        android:id="@+id/logo_text_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginBottom="60dp"
+        android:layout_centerInParent="true"
         >
         <TextView
             android:layout_weight="1"
@@ -70,6 +71,63 @@
             android:alpha="0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:gravity="center"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_below="@id/logo_text_layout"
+        android:id="@+id/dot_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        >
+        <TextView
+            android:id="@+id/sui_dot"
+            android:textSize="30sp"
+            android:text="@string/sui"
+            android:gravity="center"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginLeft="20dp"
+            android:background="@color/white"
+            android:textColor="@color/white"
+            />
+        <TextView
+            android:id="@+id/yue_dot"
+            android:textSize="30sp"
+            android:text="@string/yue"
+            android:gravity="center"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginLeft="20dp"
+            android:background="@color/white"
+            android:textColor="@color/white"
+            />
+        <TextView
+            android:id="@+id/liu_dot"
+            android:text="@string/liu"
+            android:textSize="30sp"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginLeft="20dp"
+            android:background="@color/white"
+            android:gravity="center|center_vertical"
+            android:textColor="@color/white"
+            />
+        <TextView
+
+            android:id="@+id/sheng_dot"
+            android:textSize="30sp"
+            android:text="@string/sheng"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginLeft="20dp"
+            android:background="@color/white"
             android:textColor="@color/white"
             android:gravity="center"
             />

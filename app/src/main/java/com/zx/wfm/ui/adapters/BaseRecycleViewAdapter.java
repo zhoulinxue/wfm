@@ -25,8 +25,6 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
     protected LayoutInflater mInflater;
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_NORMAL = 1;
-
-
     private OnItemClickListener onItemClickListener;
 
     public BaseRecycleViewAdapter(Context mContext, List<T> mDatas, int mLayoutId) {
