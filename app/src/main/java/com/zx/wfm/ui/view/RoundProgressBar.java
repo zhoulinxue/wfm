@@ -1,4 +1,4 @@
-package com.zx.wfm.ui.widget;
+package com.zx.wfm.ui.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;

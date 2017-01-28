@@ -6,7 +6,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,9 +21,9 @@ import com.zx.wfm.ui.adapters.MovieItemAdapter;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
 
+import java.io.Serializable;
 import java.util.List;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
@@ -45,7 +44,6 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         Intent intent=getIntent();
         videobean= (Televisionbean) intent.getSerializableExtra(Constants.VIDEO_OBJ);
         List<Moviebean> list= DBManager.getInstance().getMovieListByTeleId(videobean.getTelevisionId());
-        new Thread(videoDetailrunable).start();
         movieItemAdapter=new MovieItemAdapter(this,list,R.layout.video_num_item_layout);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         RecyclerViewHeader header = (RecyclerViewHeader) findViewById(R.id.header);
@@ -62,15 +60,6 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         movieItemAdapter.setOnItemClickListener(this);
 
     }
-
-    Runnable videoDetailrunable=new Runnable() {
-        @Override
-        public void run() {
-            if(videobean!=null){
-//                UKutils.
-            }
-        }
-    };
 
     @Override
     public void startActivity(Intent intent) {
@@ -91,22 +80,9 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void OnItemClickListener(View view, final int position) {
-//         HttpUnitOptions.setScriptingEnabled(false);
-//                // 建立一个WebConversation实例
-//                WebConversation wc = new WebConversation();
-//                // 向指定的URL发出请求，获取响应
-//        try {
-//            WebResponse wr = wc.getResponse(movieItemAdapter.getmList().get(position).getItemUrl());
-//            Log.i("input元素",wr.getText()+"");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (SAXException e) {
-//            e.printStackTrace();
-//        }
-//        UKutils.getRealUrl(movieItemAdapter.getmList().get(position).getItemUrl());
 
-        Intent intent=new Intent(this,WebActivity.class);
-        intent.putExtra(Constants.VIDEO_ITEM_OBJ,movieItemAdapter.getmList().get(position));
+        Intent intent=new Intent(this,PlayActivity.class);
+        intent.putExtra(Constants.VIDEO_OBJ_LIST,(Serializable) movieItemAdapter.getmList());
         startActivity(intent);
 
     }

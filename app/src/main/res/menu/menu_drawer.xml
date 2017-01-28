@@ -4,17 +4,17 @@
         <item
             android:id="@+id/nav_Twitter_style"
             android:icon="@mipmap/icon"
-            android:title="Twitter Style" />
+            android:title="优酷" />
 
         <item
             android:id="@+id/nav_google_style"
             android:icon="@mipmap/icon"
-            android:title="Google Style" />
+            android:title="爱奇艺" />
 
         <item
             android:id="@+id/nav_yalantis_style"
             android:icon="@mipmap/icon"
-            android:title="Yalantis Style" />
+            android:title="56网" />
 
         <item
             android:id="@+id/nav_jd_style"

@@ -1,4 +1,4 @@
-package com.zx.wfm.ui.widget;
+package com.zx.wfm.ui.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

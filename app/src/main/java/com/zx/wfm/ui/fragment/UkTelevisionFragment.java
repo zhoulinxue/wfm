@@ -71,7 +71,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.uk_activity_main,container,false);
-        ButterKnife.inject(this,view);
+//        ButterKnife.inject(this,view);
         return view;
     }
 
@@ -91,7 +91,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         swipeToLoadLayout.setOnRefreshListener(this);
         swipeToLoadLayout.setOnLoadMoreListener(this);
         //设置item之间的间隔
-        SpacesItemDecoration decoration = new SpacesItemDecoration(16);
+        SpacesItemDecoration decoration = new SpacesItemDecoration(5);
         mRecyclerView.addItemDecoration(decoration);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

@@ -37,12 +37,12 @@ public class NavTwitterFragment extends BaseNavPagerFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setTitle("Twitter Style");
+        setTitle("优酷视频");
     }
 
     @Override
     protected String[] getTitles() {
-        return new String[]{"优酷电视剧","ListView", "GridView",
+        return new String[]{"电视剧","ListView", "GridView",
                 "RecyclerView", "Grid RecyclerView", "StaggeredGrid RecyclerView",
                 "ScrollView", "WebView",
                 "FrameLayout", "RelativeLayout",
@@ -53,7 +53,7 @@ public class NavTwitterFragment extends BaseNavPagerFragment {
     protected Fragment getFragment(int position) {
         String title = getTitles()[position];
         Fragment fragment = null;
-        if(title.equals("优酷电视剧")){
+        if(title.equals("电视剧")){
             fragment=new UkTelevisionFragment();
         }else if (title.equals("ListView")) {
             fragment = new TwitterListViewFragment();

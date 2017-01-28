@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     >
     <ImageView
         android:id="@+id/movie_head"
@@ -10,13 +10,14 @@
         android:adjustViewBounds="true"
         android:minHeight="200dp"
         android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/icon"/>
     <TextView
         android:layout_alignParentBottom="true"
         android:id="@+id/movie_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="mingzi"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+       />
 
 </LinearLayout>

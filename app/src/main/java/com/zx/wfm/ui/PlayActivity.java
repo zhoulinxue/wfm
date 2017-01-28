@@ -1,28 +1,28 @@
 package com.zx.wfm.ui;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import android.annotation.SuppressLint;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
-import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.JsResult;
@@ -32,35 +32,51 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aspsine.fragmentnavigator.FragmentNavigator;
+import com.aspsine.fragmentnavigator.FragmentNavigatorAdapter;
 import com.gongwen.marqueen.MarqueeFactory;
 import com.gongwen.marqueen.MarqueeView;
-import com.zx.wfm.Application.App;
+import com.zx.wfm.MainFragmentAdapter;
 import com.zx.wfm.R;
-import com.zx.wfm.bean.TrafficInfo;
 import com.zx.wfm.bean.Moviebean;
+import com.zx.wfm.bean.TrafficInfo;
 import com.zx.wfm.factory.NoticeMF;
 import com.zx.wfm.factory.VerticalMF;
+import com.zx.wfm.ui.adapters.BaseRecycleViewAdapter;
+import com.zx.wfm.ui.adapters.MovieItemAdapter;
+import com.zx.wfm.ui.fragment.BaseToolbarFragment;
+import com.zx.wfm.ui.fragment.NavGoogleFragment;
+import com.zx.wfm.ui.fragment.NavJDFragment;
+import com.zx.wfm.ui.fragment.NavJavaCodeFragment;
+import com.zx.wfm.ui.fragment.NavTwitterFragment;
+import com.zx.wfm.ui.fragment.NavYalantisFragment;
+import com.zx.wfm.ui.fragment.WebFragment;
 import com.zx.wfm.utils.Constants;
-import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.ToastUtil;
-import com.zx.wfm.utils.TrafficManagerUtils;
 import com.zx.wfm.utils.UKutils;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 
-public class WebActivity extends BaseActivity {
+public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter.OnItemClickListener {
+    @InjectView(R.id.id_drawerlayout2)
+	protected DrawerLayout mDrawerLayout;
+	private FragmentManager mFragmentMannager;
 	@InjectView(R.id.webview)
-	 WebView webview;
+	WebView webview;
 	private ProgressDialog mDialog;
 	private Context mContext;
 	private View customView;
@@ -72,9 +88,9 @@ public class WebActivity extends BaseActivity {
 	private boolean hasPress = false;
 	private long firstTouchBackBt;
 	@InjectView(R.id.right_bottom_view)
-	 TextView rightbottomView;
+	TextView rightbottomView;
 	@InjectView(R.id.fresh_video)
-	 Button refreshbtn;
+	Button refreshbtn;
 
 	@InjectView(R.id.marqueeView)
 	MarqueeView marqueeView;
@@ -82,33 +98,87 @@ public class WebActivity extends BaseActivity {
 	MarqueeView marqueeViewLeft;
 	@InjectView(R.id.marqueeView_right)
 	MarqueeView marqueeViewRight;
-
 	private Paint paint;
 	private Handler mHandler=new Handler();
 	private boolean isAlph=false;
-	private List<TrafficInfo> infoList=new ArrayList<>();
-	TrafficInfo myinfo;
-	private long lastTotal;
-	private Long moble;
+	private List<Moviebean> beans;
+	@InjectView(R.id.swipe_target)
+	RecyclerView mRecyclerView;
+	MovieItemAdapter movieItemAdapter;
+	private int COLUMN=8;
+
+
+
 
 
 	@SuppressLint("JavascriptInterface")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.web_activity);
-		context=this;
-		hostStr=getHostStr();
+		setContentView(R.layout.play_activity);
 		mContext = this;
-		home= ((Moviebean) getIntent().getSerializableExtra(Constants.VIDEO_ITEM_OBJ)).getItemUrl();
-		SharedPreferences share = PreferenceManager
-				.getDefaultSharedPreferences(mContext);
-		moble=share.getLong(Constants.MOBLE_TRAFFIC_DATA,0l);
+		mFragmentMannager=getSupportFragmentManager();
+		mDrawerLayout.closeDrawers();
+		mDrawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+			@Override
+			public void onDrawerSlide(View drawerView, float slideOffset) {
+
+			}
+
+			@Override
+			public void onDrawerOpened(View drawerView) {
+
+			}
+
+			@Override
+			public void onDrawerClosed(View drawerView) {
+
+			}
+
+			@Override
+			public void onDrawerStateChanged(int newState) {
+
+			}
+		});
+
+		mDrawerLayout.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+			@Override
+			public void onDrawerSlide(View drawerView, float slideOffset) {
+				super.onDrawerSlide(drawerView, slideOffset);
+			}
+
+			@Override
+			public void onDrawerClosed(View drawerView) {
+				super.onDrawerClosed(drawerView);
+			}
+
+			@Override
+			public void onDrawerOpened(View drawerView) {
+				super.onDrawerOpened(drawerView);
+			}
+		});
+		initWeb();
+
+	}
+
+	@SuppressLint("JavascriptInterface")
+	private void initWeb() {
+		beans= (List<Moviebean>) getIntent().getSerializableExtra(Constants.VIDEO_OBJ_LIST);
+		if(beans==null||beans.size()==0){
+			return;
+		}
+
+		movieItemAdapter=new MovieItemAdapter(this,beans,R.layout.video_num_item_layout);
+		movieItemAdapter.setColumnNum(COLUMN);
+		mRecyclerView.setLayoutManager(new GridLayoutManager(this, COLUMN));
+		mRecyclerView.setAdapter(movieItemAdapter);
+		movieItemAdapter.setOnItemClickListener(this);
+		home=beans.get(0).getItemUrl();
 		mDialog = new ProgressDialog(mContext);
 		mDialog.setOnShowListener(new DialogInterface.OnShowListener() {
 			@Override
 			public void onShow(DialogInterface dialog) {
-				    Log.i("index",index+"");
+				Log.i("index",index+"");
 //					webview.loadUrl(home);
 				new Thread(getRealUrl).start();
 			}
@@ -155,165 +225,6 @@ public class WebActivity extends BaseActivity {
 		initMaqueeView();
 	}
 
-	private void initMaqueeView() {
-		final List<String> fresh = Arrays.asList("加载失败?", "有广告?");
-		MarqueeFactory<TextView, String> marqueeFactory = new NoticeMF(this);
-		marqueeView.setMarqueeFactory(marqueeFactory);
-		marqueeView.setAnimDuration(3000);
-		marqueeView.setInterval(6000);
-		marqueeView.startFlipping();
-		marqueeFactory.setOnItemClickListener(new MarqueeFactory.OnItemClickListener<TextView, String>() {
-			@Override
-			public void onItemClickListener(MarqueeFactory.ViewHolder<TextView, String> holder) {
-				mDialog.show();
-			}
-		});
-		marqueeFactory.setData(fresh);
-		final List<String> datas = Arrays.asList("《赋得古原草送别》", "离离原上草，一岁一枯荣。", "野火烧不尽，春风吹又生。", "远芳侵古道，晴翠接荒城。", "又送王孙去，萋萋满别情。");
-		MarqueeFactory<TextView, String> marqueeFactoryleft = new VerticalMF(this);
-		marqueeViewLeft.setMarqueeFactory(marqueeFactoryleft);
-		marqueeViewLeft.setAnimDuration(3000);
-		marqueeViewLeft.setInterval(6000);
-		marqueeViewLeft.startFlipping();
-		marqueeFactoryleft.setOnItemClickListener(new MarqueeFactory.OnItemClickListener<TextView, String>() {
-			@Override
-			public void onItemClickListener(MarqueeFactory.ViewHolder<TextView, String> holder) {
-				Toast.makeText(WebActivity.this, holder.data, Toast.LENGTH_SHORT).show();
-			}
-		});
-		marqueeFactoryleft.setData(datas);
-
-		MarqueeFactory<TextView, String> marqueeFactoryRight = new VerticalMF(this);
-		marqueeViewRight.setMarqueeFactory(marqueeFactoryRight);
-		marqueeViewRight.startFlipping();
-		marqueeViewRight.setAnimDuration(3000);
-		marqueeViewRight.setInterval(6000);
-		marqueeFactoryRight.setOnItemClickListener(new MarqueeFactory.OnItemClickListener<TextView, String>() {
-			@Override
-			public void onItemClickListener(MarqueeFactory.ViewHolder<TextView, String> holder) {
-				Toast.makeText(WebActivity.this, holder.data, Toast.LENGTH_SHORT).show();
-			}
-		});
-		marqueeFactoryRight.setData(datas);
-
-	}
-
-	Runnable refreshTrafficRunable =new Runnable(){
-
-		@Override
-		public void run() {
-			if(myinfo!=null){
-				Long total=TrafficStats.getUidRxBytes(myinfo.getUid())+TrafficStats.getUidTxBytes(myinfo.getUid());
-				if(App.preferences.getBoolean(Constants.MOBLE_TRAFFIC,false)){
-					moble=moble+total-lastTotal;
-				}
-			String text=PhoneUtils.formatTrafficByte(total);
-
-				App.editor.putLong(Constants.MOBLE_TRAFFIC_DATA,moble);
-				App.editor.commit();
-				lastTotal=total;
-			}else {
-				TrafficManagerUtils utils=new TrafficManagerUtils(WebActivity.this);
-				infoList=utils.getInternetTrafficInfos();
-				for (TrafficInfo info:infoList){
-					if(info.getPackname().equals(getPackageName())){
-						myinfo=info;
-					};
-				}
-			}
-			mHandler.postDelayed(refreshTrafficRunable,3000);
-
-		}
-	};
-
-	Runnable freshbtnRunable=new Runnable() {
-		@Override
-		public void run() {
-			if(isAlph) {
-				refreshbtn.setAlpha(0f);
-				animate(refreshbtn).setDuration(2000).alpha(1f);
-				isAlph=false;
-			}else {
-				isAlph=true;
-				refreshbtn.setAlpha(1f);
-				animate(refreshbtn).setDuration(2000).alpha(0f);
-			}
-		}
-	};
-	public  String[] getHostStr() {
-
-		String hostStr="";
-		try {
-			InputStream in= getAssets().open("hosts.txt");
-			int size=in.available();
-			byte[] bytes=new byte[size];
-			in.read(bytes);
-			in.close();
-			hostStr=new String(bytes,"utf-8");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return hostStr.trim().split("0.0.0.0");
-	}
-	@OnClick(R.id.fresh_video)
-	public void BtnRefresh(Button refreshbtn){
-		index=0;
-		mDialog.show();
-	}
-
-	@OnClick(R.id.right_bottom_view) void fullScreen(){
-		ToastUtil.showToastLong(WebActivity.this,R.string.already_fullscreen);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		webview.onResume();
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		webview.onPause();
-	}
-	public int clearCacheFolder(File dir, long numDays) {
-		int deletedFiles = 0;
-		if (dir != null && dir.isDirectory()) {
-			try {
-				for (File child : dir.listFiles()) {
-					if (child.isDirectory()) {
-						deletedFiles += clearCacheFolder(child, numDays);
-					}
-					if (child.lastModified() < numDays) {
-						if (child.delete()) {
-							deletedFiles++;
-						}
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return deletedFiles;
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		clearCacheFolder(mContext.getCacheDir(), System.currentTimeMillis());
-		webview.destroy();
-		mHandler.removeCallbacks(null);
-	}
-
-	public  boolean hasAd(Context context, String url) {
-		 for (String adUrl : hostStr) {
-			 if (url.contains(adUrl)) {
-				 return true;
-				 }
-			 }
-		 return false;
-		 }
-
 	Runnable getRealUrl=new Runnable() {
 		@Override
 		public void run() {
@@ -323,7 +234,7 @@ public class WebActivity extends BaseActivity {
 			if(elements!=null&&elements.size()!=0){
 				Element element=elements.get(0);
 				final Element ele= element.getElementById("link4");
-				 String str= ele.attr("value");
+				String str= ele.attr("value");
 //				final	String url=str.replace("height=498","height="+(PhoneUtils.getScreenHight(WebActivity.this))).replace("width=510","width="+PhoneUtils.getScreenWidth(WebActivity.this));
 
 				int start=str.indexOf("src");
@@ -337,26 +248,38 @@ public class WebActivity extends BaseActivity {
 					@Override
 					public void run() {
 
-
-
-
-
 						webview.loadUrl(url);
 //						webview.loadData(url,"text/html","utf-8");
 					}
 				},0);
 			}
-
-
-//			Element element=doc.getElementById("Drama");
-//			Elements elements1=element.getElementsByClass("show_aspect");
-//			if(elements1!=null&&elements1.size()!=0){
-//				for(Element ele:elements1){
-//					Log.i("元素",ele.html());
-//				}
-//			}
 		}
 	};
+
+	@Override
+	public void OnItemClickListener(View view, int position) {
+		mDrawerLayout.closeDrawers();
+		home=beans.get(position).getItemUrl();
+
+		if(mDialog!=null) {
+			ToastUtil.showToastShort(this,"第"+(position+1)+"集");
+			mDialog.show();
+		}
+
+	}
+
+	private class WebViewDownLoadListener implements DownloadListener {
+
+		@Override
+		public void onDownloadStart(String url, String userAgent,
+									String contentDisposition, String mimetype, long contentLength) {
+			Uri uri = Uri.parse(url);
+			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+			startActivity(intent);
+
+		}
+
+	}
 
 	private class WeweWebViewClient extends WebViewClient {
 
@@ -399,7 +322,7 @@ public class WebActivity extends BaseActivity {
 
 		@Override
 		public void onReceivedError(WebView view, int errorCode,
-				String description, String failingUrl) {
+									String description, String failingUrl) {
 			super.onReceivedError(view, errorCode, description, failingUrl);
 			try {
 				if (mDialog != null && mDialog.isShowing())
@@ -411,16 +334,61 @@ public class WebActivity extends BaseActivity {
 
 	}
 
-	private class WebViewDownLoadListener implements DownloadListener {
-
+	Runnable freshbtnRunable=new Runnable() {
 		@Override
-		public void onDownloadStart(String url, String userAgent,
-				String contentDisposition, String mimetype, long contentLength) {
-			Uri uri = Uri.parse(url);
-			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-			startActivity(intent);
-
+		public void run() {
+			if(isAlph) {
+				refreshbtn.setAlpha(0f);
+				animate(refreshbtn).setDuration(2000).alpha(1f);
+				isAlph=false;
+			}else {
+				isAlph=true;
+				refreshbtn.setAlpha(1f);
+				animate(refreshbtn).setDuration(2000).alpha(0f);
+			}
 		}
+	};
+
+	private void initMaqueeView() {
+		final List<String> fresh = Arrays.asList("加载失败?", "有广告?");
+		MarqueeFactory<TextView, String> marqueeFactory = new NoticeMF(mContext);
+		marqueeView.setMarqueeFactory(marqueeFactory);
+		marqueeView.setAnimDuration(3000);
+		marqueeView.setInterval(6000);
+		marqueeView.startFlipping();
+		marqueeFactory.setOnItemClickListener(new MarqueeFactory.OnItemClickListener<TextView, String>() {
+			@Override
+			public void onItemClickListener(MarqueeFactory.ViewHolder<TextView, String> holder) {
+				mDialog.show();
+			}
+		});
+		marqueeFactory.setData(fresh);
+		final List<String> datas = Arrays.asList("《赋得古原草送别》", "离离原上草，一岁一枯荣。", "野火烧不尽，春风吹又生。", "远芳侵古道，晴翠接荒城。", "又送王孙去，萋萋满别情。");
+		MarqueeFactory<TextView, String> marqueeFactoryleft = new VerticalMF(mContext);
+		marqueeViewLeft.setMarqueeFactory(marqueeFactoryleft);
+		marqueeViewLeft.setAnimDuration(3000);
+		marqueeViewLeft.setInterval(6000);
+		marqueeViewLeft.startFlipping();
+		marqueeFactoryleft.setOnItemClickListener(new MarqueeFactory.OnItemClickListener<TextView, String>() {
+			@Override
+			public void onItemClickListener(MarqueeFactory.ViewHolder<TextView, String> holder) {
+				Toast.makeText(mContext, holder.data, Toast.LENGTH_SHORT).show();
+			}
+		});
+		marqueeFactoryleft.setData(datas);
+
+		MarqueeFactory<TextView, String> marqueeFactoryRight = new VerticalMF(mContext);
+		marqueeViewRight.setMarqueeFactory(marqueeFactoryRight);
+		marqueeViewRight.startFlipping();
+		marqueeViewRight.setAnimDuration(3000);
+		marqueeViewRight.setInterval(6000);
+		marqueeFactoryRight.setOnItemClickListener(new MarqueeFactory.OnItemClickListener<TextView, String>() {
+			@Override
+			public void onItemClickListener(MarqueeFactory.ViewHolder<TextView, String> holder) {
+				Toast.makeText(mContext, holder.data, Toast.LENGTH_SHORT).show();
+			}
+		});
+		marqueeFactoryRight.setData(datas);
 
 	}
 
@@ -428,7 +396,7 @@ public class WebActivity extends BaseActivity {
 		private CustomViewCallback customViewCallback;
 		@Override
 		public boolean onJsAlert(WebView view, String url, String message,
-				JsResult result) {
+								 JsResult result) {
 			Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
 			result.confirm();
 			return true;
@@ -436,14 +404,14 @@ public class WebActivity extends BaseActivity {
 
 		@Override
 		public void onConsoleMessage(String message, int lineNumber,
-				String sourceID) {
+									 String sourceID) {
 			// TODO Auto-generated method stub
 			super.onConsoleMessage(message, lineNumber, sourceID);
 		}
 
 		@Override
 		public void onShowCustomView(View view, CustomViewCallback callback) {
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 			webview.setVisibility(View.INVISIBLE);
 			// 如果一个视图已经存在，那么立刻终止并新建一个
 			if (customView != null) {
@@ -481,10 +449,6 @@ public class WebActivity extends BaseActivity {
 		}
 	}
 
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-	}
 
 	@Override
 	public void onBackPressed() {
@@ -495,11 +459,8 @@ public class WebActivity extends BaseActivity {
 			} else {
 				if ((System.currentTimeMillis() - firstTouchBackBt) < 2000) {
 					hasPress = false;
-					if(webview.canGoBack()) {
-						this.moveTaskToBack(true);
-					}else {
-						super.onBackPressed();
-					}
+					webview.destroy();
+					super.onBackPressed();
 				} else {
 					hasPress = true;
 					firstTouchBackBt = System.currentTimeMillis();
@@ -507,4 +468,5 @@ public class WebActivity extends BaseActivity {
 				}
 			}
 	}
+
 }

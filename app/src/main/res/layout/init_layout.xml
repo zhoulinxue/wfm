@@ -6,7 +6,7 @@
     android:fitsSystemWindows="true"
     android:layout_height="match_parent"
     android:background="@color/style_color_primary_dark">
-    <com.zx.wfm.ui.widget.RoundProgressBar
+    <com.zx.wfm.ui.view.RoundProgressBar
         android:id="@+id/roundProgressBar"
         android:layout_width="40dip"
         android:layout_height="40dip"

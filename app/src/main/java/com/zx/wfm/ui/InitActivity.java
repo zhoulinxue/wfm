@@ -5,11 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,9 +23,8 @@ import com.zx.wfm.R;
 import com.zx.wfm.bean.AVErrorbean;
 import com.zx.wfm.bean.Userbean;
 import com.zx.wfm.dao.DBManager;
-import com.zx.wfm.ui.widget.RoundProgressBar;
+import com.zx.wfm.ui.view.RoundProgressBar;
 import com.zx.wfm.utils.Constants;
-import com.zx.wfm.utils.NetWorkUtils;
 import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.ThreadUtil;
 

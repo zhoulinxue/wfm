@@ -10,6 +10,7 @@ public class Constants {
     public static String DEFAULT_PASS_WORD="111111";
     public static String ERROR="return_msg";
     public static String VIDEO_OBJ="video_obj";
+    public static String VIDEO_OBJ_LIST="video_obj_list";
     public static String VIDEO_ITEM_OBJ="video_item_obj";
     public static int PAGE_MAX_NUM=20;
     public static int PAGE_MIN_NUM=10;

@@ -20,6 +20,7 @@ public class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this,view);
         preferences= PreferenceManager.getDefaultSharedPreferences(getActivity());
         editor=preferences.edit();
     }
