@@ -369,9 +369,13 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 				refreshbtn.setAlpha(1f);
 				animate(refreshbtn).setDuration(2000).alpha(0f);
 			}
+			// http://www.soku.com/search_video/q_电影?f=1&kb=04114020kv41000__电影
 		}
 	};
 
+	/**
+	 * 初始化 介绍 文字。
+	 */
 	private void initMaqueeView() {
 		final List<String> fresh = Arrays.asList("加载失败?", "有广告?");
 		MarqueeFactory<TextView, String> marqueeFactory = new NoticeMF(mContext);
@@ -386,7 +390,7 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 			}
 		});
 		marqueeFactory.setData(fresh);
-		final List<String> datas = Arrays.asList("《赋得古原草送别》", "离离原上草，一岁一枯荣。", "野火烧不尽，春风吹又生。", "远芳侵古道，晴翠接荒城。", "又送王孙去，萋萋满别情。");
+		final List<String> datas = Arrays.asList("左侧拉出可以选集","《赋得古原草送别》", "离离原上草，一岁一枯荣。", "野火烧不尽，春风吹又生。", "远芳侵古道，晴翠接荒城。", "又送王孙去，萋萋满别情。");
 		MarqueeFactory<TextView, String> marqueeFactoryleft = new VerticalMF(mContext);
 		marqueeViewLeft.setMarqueeFactory(marqueeFactoryleft);
 		marqueeViewLeft.setAnimDuration(3000);

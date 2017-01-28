@@ -23,7 +23,17 @@ public class Constants {
     }
 
     public static class Net {
+        // 电视剧
         public static String TELEVISION_URL="http://www.soku.com/channel/teleplaylist_0_0_0_1_1.html";
+        // 电影
+        public static String MOVIE_URL="http://www.soku.com/channel/movielist_0_0_0_1_1.html";
+        // 综艺
+        public static String VARIETY_URL="http://www.soku.com/channel/varietylist_0_0_0_1_1.html";
+        // 动漫
+        public static String CARTOON_URL="http://www.soku.com/channel/animelist_0_0_0_1_1.html";
+
+
+
         public static String HIML=".html";
     }
 }

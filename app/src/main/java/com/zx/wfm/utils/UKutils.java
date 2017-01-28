@@ -21,11 +21,14 @@ import java.util.List;
  * QQ:515278502
  */
 public class UKutils {
+    /**
+     * 解析优酷电视剧 地址。
+     * @param pageUrl 目标网页
+     * @return
+     */
     public static List<Televisionbean> getVideoInfo(String pageUrl) {// 一页调用一次
-
         Document doc =getDoc(pageUrl);
         List<Televisionbean> list=new ArrayList<>();
-        List<String> pages=new ArrayList<>();
 
         if (doc == null) {
             Log.e("Jsoup", "doc==null");
@@ -46,7 +49,9 @@ public class UKutils {
                    Element urlElement=urls.get(i);
                     Televisionbean bean=new Televisionbean();
                     bean.setTime(System.currentTimeMillis());
-                    bean.setDesc(desc_info.get(i).text());
+                    if(desc_info!=null&&desc_info.size()!=0) {
+                        bean.setDesc(desc_info.get(i).text());
+                    }
                             bean.setVideoName(urlElement.attr("title"));
                     bean.setAddressUrl(urlElement.attr("abs:href"));
                     bean.setTelevisionId(bean.getAddressUrl());
@@ -91,6 +96,11 @@ public class UKutils {
       return "no";
     }
 
+    /**
+     * 获取下一页的电视剧 栏目
+     * @param pageUrl
+     * @return
+     */
     public static String getNextPageUrl(String pageUrl) {
         String[] strs=null;
         String lastStr="";
@@ -108,6 +118,11 @@ public class UKutils {
         return pageUrl.replace(lastStr,builder.toString());
     }
 
+    /**
+     *   解析并保存电视剧 每一集的内容
+     * @param bean
+     */
+
     private static void getDetailaddres(final Televisionbean bean) {
         new Thread(new Runnable() {
             @Override
@@ -121,6 +136,11 @@ public class UKutils {
         }).start();
     }
 
+    /**
+     * 获取电视剧的 剧集
+     * @param vbean
+     * @return
+     */
     private static List<Moviebean> getVideoList(Televisionbean vbean) {
         Document doc = getDoc(vbean.getAddressUrl());
         if(doc==null){
@@ -171,17 +191,12 @@ public class UKutils {
     }
 
 
-    public static void getRealUrl(final String itemUrl) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Document doc=getDoc(itemUrl);
-                Elements element=doc.getElementsByClass("panels");
-                Log.i("input元素",itemUrl+"!"+ doc.outerHtml());
-            }
-        }).start();
-    }
 
+    /**
+     * 获取 html 文档
+     * @param url
+     * @return
+     */
     public static Document getDoc(String url) {
         try {
            return Jsoup.connect(url).timeout(6000).get();
@@ -195,4 +210,59 @@ public class UKutils {
         }
         return null;
     }
+
+    /**
+     * 获取优酷电影列表
+     * @param pageUrl
+     * @return
+     */
+    public  static List<Televisionbean> getVideoList(String pageUrl){
+        Document doc =getDoc(pageUrl);
+        List<Televisionbean> list=new ArrayList<>();
+
+        if (doc == null) {
+            Log.e("Jsoup", "doc==null");
+            return null;
+        }
+        Elements links = doc.getElementsByClass("rank");
+        Log.i("desc",links.html()+"!@!@");
+//        Elements rating_info = links.select("ranking");// 视频评分
+//        Elements urls=links.select("a[href]");
+//
+//        if (null != urls) {
+//            for (int i=0;i<urls.size();i++) {
+//                Element urlElement=urls.get(i);
+//                Televisionbean bean=new Televisionbean();
+//                bean.setTime(System.currentTimeMillis());
+////                bean.setDesc(desc_info.get(i).text());
+//                bean.setVideoName(urlElement.attr("title"));
+//                bean.setAddressUrl(urlElement.attr("abs:href"));
+//                bean.setTelevisionId(bean.getAddressUrl());
+//                bean.setNetPage(pageUrl);
+////                getDetailaddres(bean);
+////                bean.setRating(rating_info.get(i).text());
+////                Log.e("desc",bean.getRating());
+//                list.add(bean);
+//            }
+//        }
+//
+//        Elements divs_thumbs = doc.getElementsByClass("p_thumb");// 获取专辑图片
+//        if (divs_thumbs != null) {
+//
+//            Elements thumbs = divs_thumbs.select("img[original]");
+//            if (thumbs.size() <= 0) {
+//                divs_thumbs = doc.getElementsByClass("v_thumb");
+//                thumbs = divs_thumbs.select("img[original]");
+//            }
+//            if (null != thumbs) {
+//                for (int i=0;i<thumbs.size();i++) {
+//                    list.get(i).setHeadUrl(thumbs.get(i).attr("abs:original"));
+//                }
+//
+//            }
+//        }
+
+        return list;
+
+    };
 }

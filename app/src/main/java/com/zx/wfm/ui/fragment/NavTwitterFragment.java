@@ -42,11 +42,8 @@ public class NavTwitterFragment extends BaseNavPagerFragment {
 
     @Override
     protected String[] getTitles() {
-        return new String[]{"电视剧","ListView", "GridView",
-                "RecyclerView", "Grid RecyclerView", "StaggeredGrid RecyclerView",
-                "ScrollView", "WebView",
-                "FrameLayout", "RelativeLayout",
-                "LinearLayout", "ImageView", "TextView"};
+        return new String[]{"电视剧","电影","动漫","综艺", "明星",
+                "音乐" };
     }
 
     @Override
@@ -55,27 +52,16 @@ public class NavTwitterFragment extends BaseNavPagerFragment {
         Fragment fragment = null;
         if(title.equals("电视剧")){
             fragment=new UkTelevisionFragment();
-        }else if (title.equals("ListView")) {
-            fragment = new TwitterListViewFragment();
-        } else if (title.equals("GridView")) {
+        }else if (title.equals("电影")) {
+            fragment = new UkMoveFragment();
+        } else if (title.equals("动漫")) {
+            fragment = new UkCartoonFragment();
+        }else if (title.equals("综艺")) {
+            fragment = new UkVarietyFragment();
+        }else if (title.equals("明星")) {
             fragment = new TwitterGridViewFragment();
-        } else if (title.equals("RecyclerView")) {
+        } else if (title.equals("音乐")) {
             fragment = TwitterRecyclerFragment.newInstance(TwitterRecyclerFragment.TYPE_LINEAR);
-        } else if (title.equals("Grid RecyclerView")) {
-            // grid
-            fragment = TwitterRecyclerFragment.newInstance(TwitterRecyclerFragment.TYPE_GRID);
-        } else if (title.equals("StaggeredGrid RecyclerView")) {
-            fragment = TwitterRecyclerFragment.newInstance(TwitterRecyclerFragment.TYPE_STAGGERED_GRID);
-        } else if (title.equals("ScrollView")) {
-            fragment = new TwitterScrollViewFragment();
-        } else if (title.equals("WebView")) {
-            fragment = new TwitterWebViewFragment();
-        } else if (title.equals("FrameLayout")
-                || title.equals("RelativeLayout")
-                || title.equals("LinearLayout")
-                || title.equals("ImageView")
-                || title.equals("TextView")) {
-            fragment = TwitterOtherViewFragment.newInstance(title);
         }
         return fragment;
     }

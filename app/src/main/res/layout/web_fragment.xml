@@ -28,7 +28,9 @@
             android:layout_height="match_parent"
             android:background="@color/transparent"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"></com.gongwen.marqueen.MarqueeView>
+            android:layout_alignParentTop="true"
+            ></com.gongwen.marqueen.MarqueeView>
+
     </LinearLayout>
     <LinearLayout
         android:id="@+id/right_layout"
@@ -44,6 +46,7 @@
             android:background="@color/transparent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"></com.gongwen.marqueen.MarqueeView>
+
     </LinearLayout>
     <TextView
         android:id="@+id/right_bottom_view"
@@ -77,5 +80,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true">
     </com.gongwen.marqueen.MarqueeView>
+
 
 </RelativeLayout>

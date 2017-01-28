@@ -24,6 +24,7 @@ public abstract class BaseNavPagerFragment extends BaseNavigationFragment {
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private Adapter mAdapter;
+    private String[] titles;
 
     public BaseNavPagerFragment() {
         // Required empty public constructor
@@ -37,7 +38,7 @@ public abstract class BaseNavPagerFragment extends BaseNavigationFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAdapter = new Adapter(getChildFragmentManager());
-        String[] titles = getTitles();
+        titles= getTitles();
         for (int i = 0; i < titles.length; i++) {
             mAdapter.addFragment(getFragment(i), titles[i]);
         }
@@ -56,6 +57,9 @@ public abstract class BaseNavPagerFragment extends BaseNavigationFragment {
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(mAdapter);
+        if(titles!=null&&titles.length!=0) {
+            viewPager.setOffscreenPageLimit(titles.length);
+        }
         tabLayout.setupWithViewPager(viewPager);
     }
 

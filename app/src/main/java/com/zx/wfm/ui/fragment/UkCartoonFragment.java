@@ -30,7 +30,6 @@ import com.zx.wfm.utils.UKutils;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 /**
@@ -39,7 +38,7 @@ import butterknife.InjectView;
  *   邮箱：194093798@qq.com
  *  
  */
-public class UkTelevisionFragment extends BaseFragment implements OnRefreshListener, OnLoadMoreListener,BaseRecycleViewAdapter.OnItemClickListener{
+public class UkCartoonFragment extends BaseFragment implements OnRefreshListener, OnLoadMoreListener,BaseRecycleViewAdapter.OnItemClickListener{
     private int mType;
     private List<Televisionbean> list;
     @InjectView(R.id.swipe_target)
@@ -57,7 +56,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         fragment.setArguments(bundle);
         return fragment;
     }
-    public UkTelevisionFragment() {
+    public UkCartoonFragment() {
         // Required empty public constructor
     }
 
@@ -80,9 +79,8 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         super.onViewCreated(view, savedInstanceState);
         pageNum=preferences.getInt(Constants.PAGE_NUM,Constants.PAGE_MIN_NUM);
         netPage=preferences.getInt(Constants.NET_PAGE_NUM,0);
-        list= DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL);
-        Log.i("下一页", UKutils.getNextPageUrl(Constants.Net.TELEVISION_URL));
-
+        list= DBManager.getInstance().getTelevisionList(Constants.Net.CARTOON_URL);
+        Log.i("下一页", UKutils.getNextPageUrl(Constants.Net.CARTOON_URL));
         movieAdapter=new MovieAdapter(getActivity(),list,R.layout.movie_item);
         movieAdapter.setOnItemClickListener(this);
         final StaggeredGridLayoutManager manager=new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -151,6 +149,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
     }
     @Override
     public void onRefresh() {
+        Log.i("desc","下啦");
         page=0;
         if(NetWorkUtils.isNetworkConnected(getActivity())){
             getDataFromNet();
@@ -164,11 +163,11 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
             public void run() {
                 try {
 
-                    List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.TELEVISION_URL);
-
+                    List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.CARTOON_URL);
+                    Log.i("desc",list.size()+"!!");
                     DBManager.getInstance().saveTelevisions(list);
                     if(movieAdapter.getItemCount()==0) {
-                        movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL));
+                        movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.CARTOON_URL));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -180,10 +179,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
     }
 
     private void refreshCompelete() {
-        if(mContext==null){
-            return;
-        }
-        mContext.runOnUiThread(new Runnable() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if(swipeToLoadLayout!=null)

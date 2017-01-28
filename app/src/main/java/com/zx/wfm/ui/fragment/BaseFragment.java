@@ -1,5 +1,6 @@
 package com.zx.wfm.ui.fragment;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -16,6 +17,13 @@ public class BaseFragment extends Fragment {
     public static final int TYPE_LINEAR = 0;
     protected SharedPreferences preferences;
     protected SharedPreferences.Editor editor;
+    protected Activity mContext;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mContext=getActivity();
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
