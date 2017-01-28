@@ -83,6 +83,7 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
 
         Intent intent=new Intent(this,PlayActivity.class);
         intent.putExtra(Constants.VIDEO_OBJ_LIST,(Serializable) movieItemAdapter.getmList());
+        intent.putExtra(Constants.VIDEO_OBJ,movieItemAdapter.getmList().get(position));
         startActivity(intent);
 
     }

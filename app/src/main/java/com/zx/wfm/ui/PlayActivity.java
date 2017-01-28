@@ -106,6 +106,11 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	RecyclerView mRecyclerView;
 	MovieItemAdapter movieItemAdapter;
 	private int COLUMN=8;
+	private  boolean isOpen=false;
+	@InjectView(R.id.video_name_tv)
+	protected  TextView videoName;
+	@InjectView(R.id.video_items)
+	TextView itemsTv;
 
 
 
@@ -150,20 +155,35 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 			@Override
 			public void onDrawerClosed(View drawerView) {
 				super.onDrawerClosed(drawerView);
+				isOpen=false;
 			}
 
 			@Override
 			public void onDrawerOpened(View drawerView) {
 				super.onDrawerOpened(drawerView);
+				isOpen=true;
 			}
 		});
 		initWeb();
 
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		webview.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		webview.onResume();
+	}
+
 	@SuppressLint("JavascriptInterface")
 	private void initWeb() {
 		beans= (List<Moviebean>) getIntent().getSerializableExtra(Constants.VIDEO_OBJ_LIST);
+		 Moviebean bean= (Moviebean) getIntent().getSerializableExtra(Constants.VIDEO_OBJ);
 		if(beans==null||beans.size()==0){
 			return;
 		}
@@ -173,7 +193,10 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 		mRecyclerView.setLayoutManager(new GridLayoutManager(this, COLUMN));
 		mRecyclerView.setAdapter(movieItemAdapter);
 		movieItemAdapter.setOnItemClickListener(this);
-		home=beans.get(0).getItemUrl();
+		home=bean.getItemUrl();
+		videoName.setText(bean.getVideoName());
+		itemsTv.setText("(共"+beans.size()+"集)");
+
 		mDialog = new ProgressDialog(mContext);
 		mDialog.setOnShowListener(new DialogInterface.OnShowListener() {
 			@Override
@@ -452,6 +475,10 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 
 	@Override
 	public void onBackPressed() {
+		if(isOpen){
+			mDrawerLayout.closeDrawers();
+			return;
+      	}
 			if (!hasPress) {
 				firstTouchBackBt = System.currentTimeMillis();
 				ToastUtil.showToastLong(this, "再次点击退出播放");
