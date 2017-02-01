@@ -148,13 +148,15 @@ public class UKutils {
         }
         List<Moviebean> list=new ArrayList<>();
         Elements link_info = doc.getElementsByClass("linkpanel");
-        Log.i("link_info",link_info.size()+"");
+
         if(link_info!=null&&link_info.size()!=0){
             Elements urls = link_info.get(0).select("a[href]");
             for(Element e:urls) {
+                Log.i("link_info",e.ownText()+"!!!"+link_info.size()+"");
                 Moviebean bean=new Moviebean();
                 bean.setTelevisionId(vbean.getTelevisionId());
                 bean.setItemUrl(e.attr("abs:href"));
+                bean.setMovieDetail(e.ownText());
                 bean.setMovieId(bean.getItemUrl());
                 bean.setVideoName(vbean.getVideoName());
                 bean.setDesc(vbean.getDesc());
@@ -211,58 +213,4 @@ public class UKutils {
         return null;
     }
 
-    /**
-     * 获取优酷电影列表
-     * @param pageUrl
-     * @return
-     */
-    public  static List<Televisionbean> getVideoList(String pageUrl){
-        Document doc =getDoc(pageUrl);
-        List<Televisionbean> list=new ArrayList<>();
-
-        if (doc == null) {
-            Log.e("Jsoup", "doc==null");
-            return null;
-        }
-        Elements links = doc.getElementsByClass("rank");
-        Log.i("desc",links.html()+"!@!@");
-//        Elements rating_info = links.select("ranking");// 视频评分
-//        Elements urls=links.select("a[href]");
-//
-//        if (null != urls) {
-//            for (int i=0;i<urls.size();i++) {
-//                Element urlElement=urls.get(i);
-//                Televisionbean bean=new Televisionbean();
-//                bean.setTime(System.currentTimeMillis());
-////                bean.setDesc(desc_info.get(i).text());
-//                bean.setVideoName(urlElement.attr("title"));
-//                bean.setAddressUrl(urlElement.attr("abs:href"));
-//                bean.setTelevisionId(bean.getAddressUrl());
-//                bean.setNetPage(pageUrl);
-////                getDetailaddres(bean);
-////                bean.setRating(rating_info.get(i).text());
-////                Log.e("desc",bean.getRating());
-//                list.add(bean);
-//            }
-//        }
-//
-//        Elements divs_thumbs = doc.getElementsByClass("p_thumb");// 获取专辑图片
-//        if (divs_thumbs != null) {
-//
-//            Elements thumbs = divs_thumbs.select("img[original]");
-//            if (thumbs.size() <= 0) {
-//                divs_thumbs = doc.getElementsByClass("v_thumb");
-//                thumbs = divs_thumbs.select("img[original]");
-//            }
-//            if (null != thumbs) {
-//                for (int i=0;i<thumbs.size();i++) {
-//                    list.get(i).setHeadUrl(thumbs.get(i).attr("abs:original"));
-//                }
-//
-//            }
-//        }
-
-        return list;
-
-    };
 }

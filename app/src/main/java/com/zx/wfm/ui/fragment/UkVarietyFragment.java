@@ -179,7 +179,10 @@ public class UkVarietyFragment extends BaseFragment implements OnRefreshListener
     }
 
     private void refreshCompelete() {
-        getActivity().runOnUiThread(new Runnable() {
+        if(mContext==null){
+            return;
+        }
+        mContext.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if(swipeToLoadLayout!=null)
@@ -188,7 +191,10 @@ public class UkVarietyFragment extends BaseFragment implements OnRefreshListener
         });
     }
     private void loadMoreCompelete() {
-        getActivity().runOnUiThread(new Runnable() {
+        if(mContext==null){
+            return;
+        }
+        mContext.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if(swipeToLoadLayout!=null)

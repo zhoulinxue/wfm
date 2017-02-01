@@ -21,6 +21,7 @@ public class Moviebean extends com.zx.wfm.bean.Basebean  implements java.io.Seri
     private String videoName;
     private String videoHeadUrl;
     private Long time;
+    private String movieDetail;
     private String TelevisionId;
 
     /** Used to resolve relations */
@@ -43,13 +44,14 @@ public class Moviebean extends com.zx.wfm.bean.Basebean  implements java.io.Seri
         this.movieId = movieId;
     }
 
-    public Moviebean(String movieId, String itemUrl, String desc, String videoName, String videoHeadUrl, Long time, String TelevisionId) {
+    public Moviebean(String movieId, String itemUrl, String desc, String videoName, String videoHeadUrl, Long time, String movieDetail, String TelevisionId) {
         this.movieId = movieId;
         this.itemUrl = itemUrl;
         this.desc = desc;
         this.videoName = videoName;
         this.videoHeadUrl = videoHeadUrl;
         this.time = time;
+        this.movieDetail = movieDetail;
         this.TelevisionId = TelevisionId;
     }
 
@@ -105,6 +107,14 @@ public class Moviebean extends com.zx.wfm.bean.Basebean  implements java.io.Seri
 
     public void setTime(Long time) {
         this.time = time;
+    }
+
+    public String getMovieDetail() {
+        return movieDetail;
+    }
+
+    public void setMovieDetail(String movieDetail) {
+        this.movieDetail = movieDetail;
     }
 
     public String getTelevisionId() {

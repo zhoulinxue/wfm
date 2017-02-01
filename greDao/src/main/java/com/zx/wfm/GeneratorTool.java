@@ -78,6 +78,7 @@ public class GeneratorTool {
         movie.addStringProperty("videoName");// 电视电影 名字
         movie.addStringProperty("videoHeadUrl");// 电影截图
         movie.addLongProperty("time");
+        movie.addStringProperty("movieDetail");
         // 电视剧 与电影得关系是 1对1 或者是1对多  一个电视剧有多个 一个或多个 集
         Property teleproperty = movie.addStringProperty("TelevisionId").getProperty();
         tele.addToMany(movie,teleproperty,"moviebeans");

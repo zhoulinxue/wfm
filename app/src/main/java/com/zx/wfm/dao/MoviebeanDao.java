@@ -36,7 +36,8 @@ public class MoviebeanDao extends AbstractDao<Moviebean, String> {
         public final static Property VideoName = new Property(3, String.class, "videoName", false, "VIDEO_NAME");
         public final static Property VideoHeadUrl = new Property(4, String.class, "videoHeadUrl", false, "VIDEO_HEAD_URL");
         public final static Property Time = new Property(5, Long.class, "time", false, "TIME");
-        public final static Property TelevisionId = new Property(6, String.class, "TelevisionId", false, "TELEVISION_ID");
+        public final static Property MovieDetail = new Property(6, String.class, "movieDetail", false, "MOVIE_DETAIL");
+        public final static Property TelevisionId = new Property(7, String.class, "TelevisionId", false, "TELEVISION_ID");
     };
 
     private DaoSession daoSession;
@@ -62,7 +63,8 @@ public class MoviebeanDao extends AbstractDao<Moviebean, String> {
                 "\"VIDEO_NAME\" TEXT," + // 3: videoName
                 "\"VIDEO_HEAD_URL\" TEXT," + // 4: videoHeadUrl
                 "\"TIME\" INTEGER," + // 5: time
-                "\"TELEVISION_ID\" TEXT);"); // 6: TelevisionId
+                "\"MOVIE_DETAIL\" TEXT," + // 6: movieDetail
+                "\"TELEVISION_ID\" TEXT);"); // 7: TelevisionId
     }
 
     /** Drops the underlying database table. */
@@ -106,9 +108,14 @@ public class MoviebeanDao extends AbstractDao<Moviebean, String> {
             stmt.bindLong(6, time);
         }
  
+        String movieDetail = entity.getMovieDetail();
+        if (movieDetail != null) {
+            stmt.bindString(7, movieDetail);
+        }
+ 
         String TelevisionId = entity.getTelevisionId();
         if (TelevisionId != null) {
-            stmt.bindString(7, TelevisionId);
+            stmt.bindString(8, TelevisionId);
         }
     }
 
@@ -134,7 +141,8 @@ public class MoviebeanDao extends AbstractDao<Moviebean, String> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // videoName
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // videoHeadUrl
             cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // time
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // TelevisionId
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // movieDetail
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // TelevisionId
         );
         return entity;
     }
@@ -148,7 +156,8 @@ public class MoviebeanDao extends AbstractDao<Moviebean, String> {
         entity.setVideoName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setVideoHeadUrl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setTime(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
-        entity.setTelevisionId(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setMovieDetail(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setTelevisionId(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
      }
     
     /** @inheritdoc */

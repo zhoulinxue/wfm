@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -94,6 +95,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         //设置item之间的间隔
         SpacesItemDecoration decoration = new SpacesItemDecoration(5);
         mRecyclerView.addItemDecoration(decoration);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -192,7 +194,10 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         });
     }
     private void loadMoreCompelete() {
-        getActivity().runOnUiThread(new Runnable() {
+        if(mContext==null){
+            return;
+        }
+        mContext.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if(swipeToLoadLayout!=null)
