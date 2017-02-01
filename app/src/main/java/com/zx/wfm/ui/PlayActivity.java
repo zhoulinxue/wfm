@@ -20,6 +20,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
@@ -55,6 +56,7 @@ import com.zx.wfm.ui.fragment.NavJavaCodeFragment;
 import com.zx.wfm.ui.fragment.NavTwitterFragment;
 import com.zx.wfm.ui.fragment.NavYalantisFragment;
 import com.zx.wfm.ui.fragment.WebFragment;
+import com.zx.wfm.ui.view.RecycleViewDivider;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.ToastUtil;
 import com.zx.wfm.utils.UKutils;
@@ -183,18 +185,22 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	@SuppressLint("JavascriptInterface")
 	private void initWeb() {
 		beans= (List<Moviebean>) getIntent().getSerializableExtra(Constants.VIDEO_OBJ_LIST);
-		 Moviebean bean= (Moviebean) getIntent().getSerializableExtra(Constants.VIDEO_OBJ);
+		 int pos=getIntent().getIntExtra(Constants.VIDEO_OBJ_POS,0);
+
 		if(beans==null||beans.size()==0){
 			return;
 		}
 
 		movieItemAdapter=new MovieItemAdapter(this,beans,R.layout.video_num_item_layout);
+		movieItemAdapter.setCurrentPosition(pos);
 		movieItemAdapter.setColumnNum(COLUMN);
 		mRecyclerView.setLayoutManager(new GridLayoutManager(this, COLUMN));
+		mRecyclerView.addItemDecoration(new RecycleViewDivider(
+				this, LinearLayoutManager.VERTICAL, 2, getResources().getColor(R.color.white)));
 		mRecyclerView.setAdapter(movieItemAdapter);
 		movieItemAdapter.setOnItemClickListener(this);
-		home=bean.getItemUrl();
-		videoName.setText(bean.getVideoName());
+		home=beans.get(pos).getItemUrl();
+		videoName.setText(beans.get(pos).getVideoName());
 		itemsTv.setText("(共"+beans.size()+"集)");
 
 		mDialog = new ProgressDialog(mContext);
@@ -283,7 +289,6 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	public void OnItemClickListener(View view, int position) {
 		mDrawerLayout.closeDrawers();
 		home=beans.get(position).getItemUrl();
-
 		if(mDialog!=null) {
 			ToastUtil.showToastShort(this,"第"+(position+1)+"集");
 			mDialog.show();

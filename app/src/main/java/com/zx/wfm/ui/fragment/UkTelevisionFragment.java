@@ -75,6 +75,19 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
 //        ButterKnife.inject(this,view);
         return view;
     }
+    @Override
+    protected void refreshFragment() {
+        super.refreshFragment();
+        if(swipeToLoadLayout==null){
+            return;
+        }
+        swipeToLoadLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeToLoadLayout.setRefreshing(true);
+            }
+        });
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

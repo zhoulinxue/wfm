@@ -118,7 +118,13 @@ public class UkCartoonFragment extends BaseFragment implements OnRefreshListener
                 }
             }
         });
-
+    }
+    @Override
+    protected void refreshFragment() {
+        super.refreshFragment();
+        if(swipeToLoadLayout==null){
+            return;
+        }
         swipeToLoadLayout.post(new Runnable() {
             @Override
             public void run() {

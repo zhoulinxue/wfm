@@ -12,7 +12,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|top"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="2dp"
                     android:background="@color/style_color_primary_dark">
                         <ImageView
                             android:id="@+id/video_header_head_img"
@@ -38,6 +38,7 @@
                                     android:textSize="20sp"
                                     android:textColor="@color/white"/>
                                 <TextView
+                                    android:layout_marginTop="10dp"
                                     android:id="@+id/video_header_introdesc"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -45,6 +46,7 @@
                                     android:textSize="16sp"
                                     android:textColor="@color/white"/>
                                 <TextView
+                                    android:layout_marginTop="10dp"
                                     android:id="@+id/video_desc"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"

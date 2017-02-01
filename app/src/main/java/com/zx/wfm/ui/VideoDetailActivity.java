@@ -3,6 +3,7 @@ package com.zx.wfm.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.zx.wfm.bean.Televisionbean;
 import com.zx.wfm.dao.DBManager;
 import com.zx.wfm.ui.adapters.BaseRecycleViewAdapter;
 import com.zx.wfm.ui.adapters.MovieItemAdapter;
+import com.zx.wfm.ui.view.RecycleViewDivider;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
 
@@ -46,13 +48,15 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         List<Moviebean> list= DBManager.getInstance().getMovieListByTeleId(videobean.getTelevisionId());
         movieItemAdapter=new MovieItemAdapter(this,list,R.layout.video_num_item_layout);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+        mRecyclerView.addItemDecoration(new RecycleViewDivider(
+                this, LinearLayoutManager.VERTICAL, 2, getResources().getColor(R.color.white)));
         RecyclerViewHeader header = (RecyclerViewHeader) findViewById(R.id.header);
         ImageView headimg= (ImageView) header.findViewById(R.id.video_header_head_img);
-        headimg.setLayoutParams(new RelativeLayout.LayoutParams(PhoneUtils.getScreenWidth(this)/3, ViewGroup.LayoutParams.WRAP_CONTENT));
+        headimg.setLayoutParams(new RelativeLayout.LayoutParams(PhoneUtils.getScreenWidth(this)*3/7, ViewGroup.LayoutParams.WRAP_CONTENT));
         Glide.with(this).load(videobean.getHeadUrl()).into(headimg);
         TextView name= (TextView) header.findViewById(R.id.video_header_name);
         name.setText(videobean.getVideoName());
-        TextView desc= (TextView) header.findViewById(R.id.video_header_introdesc);
+        TextView desc= (TextView) header.findViewById(R.id.video_desc);
 
         desc.setText("    "+videobean.getDesc());
         header.attachTo(mRecyclerView,true);
@@ -83,7 +87,7 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
 
         Intent intent=new Intent(this,PlayActivity.class);
         intent.putExtra(Constants.VIDEO_OBJ_LIST,(Serializable) movieItemAdapter.getmList());
-        intent.putExtra(Constants.VIDEO_OBJ,movieItemAdapter.getmList().get(position));
+        intent.putExtra(Constants.VIDEO_OBJ_POS,position);
         startActivity(intent);
 
     }

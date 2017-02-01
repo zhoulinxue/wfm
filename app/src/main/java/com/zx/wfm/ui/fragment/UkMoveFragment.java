@@ -118,7 +118,14 @@ public class UkMoveFragment extends BaseFragment implements OnRefreshListener, O
                 }
             }
         });
+    }
 
+    @Override
+    protected void refreshFragment() {
+        super.refreshFragment();
+        if(swipeToLoadLayout==null){
+            return;
+        }
         swipeToLoadLayout.post(new Runnable() {
             @Override
             public void run() {

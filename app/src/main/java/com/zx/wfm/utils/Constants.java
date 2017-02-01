@@ -16,6 +16,7 @@ public class Constants {
     public static int PAGE_MIN_NUM=10;
     public static String PAGE_NUM="page_num";
     public static String NET_PAGE_NUM="net_page_num";
+    public static String VIDEO_OBJ_POS="video_postion";
 
     public static class Request_Code{
         public static  final  int RC_SETTINGS_SCREEN=1000;

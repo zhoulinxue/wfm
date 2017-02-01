@@ -26,6 +26,7 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_NORMAL = 1;
     private OnItemClickListener onItemClickListener;
+    private int currentPosition;
 
     public BaseRecycleViewAdapter(Context mContext, List<T> mDatas, int mLayoutId) {
         this.mContext = mContext;
@@ -43,11 +44,11 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
     @Override
     public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
         if (onItemClickListener != null) {
-            //设置背景
-            holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.style_color_accent));
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    setCurrentPosition(holder.getLayoutPosition());
                     //注意，这里的position不要用上面参数中的position，会出现位置错乱
                     onItemClickListener.OnItemClickListener(holder.itemView, holder.getLayoutPosition());
                 }
@@ -120,6 +121,14 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
-    
+
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public void setCurrentPosition(int currentPosition) {
+        this.currentPosition = currentPosition;
+        notifyDataSetChanged();
+    }
 }
 
