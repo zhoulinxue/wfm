@@ -1,12 +1,16 @@
 package com.zx.wfm.ui.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Televisionbean;
+import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.RecyclerViewHolder;
 import com.zx.wfm.utils.ThreadUtil;
 
@@ -27,6 +31,7 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
     public static final int TYPE_NORMAL = 1;
     private OnItemClickListener onItemClickListener;
     private int currentPosition;
+    protected int columnNum=1;
 
     public BaseRecycleViewAdapter(Context mContext, List<T> mDatas, int mLayoutId) {
         this.mContext = mContext;
@@ -44,7 +49,6 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
     @Override
     public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
         if (onItemClickListener != null) {
-
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -129,6 +133,14 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
     public void setCurrentPosition(int currentPosition) {
         this.currentPosition = currentPosition;
         notifyDataSetChanged();
+    }
+
+    public int getColumnNum() {
+        return columnNum;
+    }
+
+    public void setColumnNum(int columnNum) {
+        this.columnNum = columnNum;
     }
 }
 

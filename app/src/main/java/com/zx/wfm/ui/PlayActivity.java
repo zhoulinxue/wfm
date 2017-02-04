@@ -1,6 +1,8 @@
 package com.zx.wfm.ui;
 
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 
 import android.app.ProgressDialog;
@@ -13,11 +15,7 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,8 +24,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ext.SatelliteMenu;
-import android.view.ext.SatelliteMenuItem;
+import android.view.ViewGroup;
 import android.webkit.DownloadListener;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
@@ -36,6 +33,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -45,6 +44,9 @@ import com.aspsine.fragmentnavigator.FragmentNavigator;
 import com.aspsine.fragmentnavigator.FragmentNavigatorAdapter;
 import com.gongwen.marqueen.MarqueeFactory;
 import com.gongwen.marqueen.MarqueeView;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.zx.wfm.MainFragmentAdapter;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Moviebean;
@@ -119,8 +121,6 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	@InjectView(R.id.video_items)
 	TextView itemsTv;
 	private PopupWindow mPopupWindow;
-	@InjectView(R.id.menu)
-	SatelliteMenu menu;
 
 
 	@SuppressLint("JavascriptInterface")
@@ -171,14 +171,6 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 				isOpen=true;
 			}
 		});
-		List<SatelliteMenuItem> items=new ArrayList<>();
-		items.add(new SatelliteMenuItem(1,R.mipmap.ic_done));
-		items.add(new SatelliteMenuItem(2,R.mipmap.ic_done));
-		items.add(new SatelliteMenuItem(3,R.mipmap.ic_done));
-//		items.add(new SatelliteMenuItem(4,R.mipmap.ic_done));
-//		items.add(new SatelliteMenuItem(5,R.mipmap.ic_done));
-//		items.add(new SatelliteMenuItem(6,R.mipmap.ic_done));
-		menu.addItems(items);
 		initWeb();
 
 	}
@@ -197,6 +189,7 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 
 	@SuppressLint("JavascriptInterface")
 	private void initWeb() {
+		initFloatbtn();
 		beans= (List<Moviebean>) getIntent().getSerializableExtra(Constants.VIDEO_OBJ_LIST);
 		 int pos=getIntent().getIntExtra(Constants.VIDEO_OBJ_POS,0);
 
@@ -265,6 +258,56 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 		refreshbtn.bringToFront();
 		mHandler.postDelayed(freshbtnRunable,20*1000);
 		initMaqueeView();
+	}
+
+	private void initFloatbtn() {
+		final ImageView fabIconNew = new ImageView(this);
+		fabIconNew.setImageResource(R.mipmap.ic_action_new_light);
+		final FloatingActionButton rightLowerButton = new FloatingActionButton.Builder(this)
+				.setContentView(fabIconNew)
+				.build();
+
+		SubActionButton.Builder rLSubBuilder = new SubActionButton.Builder(this).setLayoutParams(new FrameLayout.LayoutParams(100,100));
+		ImageView rlIcon1 = new ImageView(this);
+		ImageView rlIcon2 = new ImageView(this);
+		ImageView rlIcon3 = new ImageView(this);
+
+		rlIcon1.setImageDrawable(getResources().getDrawable(R.mipmap.next));
+		rlIcon2.setImageDrawable(getResources().getDrawable(R.mipmap.icon_yuan));
+		rlIcon3.setImageDrawable(getResources().getDrawable(R.mipmap.pause));
+
+		// Build the menu with default options: light theme, 90 degrees, 72dp radius.
+		// Set 4 default SubActionButtons
+		final FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
+				.addSubActionView(rLSubBuilder.setContentView(rlIcon1).build())
+				.addSubActionView(rLSubBuilder.setContentView(rlIcon2).build())
+				.addSubActionView(rLSubBuilder.setContentView(rlIcon3).build())
+				.attachTo(rightLowerButton)
+				.build();
+
+		// Listen menu open and close events to animate the button content view
+		rightLowerMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
+			@Override
+			public void onMenuOpened(FloatingActionMenu menu) {
+				// Rotate the icon of rightLowerButton 45 degrees clockwise
+				fabIconNew.setRotation(0);
+				PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45);
+				ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
+				animation.start();
+
+			}
+
+			@Override
+			public void onMenuClosed(FloatingActionMenu menu) {
+				// Rotate the icon of rightLowerButton 45 degrees counter-clockwise
+				fabIconNew.setRotation(45);
+				PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0);
+				ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
+				animation.start();
+
+			}
+		});
+
 	}
 
 	Runnable getRealUrl=new Runnable() {

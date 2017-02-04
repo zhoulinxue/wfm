@@ -82,6 +82,7 @@ public class UkCartoonFragment extends BaseFragment implements OnRefreshListener
         list= DBManager.getInstance().getTelevisionList(Constants.Net.CARTOON_URL);
         Log.i("下一页", UKutils.getNextPageUrl(Constants.Net.CARTOON_URL));
         movieAdapter=new MovieAdapter(getActivity(),list,R.layout.movie_item);
+        movieAdapter.setColumnNum(2);
         movieAdapter.setOnItemClickListener(this);
         final StaggeredGridLayoutManager manager=new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);

@@ -17,7 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/colorPrimaryDark"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
             <!--delete reason: listview don't support coordinate scroll-->
             <!--app:layout_scrollFlags="scroll|enterAlways"-->

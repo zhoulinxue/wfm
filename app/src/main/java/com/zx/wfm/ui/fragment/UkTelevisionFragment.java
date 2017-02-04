@@ -98,6 +98,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         Log.i("下一页", UKutils.getNextPageUrl(Constants.Net.TELEVISION_URL));
 
         movieAdapter=new MovieAdapter(getActivity(),list,R.layout.movie_item);
+        movieAdapter.setColumnNum(2);
         movieAdapter.setOnItemClickListener(this);
         final StaggeredGridLayoutManager manager=new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);

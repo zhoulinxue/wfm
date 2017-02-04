@@ -47,6 +47,7 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         videobean= (Televisionbean) intent.getSerializableExtra(Constants.VIDEO_OBJ);
         List<Moviebean> list= DBManager.getInstance().getMovieListByTeleId(videobean.getTelevisionId());
         movieItemAdapter=new MovieItemAdapter(this,list,R.layout.video_num_item_layout);
+        movieItemAdapter.setColumnNum(4);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         mRecyclerView.addItemDecoration(new RecycleViewDivider(
                 this, LinearLayoutManager.VERTICAL, 2, getResources().getColor(R.color.white)));

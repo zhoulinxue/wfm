@@ -1,15 +1,16 @@
 package com.zx.wfm.ui.adapters;
-
 import android.app.Activity;
 import android.content.Context;
 import android.widget.LinearLayout;
 
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Moviebean;
+import com.zx.wfm.ui.adapters.BaseRecycleViewAdapter;
 import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.RecyclerViewHolder;
 
 import java.util.List;
+
 
 /**
  * Created by 周学 on 2017/1/8.
@@ -62,9 +63,5 @@ public class MovieItemAdapter extends BaseRecycleViewAdapter<Moviebean> {
                     new LinearLayout.LayoutParams(PhoneUtils.getScreenWidth((Activity) mContext) / columnNum,
                             PhoneUtils.getScreenWidth((Activity) mContext) / columnNum));
             holder.setText(R.id.video_num_tv, (position +1) +"集");
-    }
-
-    public void setColumnNum(int columnNum) {
-        this.columnNum = columnNum;
     }
 }

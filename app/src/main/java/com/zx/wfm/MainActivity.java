@@ -20,11 +20,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         , BaseToolbarFragment.ToggleDrawerCallBack {
 
     private static final Integer ID_ARRAY[] = {
-            R.id.nav_Twitter_style,
-            R.id.nav_google_style,
-            R.id.nav_yalantis_style,
-            R.id.nav_jd_style,
-            R.id.nav_set_header_footer_via_code
+            R.id.nav_Twitter_style
+//            R.id.nav_google_style,
+//            R.id.nav_yalantis_style,
+//            R.id.nav_jd_style,
+//            R.id.nav_set_header_footer_via_code
     };
 
     private static final List<Integer> IDS = Arrays.asList(ID_ARRAY);
