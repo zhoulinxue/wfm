@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:sat="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="@color/black">
 
@@ -21,6 +22,7 @@
         android:layout_height="match_parent"
         android:background="@color/style_color_primary_dark"
         android:gravity="top"
+        android:visibility="gone"
         >
         <com.gongwen.marqueen.MarqueeView
             android:id="@+id/marqueeView_left"
@@ -38,6 +40,7 @@
         android:layout_width="24dp"
         android:layout_height="match_parent"
         android:background="@color/style_color_primary_dark"
+        android:visibility="gone"
         android:gravity="top">
         <com.gongwen.marqueen.MarqueeView
             android:id="@+id/marqueeView_right"
@@ -80,6 +83,17 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true">
     </com.gongwen.marqueen.MarqueeView>
-
+    <android.view.ext.SatelliteMenu
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:layout_margin="8dp"
+        sat:satelliteDistance="170dp"
+        sat:mainImage="@drawable/ic_launcher"
+        sat:totalSpacingDegree="90"
+        sat:closeOnClick="true"
+        android:layout_alignParentBottom="true"
+        sat:expandDuration="500"/>
 
 </RelativeLayout>

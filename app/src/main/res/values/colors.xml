@@ -21,5 +21,6 @@
     <color name="yalantis_eggplant">#663D4E</color>
     <color name="yalantis_sienna">#EB6460</color>
     <color name="transparent">#00000000</color>
+    <color name="edit_text_background_color">#e8e8e8</color>
 
 </resources>

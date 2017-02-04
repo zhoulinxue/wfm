@@ -23,8 +23,11 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ext.SatelliteMenu;
+import android.view.ext.SatelliteMenuItem;
 import android.webkit.DownloadListener;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
@@ -34,6 +37,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +62,7 @@ import com.zx.wfm.ui.fragment.NavYalantisFragment;
 import com.zx.wfm.ui.fragment.WebFragment;
 import com.zx.wfm.ui.view.RecycleViewDivider;
 import com.zx.wfm.utils.Constants;
+import com.zx.wfm.utils.DialogUtils;
 import com.zx.wfm.utils.ToastUtil;
 import com.zx.wfm.utils.UKutils;
 
@@ -113,9 +118,9 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	protected  TextView videoName;
 	@InjectView(R.id.video_items)
 	TextView itemsTv;
-
-
-
+	private PopupWindow mPopupWindow;
+	@InjectView(R.id.menu)
+	SatelliteMenu menu;
 
 
 	@SuppressLint("JavascriptInterface")
@@ -166,6 +171,14 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 				isOpen=true;
 			}
 		});
+		List<SatelliteMenuItem> items=new ArrayList<>();
+		items.add(new SatelliteMenuItem(1,R.mipmap.ic_done));
+		items.add(new SatelliteMenuItem(2,R.mipmap.ic_done));
+		items.add(new SatelliteMenuItem(3,R.mipmap.ic_done));
+//		items.add(new SatelliteMenuItem(4,R.mipmap.ic_done));
+//		items.add(new SatelliteMenuItem(5,R.mipmap.ic_done));
+//		items.add(new SatelliteMenuItem(6,R.mipmap.ic_done));
+		menu.addItems(items);
 		initWeb();
 
 	}
@@ -258,6 +271,9 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 		@Override
 		public void run() {
 			Document doc= UKutils.getDoc(home);
+			if(doc==null){
+				return;
+			}
 			Elements elements= doc.getElementsByClass("item");
 
 			if(elements!=null&&elements.size()!=0){
@@ -391,7 +407,23 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 		marqueeFactory.setOnItemClickListener(new MarqueeFactory.OnItemClickListener<TextView, String>() {
 			@Override
 			public void onItemClickListener(MarqueeFactory.ViewHolder<TextView, String> holder) {
-				mDialog.show();
+				if(mPopupWindow!=null&&!mPopupWindow.isShowing()){
+					mPopupWindow.showAtLocation( PlayActivity.this.getWindow().getDecorView(), Gravity.CENTER, 0, 0);
+					return;
+				}
+			mPopupWindow=DialogUtils.createPopupWindow(PlayActivity.this, new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						switch (v.getId()){
+							case R.id.certain:
+								mDialog.show();
+								break;
+							case R.id.cancel:
+								break;
+						}
+						mPopupWindow.dismiss();
+					}
+				}, PlayActivity.this.getWindow().getDecorView(), "是否重新加载视频？", "取消", "确认");
 			}
 		});
 		marqueeFactory.setData(fresh);

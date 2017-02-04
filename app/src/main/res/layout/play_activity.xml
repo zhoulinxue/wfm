@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-
     <FrameLayout
         android:id="@+id/id_framelayout2"
         android:layout_width="match_parent"
@@ -12,8 +11,8 @@
         android:background="#cd9a5b" >
         <include layout="@layout/web_fragment"
             android:layout_height="match_parent"
-            android:layout_width="match_parent"
-           ></include>
+            android:layout_width="match_parent" >
+        </include>
     </FrameLayout>
 
     <LinearLayout
