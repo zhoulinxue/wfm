@@ -150,7 +150,7 @@ public class UkVarietyFragment extends BaseFragment implements OnRefreshListener
                     List<Televisionbean> newlist=UKutils.getVideoInfo(urlpage, new FindCallback<Televisionbean>() {
                         @Override
                         public void done(List<Televisionbean> list, AVException e) {
-                            loadMoreCompelete();
+                            loadMoreCompelete(swipeToLoadLayout);
                             DBManager.getInstance().saveTelevisions(list);
                             movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
                         }
@@ -161,7 +161,7 @@ public class UkVarietyFragment extends BaseFragment implements OnRefreshListener
                 }
             });
         }else {
-            loadMoreCompelete();
+            loadMoreCompelete(swipeToLoadLayout);
             movieAdapter.addAll(list);
         }
     }
@@ -172,7 +172,7 @@ public class UkVarietyFragment extends BaseFragment implements OnRefreshListener
         if(NetWorkUtils.isNetworkConnected(getActivity())){
             getDataFromNet();
         }else {
-            refreshCompelete();
+            refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
         }
     }
     private void   getDataFromNet(){
@@ -196,34 +196,9 @@ public class UkVarietyFragment extends BaseFragment implements OnRefreshListener
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    refreshCompelete();
+                    refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
                 }
-                refreshCompelete();
-            }
-        });
-    }
-
-    private void refreshCompelete() {
-        if(mContext==null){
-            return;
-        }
-        mContext.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(swipeToLoadLayout!=null)
-                    swipeToLoadLayout.setRefreshing(false);
-            }
-        });
-    }
-    private void loadMoreCompelete() {
-        if(mContext==null){
-            return;
-        }
-        mContext.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(swipeToLoadLayout!=null)
-                    swipeToLoadLayout.setLoadingMore(false);
+                refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
             }
         });
     }

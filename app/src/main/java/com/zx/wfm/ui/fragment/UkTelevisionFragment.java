@@ -188,7 +188,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
             if (NetWorkUtils.isNetworkConnected(getActivity())) {
                 getDataFromNet();
             } else {
-                refreshCompelete();
+                refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
             }
 
     }
@@ -212,27 +212,14 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    refreshCompelete();
+                    refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
                 }
-                refreshCompelete();
+                refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
             }
         });
     }
 
-    private void refreshCompelete() {
-//        postToServer(movieAdapter.getmList());
-        if(mContext==null){
-            return;
-        }
-        mContext.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(swipeToLoadLayout!=null)
-                    swipeToLoadLayout.setRefreshing(false);
-            }
-        });
 
-    }
     private void loadMoreCompelete() {
         if(mContext==null){
             return;

@@ -116,8 +116,8 @@ public class InitActivity extends Activity{
             }
         });
         animateView(suitv);
-        AVObject.registerSubclass(Televisionbean.class);
         AVOSCloud.initialize(InitActivity.this,"2zBSbem5VbsxPa1dou5nH8EQ-gzGzoHsz","ra2GN4GM8uypJQ8khu7H2wqg");
+        AVOSCloud.setDebugLogEnabled(true);
     }
 
     public void logintoServer() {

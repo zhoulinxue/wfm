@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 
+import com.alibaba.fastjson.JSONObject;
+import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
@@ -52,14 +54,21 @@ public class BaseFragment extends Fragment {
     protected void postToServer(final List<Televisionbean> list) {
 //      final List<Televisionbean> list=  DBManager.getInstance().findLocalTelevision();
         Log.i("未上传数据",(list==null)+"");
+        List<AVObject> objList=null;
+        if(list!=null&&list.size()!=0){
+        objList=new ArrayList<>();
+        }else {
+            return;
+        }
         for(Televisionbean bean:list){
-            Log.i("啥JB",bean.getObjectId()+"");
+            objList.add(bean.toAVObject());
         }
         if(list!=null&&list.size()!=0) {
             Log.i("未上传数据",list.size()+"");
-            AVObject.saveAllInBackground(list, new SaveCallback() {
+            AVObject.saveAllInBackground(objList, new SaveCallback() {
                 @Override
                 public void done(AVException e) {
+                    e.printStackTrace();
                     if (e != null) {
                         Log.e("保存数据", e.getMessage());
                     } else {
@@ -71,36 +80,38 @@ public class BaseFragment extends Fragment {
         }
     }
 
-    protected void getAllMessage() {
-        AVQuery<Televisionbean> query = new AVQuery<>("Televisionbean");
-        query.findInBackground(new FindCallback<Televisionbean>() {
-            @Override
-            public void done(List<Televisionbean> list, AVException e) {
-                DBManager.getInstance().saveTelevisions(list);
-                ArrayList<Televisionbean> todos = (ArrayList<Televisionbean>) list;
-                for (AVObject todo : list) {
-                    todo.put("status", 1);
-                }
-
-                AVObject.saveAllInBackground(todos, new SaveCallback() {
-                    @Override
-                    public void done(AVException e) {
-                        if (e != null) {
-                            // 出现错误
-                        } else {
-                            // 保存成功
-                        }
-                    }
-                });
-            }
-        });
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this,view);
         preferences= PreferenceManager.getDefaultSharedPreferences(getActivity());
         editor=preferences.edit();
+    }
+
+    protected void loadMoreCompelete(final SwipeToLoadLayout swipeToLoadLayout) {
+        if(mContext==null){
+            return;
+        }
+        mContext.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(swipeToLoadLayout!=null)
+                    swipeToLoadLayout.setLoadingMore(false);
+            }
+        });
+    }
+    protected void refreshCompelete(final SwipeToLoadLayout swipeToLoadLayout,List<Televisionbean> list) {
+        postToServer(list);
+        if(mContext==null){
+            return;
+        }
+        mContext.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(swipeToLoadLayout!=null)
+                    swipeToLoadLayout.setRefreshing(false);
+            }
+        });
+
     }
 }

@@ -29,6 +29,8 @@ import java.util.List;
  * QQ:515278502
  */
 public class UKutils {
+    private static String TAG=UKutils.class.getSimpleName();
+
     /**
      * 解析优酷电视剧 地址。
      * @param pageUrl 目标网页
@@ -53,7 +55,7 @@ public class UKutils {
         Elements link_info = doc.getElementsByClass("p_panels");// 视频集数
         Elements rating_info = doc.getElementsByClass("ranking");// 视频评分
         if (divs_info != null) {
-            Log.d("size",desc_info.size()+"#"+link_info.size()+"@"+divs_info.size());
+            Log.d(TAG,desc_info.size()+"#"+link_info.size()+"@"+divs_info.size());
             if (divs_info.size() <= 0) {
                 divs_info = doc.getElementsByClass("v_link");// 视频播放url，如资讯
             }
@@ -77,7 +79,7 @@ public class UKutils {
                         bean.setRating("无评分");
                     }
                     list.add(bean);
-                    Log.i("desc",bean.getRating());
+                    Log.i(TAG,bean.getRating());
                 }
             }
         }
@@ -167,7 +169,7 @@ public class UKutils {
         if(link_info!=null&&link_info.size()!=0){
             Elements urls = link_info.get(0).select("a[href]");
             for(Element e:urls) {
-                Log.i("link_info",e.ownText()+"!!!"+link_info.size()+"");
+                Log.i(TAG,e.ownText()+"!!!"+link_info.size()+"");
                 Moviebean bean=new Moviebean();
                 bean.setTelevisionId(vbean.getTelevisionId());
                 bean.setItemUrl(e.attr("abs:href"));
@@ -198,7 +200,7 @@ public class UKutils {
             for(Element element:elements){
                 String url=element.attr("abs:href");
                 if(!pages.contains(url)) {
-                    Log.i("多少页",url);
+                    Log.i(TAG,url);
                     pages.add(url);
                 }
             }
@@ -215,6 +217,7 @@ public class UKutils {
      * @return
      */
     public static Document getDoc(String url) {
+        Log.d(TAG,url);
         try {
            return Jsoup.connect(url).timeout(6000).get();
             // Added a maximum body response size to Jsoup.Connection, to

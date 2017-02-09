@@ -154,13 +154,13 @@ public class UkMoveFragment extends BaseFragment implements OnRefreshListener, O
                             movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
                         }
                     });
-                    loadMoreCompelete();
+                    loadMoreCompelete(swipeToLoadLayout);
                     DBManager.getInstance().saveTelevisions(newlist);
                     movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
                 }
             });
         }else {
-            loadMoreCompelete();
+            loadMoreCompelete(swipeToLoadLayout);
             movieAdapter.addAll(list);
         }
     }
@@ -171,7 +171,7 @@ public class UkMoveFragment extends BaseFragment implements OnRefreshListener, O
         if(NetWorkUtils.isNetworkConnected(getActivity())){
             getDataFromNet();
         }else {
-            refreshCompelete();
+            refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
         }
 
     }
@@ -196,28 +196,9 @@ public class UkMoveFragment extends BaseFragment implements OnRefreshListener, O
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    refreshCompelete();
+                    refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
                 }
-                refreshCompelete();
-            }
-        });
-    }
-
-    private void refreshCompelete() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(swipeToLoadLayout!=null)
-                    swipeToLoadLayout.setRefreshing(false);
-            }
-        });
-    }
-    private void loadMoreCompelete() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(swipeToLoadLayout!=null)
-                    swipeToLoadLayout.setLoadingMore(false);
+                refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
             }
         });
     }

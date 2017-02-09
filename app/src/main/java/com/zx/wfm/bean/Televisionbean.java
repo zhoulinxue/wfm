@@ -69,13 +69,7 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
         myDao = daoSession != null ? daoSession.getTelevisionbeanDao() : null;
     }
 
-    public String getObjectId() {
-        return objectId;
-    }
 
-    public void setObjectId(String objectId) {
-        this.objectId = objectId;
-    }
 
     public String getTelevisionId() {
         return TelevisionId;
@@ -253,6 +247,14 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
                 ", movieCourseList=" + movieCourseList +
                 '}';
     }
+    public String getObjectId() {
+        return super.getObjectId();
+    }
+
+    public void setObjectId(String objectId) {
+        super.setObjectId(objectId);
+    }
+    // KEEP METHODS END
 // KEEP METHODS END
 
 }

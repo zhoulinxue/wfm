@@ -1,6 +1,7 @@
 package com.zx.wfm.bean;
 
 import android.annotation.SuppressLint;
+import android.os.Parcel;
 import android.util.Log;
 
 import com.avos.avoscloud.AVClassName;
@@ -31,28 +32,30 @@ public class Basebean extends AVObject implements Serializable,ObjectToAVObject{
             String path=getClass().getName();
             Class cls = Class.forName(path);  //com.geocompass.model.STSTBPRPModel
             Field[] fieldlist = cls.getDeclaredFields();
-            put("ower", AVUser.getCurrentUser());
+            AVObject object=new AVObject(getClass().getSimpleName());
+//            object.put("ower", AVUser.getCurrentUser());
             for (int i = 0; i < fieldlist.length; i++) {
                 Field fld = fieldlist[i];
                 fld.setAccessible(true);
                 try {
                     Log.e("实体名",fld.getName()+"路径："+fld.get(this));
-                    if(!"$change".equals(fld.getName())) {
-                        put(fld.getName(), fld.get(this));
+                    if(!"$change".equals(fld.getName())&&!"objectId".equals(fld.getName())) {
+                        object.put(fld.getName(), fld.get(this));
+                    }else if("objectId".equals(fld.getName())){
+                        object.setObjectId(fld.get(this)+"");
                     }
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
 
             }
-            return this;
+            return object;
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
     }
-
      public static void reflect(Object obj) {  
                 if (obj == null) return;  
                 Field[] fields = obj.getClass().getDeclaredFields();  
