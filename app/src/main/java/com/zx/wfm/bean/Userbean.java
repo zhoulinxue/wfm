@@ -2,11 +2,13 @@ package com.zx.wfm.bean;
 
 import android.annotation.SuppressLint;
 
+import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVUser;
 
 /**
  * Created by 周学 on 2017/1/8.
  */
+@AVClassName("Userbean")
 public class Userbean extends Basebean{
     private AVUser avUser;
     private String deviceId;

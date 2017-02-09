@@ -1,6 +1,8 @@
 package com.zx.wfm.bean;
 
 import java.util.List;
+
+import com.avos.avoscloud.AVClassName;
 import com.zx.wfm.dao.DaoSession;
 import de.greenrobot.dao.DaoException;
 
@@ -15,8 +17,10 @@ import com.zx.wfm.dao.TelevisionbeanDao;
 /**
  * Entity mapped to table "TELEVISIONBEAN".
  */
+@AVClassName("Televisionbean")
 public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io.Serializable {
 
+    private String objectId;
     private String TelevisionId;
     private String addressUrl;
     private String desc;
@@ -46,7 +50,8 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
         this.TelevisionId = TelevisionId;
     }
 
-    public Televisionbean(String TelevisionId, String addressUrl, String desc, String videoName, String headUrl, String rating, String from, Long time, String netPage) {
+    public Televisionbean(String objectId, String TelevisionId, String addressUrl, String desc, String videoName, String headUrl, String rating, String from, Long time, String netPage) {
+        this.objectId = objectId;
         this.TelevisionId = TelevisionId;
         this.addressUrl = addressUrl;
         this.desc = desc;
@@ -62,6 +67,14 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getTelevisionbeanDao() : null;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 
     public String getTelevisionId() {
@@ -224,7 +237,8 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
     @Override
     public String toString() {
         return "Televisionbean{" +
-                "TelevisionId='" + TelevisionId + '\'' +
+                "objectId='" + objectId + '\'' +
+                ", TelevisionId='" + TelevisionId + '\'' +
                 ", addressUrl='" + addressUrl + '\'' +
                 ", desc='" + desc + '\'' +
                 ", videoName='" + videoName + '\'' +
@@ -232,12 +246,13 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
                 ", rating='" + rating + '\'' +
                 ", from='" + from + '\'' +
                 ", time=" + time +
+                ", netPage='" + netPage + '\'' +
                 ", daoSession=" + daoSession +
                 ", myDao=" + myDao +
                 ", moviebeans=" + moviebeans +
                 ", movieCourseList=" + movieCourseList +
                 '}';
     }
-    // KEEP METHODS END
+// KEEP METHODS END
 
 }

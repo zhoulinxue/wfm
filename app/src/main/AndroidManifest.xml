@@ -18,7 +18,9 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity android:name=".ui.InitActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/ThemeSplash"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"></action>
                 <category android:name="android.intent.category.LAUNCHER"></category>

@@ -1,5 +1,6 @@
 package com.zx.wfm.ui;
 
+import java.io.Serializable;
 import java.util.List;
 
 import android.content.Intent;
@@ -13,6 +14,8 @@ import android.view.View;
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.LogUtil;
 import com.bumptech.glide.Glide;
 import com.zx.wfm.R;
@@ -112,7 +115,13 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
                 ThreadUtil.runOnNewThread(new Runnable() {
                     @Override
                     public void run() {
-                        List<Televisionbean> newlist=UKutils.getVideoInfo(urlpage);
+                        List<Televisionbean> newlist=UKutils.getVideoInfo(urlpage, new FindCallback<Televisionbean>() {
+                            @Override
+                            public void done(List<Televisionbean> list, AVException e) {
+                                DBManager.getInstance().saveTelevisions(list);
+                                movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
+                            }
+                        });
                         loadMoreCompelete();
                         DBManager.getInstance().saveTelevisions(newlist);
                         movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
@@ -140,7 +149,15 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
               try {
 //                  url =UKutils.getVideoPages();
                   refreshCompelete();
-                  List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.TELEVISION_URL);
+                  List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.TELEVISION_URL, new FindCallback<Televisionbean>() {
+                      @Override
+                      public void done(List<Televisionbean> list, AVException e) {
+                          DBManager.getInstance().saveTelevisions(list);
+                          if(movieAdapter.getItemCount()==0) {
+                              movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL));
+                          }
+                      }
+                  });
                   DBManager.getInstance().saveTelevisions(list);
                   if(movieAdapter.getItemCount()==0) {
                       movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL));
@@ -176,7 +193,7 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
     public void OnItemClickListener(View view, int position) {
         Televisionbean bean=DBManager.getInstance().getTelevisionById(movieAdapter.getmList().get(position).getTelevisionId());
         Intent intent=new Intent(this,VideoDetailActivity.class);
-        intent.putExtra(Constants.VIDEO_OBJ,bean);
+        intent.putExtra(Constants.VIDEO_OBJ,(Serializable)bean);
         startActivity(intent);
     }
 }

@@ -30,14 +30,15 @@ public class MoviebeanDao extends AbstractDao<Moviebean, String> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property MovieId = new Property(0, String.class, "movieId", true, "MOVIE_ID");
-        public final static Property ItemUrl = new Property(1, String.class, "itemUrl", false, "ITEM_URL");
-        public final static Property Desc = new Property(2, String.class, "desc", false, "DESC");
-        public final static Property VideoName = new Property(3, String.class, "videoName", false, "VIDEO_NAME");
-        public final static Property VideoHeadUrl = new Property(4, String.class, "videoHeadUrl", false, "VIDEO_HEAD_URL");
-        public final static Property Time = new Property(5, Long.class, "time", false, "TIME");
-        public final static Property MovieDetail = new Property(6, String.class, "movieDetail", false, "MOVIE_DETAIL");
-        public final static Property TelevisionId = new Property(7, String.class, "TelevisionId", false, "TELEVISION_ID");
+        public final static Property ObjectId = new Property(0, String.class, "objectId", false, "OBJECT_ID");
+        public final static Property MovieId = new Property(1, String.class, "movieId", true, "MOVIE_ID");
+        public final static Property ItemUrl = new Property(2, String.class, "itemUrl", false, "ITEM_URL");
+        public final static Property Desc = new Property(3, String.class, "desc", false, "DESC");
+        public final static Property VideoName = new Property(4, String.class, "videoName", false, "VIDEO_NAME");
+        public final static Property VideoHeadUrl = new Property(5, String.class, "videoHeadUrl", false, "VIDEO_HEAD_URL");
+        public final static Property Time = new Property(6, Long.class, "time", false, "TIME");
+        public final static Property MovieDetail = new Property(7, String.class, "movieDetail", false, "MOVIE_DETAIL");
+        public final static Property TelevisionId = new Property(8, String.class, "TelevisionId", false, "TELEVISION_ID");
     };
 
     private DaoSession daoSession;
@@ -57,14 +58,15 @@ public class MoviebeanDao extends AbstractDao<Moviebean, String> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"MOVIEBEAN\" (" + //
-                "\"MOVIE_ID\" TEXT PRIMARY KEY NOT NULL ," + // 0: movieId
-                "\"ITEM_URL\" TEXT," + // 1: itemUrl
-                "\"DESC\" TEXT," + // 2: desc
-                "\"VIDEO_NAME\" TEXT," + // 3: videoName
-                "\"VIDEO_HEAD_URL\" TEXT," + // 4: videoHeadUrl
-                "\"TIME\" INTEGER," + // 5: time
-                "\"MOVIE_DETAIL\" TEXT," + // 6: movieDetail
-                "\"TELEVISION_ID\" TEXT);"); // 7: TelevisionId
+                "\"OBJECT_ID\" TEXT," + // 0: objectId
+                "\"MOVIE_ID\" TEXT PRIMARY KEY NOT NULL ," + // 1: movieId
+                "\"ITEM_URL\" TEXT," + // 2: itemUrl
+                "\"DESC\" TEXT," + // 3: desc
+                "\"VIDEO_NAME\" TEXT," + // 4: videoName
+                "\"VIDEO_HEAD_URL\" TEXT," + // 5: videoHeadUrl
+                "\"TIME\" INTEGER," + // 6: time
+                "\"MOVIE_DETAIL\" TEXT," + // 7: movieDetail
+                "\"TELEVISION_ID\" TEXT);"); // 8: TelevisionId
     }
 
     /** Drops the underlying database table. */
@@ -78,44 +80,49 @@ public class MoviebeanDao extends AbstractDao<Moviebean, String> {
     protected void bindValues(SQLiteStatement stmt, Moviebean entity) {
         stmt.clearBindings();
  
+        String objectId = entity.getObjectId();
+        if (objectId != null) {
+            stmt.bindString(1, objectId);
+        }
+ 
         String movieId = entity.getMovieId();
         if (movieId != null) {
-            stmt.bindString(1, movieId);
+            stmt.bindString(2, movieId);
         }
  
         String itemUrl = entity.getItemUrl();
         if (itemUrl != null) {
-            stmt.bindString(2, itemUrl);
+            stmt.bindString(3, itemUrl);
         }
  
         String desc = entity.getDesc();
         if (desc != null) {
-            stmt.bindString(3, desc);
+            stmt.bindString(4, desc);
         }
  
         String videoName = entity.getVideoName();
         if (videoName != null) {
-            stmt.bindString(4, videoName);
+            stmt.bindString(5, videoName);
         }
  
         String videoHeadUrl = entity.getVideoHeadUrl();
         if (videoHeadUrl != null) {
-            stmt.bindString(5, videoHeadUrl);
+            stmt.bindString(6, videoHeadUrl);
         }
  
         Long time = entity.getTime();
         if (time != null) {
-            stmt.bindLong(6, time);
+            stmt.bindLong(7, time);
         }
  
         String movieDetail = entity.getMovieDetail();
         if (movieDetail != null) {
-            stmt.bindString(7, movieDetail);
+            stmt.bindString(8, movieDetail);
         }
  
         String TelevisionId = entity.getTelevisionId();
         if (TelevisionId != null) {
-            stmt.bindString(8, TelevisionId);
+            stmt.bindString(9, TelevisionId);
         }
     }
 
@@ -128,21 +135,22 @@ public class MoviebeanDao extends AbstractDao<Moviebean, String> {
     /** @inheritdoc */
     @Override
     public String readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0);
+        return cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1);
     }    
 
     /** @inheritdoc */
     @Override
     public Moviebean readEntity(Cursor cursor, int offset) {
         Moviebean entity = new Moviebean( //
-            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // movieId
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // itemUrl
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // desc
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // videoName
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // videoHeadUrl
-            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // time
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // movieDetail
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // TelevisionId
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // objectId
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // movieId
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // itemUrl
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // desc
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // videoName
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // videoHeadUrl
+            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // time
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // movieDetail
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // TelevisionId
         );
         return entity;
     }
@@ -150,14 +158,15 @@ public class MoviebeanDao extends AbstractDao<Moviebean, String> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, Moviebean entity, int offset) {
-        entity.setMovieId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setItemUrl(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setDesc(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setVideoName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setVideoHeadUrl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setTime(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
-        entity.setMovieDetail(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setTelevisionId(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setObjectId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
+        entity.setMovieId(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setItemUrl(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setDesc(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setVideoName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setVideoHeadUrl(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setTime(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
+        entity.setMovieDetail(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setTelevisionId(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
      }
     
     /** @inheritdoc */

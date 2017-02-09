@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.FindCallback;
 import com.bumptech.glide.Glide;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Televisionbean;
@@ -28,6 +30,7 @@ import com.zx.wfm.utils.SpacesItemDecoration;
 import com.zx.wfm.utils.ThreadUtil;
 import com.zx.wfm.utils.UKutils;
 
+import java.io.Serializable;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -144,7 +147,13 @@ public class UkMoveFragment extends BaseFragment implements OnRefreshListener, O
             ThreadUtil.runOnNewThread(new Runnable() {
                 @Override
                 public void run() {
-                    List<Televisionbean> newlist=UKutils.getVideoInfo(urlpage);
+                    List<Televisionbean> newlist=UKutils.getVideoInfo(urlpage, new FindCallback<Televisionbean>() {
+                        @Override
+                        public void done(List<Televisionbean> list, AVException e) {
+                            DBManager.getInstance().saveTelevisions(list);
+                            movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
+                        }
+                    });
                     loadMoreCompelete();
                     DBManager.getInstance().saveTelevisions(newlist);
                     movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
@@ -164,14 +173,22 @@ public class UkMoveFragment extends BaseFragment implements OnRefreshListener, O
         }else {
             refreshCompelete();
         }
+
     }
     private void   getDataFromNet(){
         ThreadUtil.runOnNewThread( new Runnable() {
             @Override
             public void run() {
                 try {
-
-                    List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.MOVIE_URL);
+                    List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.MOVIE_URL, new FindCallback<Televisionbean>() {
+                        @Override
+                        public void done(List<Televisionbean> list, AVException e) {
+                            DBManager.getInstance().saveTelevisions(list);
+                            if(movieAdapter.getItemCount()==0) {
+                                movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.MOVIE_URL));
+                            }
+                        }
+                    });
                     Log.i("desc",list.size()+"!!");
                     DBManager.getInstance().saveTelevisions(list);
                     if(movieAdapter.getItemCount()==0) {
@@ -209,7 +226,7 @@ public class UkMoveFragment extends BaseFragment implements OnRefreshListener, O
     public void OnItemClickListener(View view, int position) {
         Televisionbean bean=DBManager.getInstance().getTelevisionById(movieAdapter.getmList().get(position).getTelevisionId());
         Intent intent=new Intent(getActivity(),VideoDetailActivity.class);
-        intent.putExtra(Constants.VIDEO_OBJ,bean);
+        intent.putExtra(Constants.VIDEO_OBJ,(Serializable) bean);
         startActivity(intent);
     }
 

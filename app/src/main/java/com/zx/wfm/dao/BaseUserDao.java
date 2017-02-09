@@ -28,16 +28,17 @@ public class BaseUserDao extends AbstractDao<BaseUser, String> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Uid = new Property(0, String.class, "uid", true, "UID");
-        public final static Property Sex = new Property(1, String.class, "sex", false, "SEX");
-        public final static Property Age = new Property(2, Long.class, "age", false, "AGE");
-        public final static Property HeadUrl = new Property(3, String.class, "headUrl", false, "HEAD_URL");
-        public final static Property NickName = new Property(4, String.class, "nickName", false, "NICK_NAME");
-        public final static Property DeviceId = new Property(5, String.class, "deviceId", false, "DEVICE_ID");
-        public final static Property UserType = new Property(6, String.class, "userType", false, "USER_TYPE");
-        public final static Property IsVip = new Property(7, Boolean.class, "isVip", false, "IS_VIP");
-        public final static Property RechargeTime = new Property(8, String.class, "rechargeTime", false, "RECHARGE_TIME");
-        public final static Property CardId = new Property(9, Long.class, "cardId", false, "CARD_ID");
+        public final static Property ObjectId = new Property(0, String.class, "objectId", false, "OBJECT_ID");
+        public final static Property Uid = new Property(1, String.class, "uid", true, "UID");
+        public final static Property Sex = new Property(2, String.class, "sex", false, "SEX");
+        public final static Property Age = new Property(3, Long.class, "age", false, "AGE");
+        public final static Property HeadUrl = new Property(4, String.class, "headUrl", false, "HEAD_URL");
+        public final static Property NickName = new Property(5, String.class, "nickName", false, "NICK_NAME");
+        public final static Property DeviceId = new Property(6, String.class, "deviceId", false, "DEVICE_ID");
+        public final static Property UserType = new Property(7, String.class, "userType", false, "USER_TYPE");
+        public final static Property IsVip = new Property(8, Boolean.class, "isVip", false, "IS_VIP");
+        public final static Property RechargeTime = new Property(9, String.class, "rechargeTime", false, "RECHARGE_TIME");
+        public final static Property CardId = new Property(10, Long.class, "cardId", false, "CARD_ID");
     };
 
     private DaoSession daoSession;
@@ -56,16 +57,17 @@ public class BaseUserDao extends AbstractDao<BaseUser, String> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"BASE_USER\" (" + //
-                "\"UID\" TEXT PRIMARY KEY NOT NULL ," + // 0: uid
-                "\"SEX\" TEXT," + // 1: sex
-                "\"AGE\" INTEGER," + // 2: age
-                "\"HEAD_URL\" TEXT," + // 3: headUrl
-                "\"NICK_NAME\" TEXT," + // 4: nickName
-                "\"DEVICE_ID\" TEXT," + // 5: deviceId
-                "\"USER_TYPE\" TEXT," + // 6: userType
-                "\"IS_VIP\" INTEGER," + // 7: isVip
-                "\"RECHARGE_TIME\" TEXT," + // 8: rechargeTime
-                "\"CARD_ID\" INTEGER);"); // 9: cardId
+                "\"OBJECT_ID\" TEXT," + // 0: objectId
+                "\"UID\" TEXT PRIMARY KEY NOT NULL ," + // 1: uid
+                "\"SEX\" TEXT," + // 2: sex
+                "\"AGE\" INTEGER," + // 3: age
+                "\"HEAD_URL\" TEXT," + // 4: headUrl
+                "\"NICK_NAME\" TEXT," + // 5: nickName
+                "\"DEVICE_ID\" TEXT," + // 6: deviceId
+                "\"USER_TYPE\" TEXT," + // 7: userType
+                "\"IS_VIP\" INTEGER," + // 8: isVip
+                "\"RECHARGE_TIME\" TEXT," + // 9: rechargeTime
+                "\"CARD_ID\" INTEGER);"); // 10: cardId
     }
 
     /** Drops the underlying database table. */
@@ -79,54 +81,59 @@ public class BaseUserDao extends AbstractDao<BaseUser, String> {
     protected void bindValues(SQLiteStatement stmt, BaseUser entity) {
         stmt.clearBindings();
  
+        String objectId = entity.getObjectId();
+        if (objectId != null) {
+            stmt.bindString(1, objectId);
+        }
+ 
         String uid = entity.getUid();
         if (uid != null) {
-            stmt.bindString(1, uid);
+            stmt.bindString(2, uid);
         }
  
         String sex = entity.getSex();
         if (sex != null) {
-            stmt.bindString(2, sex);
+            stmt.bindString(3, sex);
         }
  
         Long age = entity.getAge();
         if (age != null) {
-            stmt.bindLong(3, age);
+            stmt.bindLong(4, age);
         }
  
         String headUrl = entity.getHeadUrl();
         if (headUrl != null) {
-            stmt.bindString(4, headUrl);
+            stmt.bindString(5, headUrl);
         }
  
         String nickName = entity.getNickName();
         if (nickName != null) {
-            stmt.bindString(5, nickName);
+            stmt.bindString(6, nickName);
         }
  
         String deviceId = entity.getDeviceId();
         if (deviceId != null) {
-            stmt.bindString(6, deviceId);
+            stmt.bindString(7, deviceId);
         }
  
         String userType = entity.getUserType();
         if (userType != null) {
-            stmt.bindString(7, userType);
+            stmt.bindString(8, userType);
         }
  
         Boolean isVip = entity.getIsVip();
         if (isVip != null) {
-            stmt.bindLong(8, isVip ? 1L: 0L);
+            stmt.bindLong(9, isVip ? 1L: 0L);
         }
  
         String rechargeTime = entity.getRechargeTime();
         if (rechargeTime != null) {
-            stmt.bindString(9, rechargeTime);
+            stmt.bindString(10, rechargeTime);
         }
  
         Long cardId = entity.getCardId();
         if (cardId != null) {
-            stmt.bindLong(10, cardId);
+            stmt.bindLong(11, cardId);
         }
     }
 
@@ -139,23 +146,24 @@ public class BaseUserDao extends AbstractDao<BaseUser, String> {
     /** @inheritdoc */
     @Override
     public String readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0);
+        return cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1);
     }    
 
     /** @inheritdoc */
     @Override
     public BaseUser readEntity(Cursor cursor, int offset) {
         BaseUser entity = new BaseUser( //
-            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // uid
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // sex
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // age
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // headUrl
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // nickName
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // deviceId
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // userType
-            cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0, // isVip
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // rechargeTime
-            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9) // cardId
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // objectId
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // uid
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // sex
+            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // age
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // headUrl
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // nickName
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // deviceId
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // userType
+            cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0, // isVip
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // rechargeTime
+            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10) // cardId
         );
         return entity;
     }
@@ -163,16 +171,17 @@ public class BaseUserDao extends AbstractDao<BaseUser, String> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, BaseUser entity, int offset) {
-        entity.setUid(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setSex(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setAge(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
-        entity.setHeadUrl(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setNickName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setDeviceId(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setUserType(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setIsVip(cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0);
-        entity.setRechargeTime(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setCardId(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
+        entity.setObjectId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
+        entity.setUid(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setSex(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setAge(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
+        entity.setHeadUrl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setNickName(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setDeviceId(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setUserType(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setIsVip(cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0);
+        entity.setRechargeTime(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setCardId(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
      }
     
     /** @inheritdoc */

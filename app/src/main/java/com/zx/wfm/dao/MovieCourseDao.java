@@ -31,9 +31,10 @@ public class MovieCourseDao extends AbstractDao<MovieCourse, Void> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Time = new Property(0, Long.class, "time", false, "TIME");
-        public final static Property Uid = new Property(1, String.class, "uid", false, "UID");
-        public final static Property TelevisionId = new Property(2, String.class, "TelevisionId", false, "TELEVISION_ID");
+        public final static Property ObjectId = new Property(0, String.class, "objectId", false, "OBJECT_ID");
+        public final static Property Time = new Property(1, Long.class, "time", false, "TIME");
+        public final static Property Uid = new Property(2, String.class, "uid", false, "UID");
+        public final static Property TelevisionId = new Property(3, String.class, "TelevisionId", false, "TELEVISION_ID");
     };
 
     private DaoSession daoSession;
@@ -54,9 +55,10 @@ public class MovieCourseDao extends AbstractDao<MovieCourse, Void> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"MOVIE_COURSE\" (" + //
-                "\"TIME\" INTEGER," + // 0: time
-                "\"UID\" TEXT," + // 1: uid
-                "\"TELEVISION_ID\" TEXT);"); // 2: TelevisionId
+                "\"OBJECT_ID\" TEXT," + // 0: objectId
+                "\"TIME\" INTEGER," + // 1: time
+                "\"UID\" TEXT," + // 2: uid
+                "\"TELEVISION_ID\" TEXT);"); // 3: TelevisionId
     }
 
     /** Drops the underlying database table. */
@@ -70,19 +72,24 @@ public class MovieCourseDao extends AbstractDao<MovieCourse, Void> {
     protected void bindValues(SQLiteStatement stmt, MovieCourse entity) {
         stmt.clearBindings();
  
+        String objectId = entity.getObjectId();
+        if (objectId != null) {
+            stmt.bindString(1, objectId);
+        }
+ 
         Long time = entity.getTime();
         if (time != null) {
-            stmt.bindLong(1, time);
+            stmt.bindLong(2, time);
         }
  
         String uid = entity.getUid();
         if (uid != null) {
-            stmt.bindString(2, uid);
+            stmt.bindString(3, uid);
         }
  
         String TelevisionId = entity.getTelevisionId();
         if (TelevisionId != null) {
-            stmt.bindString(3, TelevisionId);
+            stmt.bindString(4, TelevisionId);
         }
     }
 
@@ -102,9 +109,10 @@ public class MovieCourseDao extends AbstractDao<MovieCourse, Void> {
     @Override
     public MovieCourse readEntity(Cursor cursor, int offset) {
         MovieCourse entity = new MovieCourse( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // time
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // uid
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // TelevisionId
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // objectId
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // time
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // uid
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // TelevisionId
         );
         return entity;
     }
@@ -112,9 +120,10 @@ public class MovieCourseDao extends AbstractDao<MovieCourse, Void> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MovieCourse entity, int offset) {
-        entity.setTime(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setUid(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setTelevisionId(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setObjectId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
+        entity.setTime(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setUid(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setTelevisionId(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
      }
     
     /** @inheritdoc */

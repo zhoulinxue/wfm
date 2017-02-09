@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.FindCallback;
 import com.bumptech.glide.Glide;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Televisionbean;
@@ -28,6 +30,7 @@ import com.zx.wfm.utils.SpacesItemDecoration;
 import com.zx.wfm.utils.ThreadUtil;
 import com.zx.wfm.utils.UKutils;
 
+import java.io.Serializable;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -144,8 +147,15 @@ public class UkVarietyFragment extends BaseFragment implements OnRefreshListener
             ThreadUtil.runOnNewThread(new Runnable() {
                 @Override
                 public void run() {
-                    List<Televisionbean> newlist=UKutils.getVideoInfo(urlpage);
-                    loadMoreCompelete();
+                    List<Televisionbean> newlist=UKutils.getVideoInfo(urlpage, new FindCallback<Televisionbean>() {
+                        @Override
+                        public void done(List<Televisionbean> list, AVException e) {
+                            loadMoreCompelete();
+                            DBManager.getInstance().saveTelevisions(list);
+                            movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
+                        }
+                    });
+
                     DBManager.getInstance().saveTelevisions(newlist);
                     movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
                 }
@@ -171,8 +181,15 @@ public class UkVarietyFragment extends BaseFragment implements OnRefreshListener
             public void run() {
                 try {
 
-                    List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.VARIETY_URL);
-                    Log.i("desc",list.size()+"!!");
+                    List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.VARIETY_URL, new FindCallback<Televisionbean>() {
+                        @Override
+                        public void done(List<Televisionbean> list, AVException e) {
+                            DBManager.getInstance().saveTelevisions(list);
+                            if(movieAdapter.getItemCount()==0) {
+                                movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.VARIETY_URL));
+                            }
+                        }
+                    });
                     DBManager.getInstance().saveTelevisions(list);
                     if(movieAdapter.getItemCount()==0) {
                         movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.VARIETY_URL));
@@ -215,7 +232,7 @@ public class UkVarietyFragment extends BaseFragment implements OnRefreshListener
     public void OnItemClickListener(View view, int position) {
         Televisionbean bean=DBManager.getInstance().getTelevisionById(movieAdapter.getmList().get(position).getTelevisionId());
         Intent intent=new Intent(getActivity(),VideoDetailActivity.class);
-        intent.putExtra(Constants.VIDEO_OBJ,bean);
+        intent.putExtra(Constants.VIDEO_OBJ,(Serializable) bean);
         startActivity(intent);
     }
 

@@ -16,6 +16,7 @@ import com.zx.wfm.dao.TelevisionbeanDao;
  */
 public class MovieCourse extends com.zx.wfm.bean.Basebean  implements java.io.Serializable {
 
+    private String objectId;
     private Long time;
     private String uid;
     private String TelevisionId;
@@ -39,7 +40,8 @@ public class MovieCourse extends com.zx.wfm.bean.Basebean  implements java.io.Se
     public MovieCourse() {
     }
 
-    public MovieCourse(Long time, String uid, String TelevisionId) {
+    public MovieCourse(String objectId, Long time, String uid, String TelevisionId) {
+        this.objectId = objectId;
         this.time = time;
         this.uid = uid;
         this.TelevisionId = TelevisionId;
@@ -49,6 +51,14 @@ public class MovieCourse extends com.zx.wfm.bean.Basebean  implements java.io.Se
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMovieCourseDao() : null;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 
     public Long getTime() {

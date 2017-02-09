@@ -25,6 +25,7 @@ public class GeneratorTool {
         Entity user = schema.addEntity("BaseUser");
         user.setSuperclass("com.zx.wfm.bean.Basebean");
         user.implementsSerializable();
+        user.addStringProperty("objectId");
         user.setHasKeepSections(true);
         user.addStringProperty("uid").primaryKey();
         user.addStringProperty("sex");
@@ -39,6 +40,7 @@ public class GeneratorTool {
         // 身份证
         Entity idCard = schema.addEntity("IDCard");
         idCard.setHasKeepSections(true);
+        idCard.addStringProperty("objectId");
         idCard.setSuperclass("com.zx.wfm.bean.Basebean");
         idCard.implementsSerializable();
         idCard.addLongProperty("cardId").primaryKey();
@@ -56,6 +58,7 @@ public class GeneratorTool {
         tele.setHasKeepSections(true);
         tele.setSuperclass("com.zx.wfm.bean.Basebean");
         tele.implementsSerializable();
+        tele.addStringProperty("objectId");
         tele.addStringProperty("TelevisionId").primaryKey();// 电视/电影得ID
         tele.addStringProperty("addressUrl");// 电影解析地址
         tele.addStringProperty("desc");// 电视/电影描述
@@ -72,6 +75,7 @@ public class GeneratorTool {
         movie.setHasKeepSections(true);
         movie.setSuperclass("com.zx.wfm.bean.Basebean");
         movie.implementsSerializable();
+        movie.addStringProperty("objectId");
         movie.addStringProperty("movieId").primaryKey();// 电视/电影得ID
         movie.addStringProperty("itemUrl");// 电影解析地址
         movie.addStringProperty("desc");// 电视/电影描述
@@ -88,9 +92,9 @@ public class GeneratorTool {
         // 中间表有其它两个表的主键作为外键 一个用户 可以分享N个电视  一个电视也可以 由N个用去去分享
         Entity personCourse = schema.addEntity("MovieCourse");
         personCourse.setHasKeepSections(true);
-
         personCourse.setSuperclass("com.zx.wfm.bean.Basebean");
         personCourse.implementsSerializable();
+        personCourse.addStringProperty("objectId");
         personCourse.addLongProperty("time");
         Property personName = personCourse.addStringProperty("uid").getProperty();
         Property courseId = personCourse.addStringProperty("TelevisionId").getProperty();

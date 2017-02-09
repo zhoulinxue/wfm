@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONObject;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
 import com.avos.avoscloud.SignUpCallback;
@@ -21,6 +23,7 @@ import com.tencent.bugly.beta.Beta;
 import com.zx.wfm.MainActivity;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.AVErrorbean;
+import com.zx.wfm.bean.Televisionbean;
 import com.zx.wfm.bean.Userbean;
 import com.zx.wfm.dao.DBManager;
 import com.zx.wfm.ui.view.RoundProgressBar;
@@ -113,6 +116,7 @@ public class InitActivity extends Activity{
             }
         });
         animateView(suitv);
+        AVObject.registerSubclass(Televisionbean.class);
         AVOSCloud.initialize(InitActivity.this,"2zBSbem5VbsxPa1dou5nH8EQ-gzGzoHsz","ra2GN4GM8uypJQ8khu7H2wqg");
     }
 

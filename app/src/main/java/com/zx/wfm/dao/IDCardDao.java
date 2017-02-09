@@ -28,9 +28,10 @@ public class IDCardDao extends AbstractDao<IDCard, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property CardId = new Property(0, Long.class, "cardId", true, "CARD_ID");
-        public final static Property Validity = new Property(1, Long.class, "validity", false, "VALIDITY");
-        public final static Property Uid = new Property(2, String.class, "uid", false, "UID");
+        public final static Property ObjectId = new Property(0, String.class, "objectId", false, "OBJECT_ID");
+        public final static Property CardId = new Property(1, Long.class, "cardId", true, "CARD_ID");
+        public final static Property Validity = new Property(2, Long.class, "validity", false, "VALIDITY");
+        public final static Property Uid = new Property(3, String.class, "uid", false, "UID");
     };
 
     private DaoSession daoSession;
@@ -49,9 +50,10 @@ public class IDCardDao extends AbstractDao<IDCard, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"IDCARD\" (" + //
-                "\"CARD_ID\" INTEGER PRIMARY KEY ," + // 0: cardId
-                "\"VALIDITY\" INTEGER," + // 1: validity
-                "\"UID\" TEXT);"); // 2: uid
+                "\"OBJECT_ID\" TEXT," + // 0: objectId
+                "\"CARD_ID\" INTEGER PRIMARY KEY ," + // 1: cardId
+                "\"VALIDITY\" INTEGER," + // 2: validity
+                "\"UID\" TEXT);"); // 3: uid
     }
 
     /** Drops the underlying database table. */
@@ -65,19 +67,24 @@ public class IDCardDao extends AbstractDao<IDCard, Long> {
     protected void bindValues(SQLiteStatement stmt, IDCard entity) {
         stmt.clearBindings();
  
+        String objectId = entity.getObjectId();
+        if (objectId != null) {
+            stmt.bindString(1, objectId);
+        }
+ 
         Long cardId = entity.getCardId();
         if (cardId != null) {
-            stmt.bindLong(1, cardId);
+            stmt.bindLong(2, cardId);
         }
  
         Long validity = entity.getValidity();
         if (validity != null) {
-            stmt.bindLong(2, validity);
+            stmt.bindLong(3, validity);
         }
  
         String uid = entity.getUid();
         if (uid != null) {
-            stmt.bindString(3, uid);
+            stmt.bindString(4, uid);
         }
     }
 
@@ -90,16 +97,17 @@ public class IDCardDao extends AbstractDao<IDCard, Long> {
     /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1);
     }    
 
     /** @inheritdoc */
     @Override
     public IDCard readEntity(Cursor cursor, int offset) {
         IDCard entity = new IDCard( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // cardId
-            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // validity
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // uid
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // objectId
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // cardId
+            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // validity
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // uid
         );
         return entity;
     }
@@ -107,9 +115,10 @@ public class IDCardDao extends AbstractDao<IDCard, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, IDCard entity, int offset) {
-        entity.setCardId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setValidity(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
-        entity.setUid(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setObjectId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
+        entity.setCardId(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setValidity(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
+        entity.setUid(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
      }
     
     /** @inheritdoc */

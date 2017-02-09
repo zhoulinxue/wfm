@@ -6,7 +6,10 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.LogUtil;
+import com.avos.avoscloud.SaveCallback;
 import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.bean.Televisionbean;
 import com.zx.wfm.utils.Constants;
@@ -90,9 +93,23 @@ public class DBManager {
         if(list==null){
             return;
         }
-        Log.i(TAG,"保存集合"+list.size());
-        mTelevisionbeanDao.insertOrReplaceInTx(list);
+        for(Televisionbean bean:list){
+            Televisionbean oldbean=findLocalTelevisionById(bean.getTelevisionId());
+            if(oldbean==null){
+                mTelevisionbeanDao.insertInTx(bean);
+            }else {
+                bean.setObjectId(oldbean.getObjectId());
+                mTelevisionbeanDao.update(bean);
+            };
+        }
     }
+
+    private Televisionbean findLocalTelevisionById(String televisionId) {
+        QueryBuilder<Televisionbean> builder=getTelevisionbeanQueryBuilder();
+        builder.where(TelevisionbeanDao.Properties.TelevisionId.eq(televisionId));
+        return builder.unique();
+    }
+
 
     /**
      * 获取 指定页数得电影
@@ -119,7 +136,6 @@ public class DBManager {
         builder.where(TelevisionbeanDao.Properties.NetPage.eq(netPage));
         return builder.list();
     }
-
     /**
      * 获取所有电影
      * @return
@@ -169,5 +185,11 @@ public class DBManager {
 
     public List<Moviebean> getMovieListByTeleId(String televisionId) {
      return    moviebeanDao.queryBuilder().where(MoviebeanDao.Properties.TelevisionId.eq(televisionId)).list();
+    }
+
+    public List<Televisionbean> findLocalTelevision() {
+        QueryBuilder<Televisionbean> queryBuilder=getTelevisionbeanQueryBuilder();
+        queryBuilder.where(TelevisionbeanDao.Properties.ObjectId.isNull());
+        return  queryBuilder.list();
     }
 }

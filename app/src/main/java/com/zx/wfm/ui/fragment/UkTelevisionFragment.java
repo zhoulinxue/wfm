@@ -16,6 +16,12 @@ import android.view.ViewGroup;
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
+import com.avos.avoscloud.LogUtil;
 import com.bumptech.glide.Glide;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Televisionbean;
@@ -25,10 +31,12 @@ import com.zx.wfm.ui.adapters.BaseRecycleViewAdapter;
 import com.zx.wfm.ui.adapters.MovieAdapter;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.NetWorkUtils;
+import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.SpacesItemDecoration;
 import com.zx.wfm.utils.ThreadUtil;
 import com.zx.wfm.utils.UKutils;
 
+import java.io.Serializable;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -96,7 +104,6 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         netPage=preferences.getInt(Constants.NET_PAGE_NUM,0);
         list= DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL);
         Log.i("下一页", UKutils.getNextPageUrl(Constants.Net.TELEVISION_URL));
-
         movieAdapter=new MovieAdapter(getActivity(),list,R.layout.movie_item);
         movieAdapter.setColumnNum(2);
         movieAdapter.setOnItemClickListener(this);
@@ -154,7 +161,17 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
             ThreadUtil.runOnNewThread(new Runnable() {
                 @Override
                 public void run() {
-                    List<Televisionbean> newlist=UKutils.getVideoInfo(urlpage);
+                    List<Televisionbean> newlist=UKutils.getVideoInfo(urlpage, new FindCallback<Televisionbean>() {
+                        @Override
+                        public void done(List<Televisionbean> list, AVException e) {
+                            for(Televisionbean televisionbean:list){
+                                Log.i("服务器",televisionbean.toString());
+                            }
+                            loadMoreCompelete();
+                            DBManager.getInstance().saveTelevisions(list);
+                            movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
+                        }
+                    });
                     loadMoreCompelete();
                     DBManager.getInstance().saveTelevisions(newlist);
                     movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
@@ -167,21 +184,28 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
     }
     @Override
     public void onRefresh() {
-        page=0;
-        if(NetWorkUtils.isNetworkConnected(getActivity())){
-            getDataFromNet();
-        }else {
-            refreshCompelete();
-        }
+            page = 0;
+            if (NetWorkUtils.isNetworkConnected(getActivity())) {
+                getDataFromNet();
+            } else {
+                refreshCompelete();
+            }
+
     }
     private void   getDataFromNet(){
         ThreadUtil.runOnNewThread( new Runnable() {
             @Override
             public void run() {
                 try {
-
-                    List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.TELEVISION_URL);
-
+                    List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.TELEVISION_URL, new FindCallback<Televisionbean>() {
+                        @Override
+                        public void done(List<Televisionbean> list, AVException e) {
+                            DBManager.getInstance().saveTelevisions(list);
+                            if(movieAdapter.getItemCount()==0) {
+                                movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL));
+                            }
+                        }
+                    });
                     DBManager.getInstance().saveTelevisions(list);
                     if(movieAdapter.getItemCount()==0) {
                         movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL));
@@ -196,6 +220,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
     }
 
     private void refreshCompelete() {
+//        postToServer(movieAdapter.getmList());
         if(mContext==null){
             return;
         }
@@ -206,6 +231,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
                     swipeToLoadLayout.setRefreshing(false);
             }
         });
+
     }
     private void loadMoreCompelete() {
         if(mContext==null){
@@ -224,7 +250,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
     public void OnItemClickListener(View view, int position) {
         Televisionbean bean=DBManager.getInstance().getTelevisionById(movieAdapter.getmList().get(position).getTelevisionId());
         Intent intent=new Intent(getActivity(),VideoDetailActivity.class);
-        intent.putExtra(Constants.VIDEO_OBJ,bean);
+        intent.putExtra(Constants.VIDEO_OBJ,(Serializable) bean);
         startActivity(intent);
     }
 

@@ -1,6 +1,8 @@
 package com.zx.wfm.bean;
 
 import java.util.List;
+
+import com.avos.avoscloud.AVClassName;
 import com.zx.wfm.dao.DaoSession;
 import de.greenrobot.dao.DaoException;
 
@@ -15,8 +17,10 @@ import com.zx.wfm.dao.MovieCourseDao;
 /**
  * Entity mapped to table "BASE_USER".
  */
+@AVClassName("BaseUser")
 public class BaseUser extends com.zx.wfm.bean.Basebean  implements java.io.Serializable {
 
+    private String objectId;
     private String uid;
     private String sex;
     private Long age;
@@ -49,7 +53,8 @@ public class BaseUser extends com.zx.wfm.bean.Basebean  implements java.io.Seria
         this.uid = uid;
     }
 
-    public BaseUser(String uid, String sex, Long age, String headUrl, String nickName, String deviceId, String userType, Boolean isVip, String rechargeTime, Long cardId) {
+    public BaseUser(String objectId, String uid, String sex, Long age, String headUrl, String nickName, String deviceId, String userType, Boolean isVip, String rechargeTime, Long cardId) {
+        this.objectId = objectId;
         this.uid = uid;
         this.sex = sex;
         this.age = age;
@@ -66,6 +71,14 @@ public class BaseUser extends com.zx.wfm.bean.Basebean  implements java.io.Seria
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getBaseUserDao() : null;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 
     public String getUid() {

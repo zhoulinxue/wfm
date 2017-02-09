@@ -23,15 +23,16 @@ public class TelevisionbeanDao extends AbstractDao<Televisionbean, String> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property TelevisionId = new Property(0, String.class, "TelevisionId", true, "TELEVISION_ID");
-        public final static Property AddressUrl = new Property(1, String.class, "addressUrl", false, "ADDRESS_URL");
-        public final static Property Desc = new Property(2, String.class, "desc", false, "DESC");
-        public final static Property VideoName = new Property(3, String.class, "videoName", false, "VIDEO_NAME");
-        public final static Property HeadUrl = new Property(4, String.class, "headUrl", false, "HEAD_URL");
-        public final static Property Rating = new Property(5, String.class, "rating", false, "RATING");
-        public final static Property From = new Property(6, String.class, "from", false, "FROM");
-        public final static Property Time = new Property(7, Long.class, "time", false, "TIME");
-        public final static Property NetPage = new Property(8, String.class, "netPage", false, "NET_PAGE");
+        public final static Property ObjectId = new Property(0, String.class, "objectId", false, "OBJECT_ID");
+        public final static Property TelevisionId = new Property(1, String.class, "TelevisionId", true, "TELEVISION_ID");
+        public final static Property AddressUrl = new Property(2, String.class, "addressUrl", false, "ADDRESS_URL");
+        public final static Property Desc = new Property(3, String.class, "desc", false, "DESC");
+        public final static Property VideoName = new Property(4, String.class, "videoName", false, "VIDEO_NAME");
+        public final static Property HeadUrl = new Property(5, String.class, "headUrl", false, "HEAD_URL");
+        public final static Property Rating = new Property(6, String.class, "rating", false, "RATING");
+        public final static Property From = new Property(7, String.class, "from", false, "FROM");
+        public final static Property Time = new Property(8, Long.class, "time", false, "TIME");
+        public final static Property NetPage = new Property(9, String.class, "netPage", false, "NET_PAGE");
     };
 
     private DaoSession daoSession;
@@ -50,15 +51,16 @@ public class TelevisionbeanDao extends AbstractDao<Televisionbean, String> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"TELEVISIONBEAN\" (" + //
-                "\"TELEVISION_ID\" TEXT PRIMARY KEY NOT NULL ," + // 0: TelevisionId
-                "\"ADDRESS_URL\" TEXT," + // 1: addressUrl
-                "\"DESC\" TEXT," + // 2: desc
-                "\"VIDEO_NAME\" TEXT," + // 3: videoName
-                "\"HEAD_URL\" TEXT," + // 4: headUrl
-                "\"RATING\" TEXT," + // 5: rating
-                "\"FROM\" TEXT," + // 6: from
-                "\"TIME\" INTEGER," + // 7: time
-                "\"NET_PAGE\" TEXT);"); // 8: netPage
+                "\"OBJECT_ID\" TEXT," + // 0: objectId
+                "\"TELEVISION_ID\" TEXT PRIMARY KEY NOT NULL ," + // 1: TelevisionId
+                "\"ADDRESS_URL\" TEXT," + // 2: addressUrl
+                "\"DESC\" TEXT," + // 3: desc
+                "\"VIDEO_NAME\" TEXT," + // 4: videoName
+                "\"HEAD_URL\" TEXT," + // 5: headUrl
+                "\"RATING\" TEXT," + // 6: rating
+                "\"FROM\" TEXT," + // 7: from
+                "\"TIME\" INTEGER," + // 8: time
+                "\"NET_PAGE\" TEXT);"); // 9: netPage
     }
 
     /** Drops the underlying database table. */
@@ -72,49 +74,54 @@ public class TelevisionbeanDao extends AbstractDao<Televisionbean, String> {
     protected void bindValues(SQLiteStatement stmt, Televisionbean entity) {
         stmt.clearBindings();
  
+        String objectId = entity.getObjectId();
+        if (objectId != null) {
+            stmt.bindString(1, objectId);
+        }
+ 
         String TelevisionId = entity.getTelevisionId();
         if (TelevisionId != null) {
-            stmt.bindString(1, TelevisionId);
+            stmt.bindString(2, TelevisionId);
         }
  
         String addressUrl = entity.getAddressUrl();
         if (addressUrl != null) {
-            stmt.bindString(2, addressUrl);
+            stmt.bindString(3, addressUrl);
         }
  
         String desc = entity.getDesc();
         if (desc != null) {
-            stmt.bindString(3, desc);
+            stmt.bindString(4, desc);
         }
  
         String videoName = entity.getVideoName();
         if (videoName != null) {
-            stmt.bindString(4, videoName);
+            stmt.bindString(5, videoName);
         }
  
         String headUrl = entity.getHeadUrl();
         if (headUrl != null) {
-            stmt.bindString(5, headUrl);
+            stmt.bindString(6, headUrl);
         }
  
         String rating = entity.getRating();
         if (rating != null) {
-            stmt.bindString(6, rating);
+            stmt.bindString(7, rating);
         }
  
         String from = entity.getFrom();
         if (from != null) {
-            stmt.bindString(7, from);
+            stmt.bindString(8, from);
         }
  
         Long time = entity.getTime();
         if (time != null) {
-            stmt.bindLong(8, time);
+            stmt.bindLong(9, time);
         }
  
         String netPage = entity.getNetPage();
         if (netPage != null) {
-            stmt.bindString(9, netPage);
+            stmt.bindString(10, netPage);
         }
     }
 
@@ -127,22 +134,23 @@ public class TelevisionbeanDao extends AbstractDao<Televisionbean, String> {
     /** @inheritdoc */
     @Override
     public String readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0);
+        return cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1);
     }    
 
     /** @inheritdoc */
     @Override
     public Televisionbean readEntity(Cursor cursor, int offset) {
         Televisionbean entity = new Televisionbean( //
-            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // TelevisionId
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // addressUrl
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // desc
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // videoName
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // headUrl
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // rating
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // from
-            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // time
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // netPage
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // objectId
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // TelevisionId
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // addressUrl
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // desc
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // videoName
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // headUrl
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // rating
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // from
+            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // time
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // netPage
         );
         return entity;
     }
@@ -150,15 +158,16 @@ public class TelevisionbeanDao extends AbstractDao<Televisionbean, String> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, Televisionbean entity, int offset) {
-        entity.setTelevisionId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setAddressUrl(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setDesc(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setVideoName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setHeadUrl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setRating(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setFrom(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setTime(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
-        entity.setNetPage(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setObjectId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
+        entity.setTelevisionId(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setAddressUrl(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setDesc(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setVideoName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setHeadUrl(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setRating(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setFrom(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setTime(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
+        entity.setNetPage(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
      }
     
     /** @inheritdoc */

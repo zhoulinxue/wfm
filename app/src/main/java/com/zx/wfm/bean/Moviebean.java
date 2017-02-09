@@ -1,5 +1,6 @@
 package com.zx.wfm.bean;
 
+import com.avos.avoscloud.AVClassName;
 import com.zx.wfm.dao.DaoSession;
 import de.greenrobot.dao.DaoException;
 
@@ -13,8 +14,10 @@ import com.zx.wfm.dao.TelevisionbeanDao;
 /**
  * Entity mapped to table "MOVIEBEAN".
  */
+@AVClassName("Moviebean")
 public class Moviebean extends com.zx.wfm.bean.Basebean  implements java.io.Serializable {
 
+    private String objectId;
     private String movieId;
     private String itemUrl;
     private String desc;
@@ -44,7 +47,8 @@ public class Moviebean extends com.zx.wfm.bean.Basebean  implements java.io.Seri
         this.movieId = movieId;
     }
 
-    public Moviebean(String movieId, String itemUrl, String desc, String videoName, String videoHeadUrl, Long time, String movieDetail, String TelevisionId) {
+    public Moviebean(String objectId, String movieId, String itemUrl, String desc, String videoName, String videoHeadUrl, Long time, String movieDetail, String TelevisionId) {
+        this.objectId = objectId;
         this.movieId = movieId;
         this.itemUrl = itemUrl;
         this.desc = desc;
@@ -59,6 +63,14 @@ public class Moviebean extends com.zx.wfm.bean.Basebean  implements java.io.Seri
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMoviebeanDao() : null;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 
     public String getMovieId() {

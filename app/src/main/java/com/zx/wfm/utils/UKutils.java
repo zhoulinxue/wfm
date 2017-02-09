@@ -3,6 +3,14 @@ package com.zx.wfm.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.LogUtil;
+import com.avos.avoscloud.SaveCallback;
+import com.zx.wfm.Application.App;
 import com.zx.wfm.bean.Televisionbean;
 import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.dao.DBManager;
@@ -26,9 +34,15 @@ public class UKutils {
      * @param pageUrl 目标网页
      * @return
      */
-    public static List<Televisionbean> getVideoInfo(String pageUrl) {// 一页调用一次
+    public static List<Televisionbean> getVideoInfo(String pageUrl,FindCallback<Televisionbean> callback) {// 一页调用一次
+//        if(!"A0000044F8E372".equals(PhoneUtils.getImeiInfo(App.wfmApplication.getApplicationContext()))) {
+//            AVQuery<Televisionbean> query =new AVQuery<>("Televisionbean");
+//            query.whereEqualTo("netPage", pageUrl);
+//            query.findInBackground(callback);
+//            return null;
+//        }
         Document doc =getDoc(pageUrl);
-        List<Televisionbean> list=new ArrayList<>();
+        final List<Televisionbean> list=new ArrayList<>();
 
         if (doc == null) {
             Log.e("Jsoup", "doc==null");
@@ -79,8 +93,9 @@ public class UKutils {
             if (null != thumbs) {
                 for (int i=0;i<thumbs.size();i++) {
                     list.get(i).setHeadUrl(thumbs.get(i).attr("abs:original"));
+                    list.get(i).toAVObject();
+                    list.get(i).setFrom(AVUser.getCurrentUser().getObjectId());
                 }
-
             }
         }
         return list;
