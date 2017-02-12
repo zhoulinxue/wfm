@@ -304,7 +304,7 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 			public void myClick(View v) {
 				rightLowerMenu.close(true);
 				if(movieItemAdapter!=null&&movieItemAdapter.getmList().size()!=0){
-					if(movieItemAdapter.getCurrentPosition()<movieItemAdapter.getmList().size())
+					if(movieItemAdapter.getCurrentPosition()+1<movieItemAdapter.getmList().size())
 						OnItemClickListener(v,movieItemAdapter.getCurrentPosition()+1);
 					else {
 						ToastUtil.showToastShort(PlayActivity.this,"没有下一集了");

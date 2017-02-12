@@ -133,10 +133,16 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void OnItemClickListener(View view, final int position) {
         movieItemAdapter.setCurrentPosition(position);
-        Intent intent=new Intent(this,PlayActivity.class);
-        intent.putParcelableArrayListExtra(Constants.VIDEO_OBJ_LIST, (ArrayList<? extends Parcelable>) movieItemAdapter.getmList());
-        intent.putExtra(Constants.VIDEO_OBJ_POS,position);
-        startActivity(intent);
+        ThreadUtil.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent=new Intent(VideoDetailActivity.this,PlayActivity.class);
+                intent.putParcelableArrayListExtra(Constants.VIDEO_OBJ_LIST, (ArrayList<? extends Parcelable>) movieItemAdapter.getmList());
+                intent.putExtra(Constants.VIDEO_OBJ_POS,position);
+                startActivity(intent);
+            }
+        },200);
+
 
     }
 }
