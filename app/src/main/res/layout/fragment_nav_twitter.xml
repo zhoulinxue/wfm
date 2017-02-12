@@ -44,5 +44,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
+        android:visibility="gone"
         android:src="@mipmap/ic_done" />
 </android.support.design.widget.CoordinatorLayout>

@@ -9,5 +9,5 @@ import com.avos.avoscloud.AVObject;
  *  
  */
 public interface ObjectToAVObject {
-    public AVObject toAVObject();
+    public Object toAVObject();
 }

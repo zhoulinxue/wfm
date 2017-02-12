@@ -16,15 +16,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.DownloadListener;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
@@ -35,34 +33,22 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aspsine.fragmentnavigator.FragmentNavigator;
-import com.aspsine.fragmentnavigator.FragmentNavigatorAdapter;
 import com.gongwen.marqueen.MarqueeFactory;
 import com.gongwen.marqueen.MarqueeView;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
-import com.zx.wfm.MainFragmentAdapter;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Moviebean;
-import com.zx.wfm.bean.TrafficInfo;
 import com.zx.wfm.factory.NoticeMF;
 import com.zx.wfm.factory.VerticalMF;
 import com.zx.wfm.ui.adapters.BaseRecycleViewAdapter;
 import com.zx.wfm.ui.adapters.MovieItemAdapter;
-import com.zx.wfm.ui.fragment.BaseToolbarFragment;
-import com.zx.wfm.ui.fragment.NavGoogleFragment;
-import com.zx.wfm.ui.fragment.NavJDFragment;
-import com.zx.wfm.ui.fragment.NavJavaCodeFragment;
-import com.zx.wfm.ui.fragment.NavTwitterFragment;
-import com.zx.wfm.ui.fragment.NavYalantisFragment;
-import com.zx.wfm.ui.fragment.WebFragment;
-import com.zx.wfm.ui.view.RecycleViewDivider;
+import com.zx.wfm.ui.view.ItemDecoration;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.DialogUtils;
 import com.zx.wfm.utils.ToastUtil;
@@ -72,7 +58,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -114,7 +99,6 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	@InjectView(R.id.swipe_target)
 	RecyclerView mRecyclerView;
 	MovieItemAdapter movieItemAdapter;
-	private int COLUMN=8;
 	private  boolean isOpen=false;
 	@InjectView(R.id.video_name_tv)
 	protected  TextView videoName;
@@ -190,7 +174,7 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	@SuppressLint("JavascriptInterface")
 	private void initWeb() {
 		initFloatbtn();
-		beans= (List<Moviebean>) getIntent().getSerializableExtra(Constants.VIDEO_OBJ_LIST);
+		beans= getIntent().getParcelableArrayListExtra(Constants.VIDEO_OBJ_LIST);
 		 int pos=getIntent().getIntExtra(Constants.VIDEO_OBJ_POS,0);
 
 		if(beans==null||beans.size()==0){
@@ -199,10 +183,8 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 
 		movieItemAdapter=new MovieItemAdapter(this,beans,R.layout.video_num_item_layout);
 		movieItemAdapter.setCurrentPosition(pos);
-		movieItemAdapter.setColumnNum(COLUMN);
-		mRecyclerView.setLayoutManager(new GridLayoutManager(this, COLUMN));
-		mRecyclerView.addItemDecoration(new RecycleViewDivider(
-				this, LinearLayoutManager.VERTICAL, 2, getResources().getColor(R.color.white)));
+		mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+		mRecyclerView.addItemDecoration(new ItemDecoration());
 		mRecyclerView.setAdapter(movieItemAdapter);
 		movieItemAdapter.setOnItemClickListener(this);
 		home=beans.get(pos).getItemUrl();
@@ -265,47 +247,127 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 		fabIconNew.setImageResource(R.mipmap.ic_action_new_light);
 		final FloatingActionButton rightLowerButton = new FloatingActionButton.Builder(this)
 				.setContentView(fabIconNew)
+				.setLayoutParams(new FloatingActionButton.LayoutParams(150,150))
 				.build();
 
 		SubActionButton.Builder rLSubBuilder = new SubActionButton.Builder(this).setLayoutParams(new FrameLayout.LayoutParams(100,100));
 		ImageView rlIcon1 = new ImageView(this);
 		ImageView rlIcon2 = new ImageView(this);
 		ImageView rlIcon3 = new ImageView(this);
+		ImageView rlIcon4 = new ImageView(this);
+		ImageView rlIcon5 = new ImageView(this);
 
-		rlIcon1.setImageDrawable(getResources().getDrawable(R.mipmap.next));
-		rlIcon2.setImageDrawable(getResources().getDrawable(R.mipmap.icon_yuan));
-		rlIcon3.setImageDrawable(getResources().getDrawable(R.mipmap.pause));
+		rlIcon1.setBackgroundResource(R.mipmap.next);
+		rlIcon2.setBackgroundResource(R.mipmap.icon_yuan);
+		rlIcon3.setBackgroundResource(R.mipmap.pause);
+		rlIcon4.setBackgroundResource(R.mipmap.last);
+		rlIcon5.setBackgroundResource(R.mipmap.right);
 
+	SubActionButton	nextImg=rLSubBuilder.setContentView(rlIcon1).build();
+		SubActionButton	refreshimg=rLSubBuilder.setContentView(rlIcon2).build();
+		SubActionButton pauseImg=rLSubBuilder.setContentView(rlIcon3).build();
+		SubActionButton lastImg=rLSubBuilder.setContentView(rlIcon4).build();
+		SubActionButton rightImg=rLSubBuilder.setContentView(rlIcon5).build();
 		// Build the menu with default options: light theme, 90 degrees, 72dp radius.
 		// Set 4 default SubActionButtons
 		final FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
-				.addSubActionView(rLSubBuilder.setContentView(rlIcon1).build())
-				.addSubActionView(rLSubBuilder.setContentView(rlIcon2).build())
-				.addSubActionView(rLSubBuilder.setContentView(rlIcon3).build())
+				.addSubActionView(nextImg)
+				.addSubActionView(refreshimg)
+//				.addSubActionView(pauseImg)
+				.addSubActionView(lastImg)
+				.addSubActionView(rightImg)
 				.attachTo(rightLowerButton)
 				.build();
+		rightImg.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(!isOpen) {
+					mDrawerLayout.openDrawer(GravityCompat.START);
+					v.setRotation(0);
+					PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 180);
+					ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(v, pvhR);
+					animation.setDuration(100);
+					animation.start();
+				}else {
+					mDrawerLayout.closeDrawers();
+					v.setRotation(180);
+					PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION,0);
+					ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(v, pvhR);
+					animation.setDuration(100);
+					animation.start();
+				}
+			}
+		});
+		nextImg.setOnClickListener(new ActionClickListenr() {
+
+			@Override
+			public void myClick(View v) {
+				rightLowerMenu.close(true);
+				if(movieItemAdapter!=null&&movieItemAdapter.getmList().size()!=0){
+					if(movieItemAdapter.getCurrentPosition()<movieItemAdapter.getmList().size())
+						OnItemClickListener(v,movieItemAdapter.getCurrentPosition()+1);
+					else {
+						ToastUtil.showToastShort(PlayActivity.this,"没有下一集了");
+					}
+				}
+			}
+		});
+		lastImg.setOnClickListener(new ActionClickListenr() {
+			@Override
+			public void myClick(View v) {
+				rightLowerMenu.close(true);
+				if(movieItemAdapter!=null&&movieItemAdapter.getmList().size()!=0){
+					if(movieItemAdapter.getCurrentPosition()>0)
+						OnItemClickListener(v,movieItemAdapter.getCurrentPosition()-1);
+					else {
+						ToastUtil.showToastShort(PlayActivity.this,"已经是第一集了");
+					}
+				}
+			}
+		} );
+		refreshimg.setOnClickListener(new ActionClickListenr() {
+			@Override
+			public void myClick(View v) {
+				rightLowerMenu.close(true);
+				if(mDialog!=null){
+					mDialog.show();
+				}
+			}
+		});
+		pauseImg.setOnClickListener(new ActionClickListenr() {
+
+
+			@Override
+			public void myClick(View v) {
+				rightLowerMenu.close(true);
+				if(webview!=null){
+					webview.onPause();
+				}
+			}
+		});
 
 		// Listen menu open and close events to animate the button content view
 		rightLowerMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
 			@Override
 			public void onMenuOpened(FloatingActionMenu menu) {
 				// Rotate the icon of rightLowerButton 45 degrees clockwise
-				fabIconNew.setRotation(0);
-				PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45);
-				ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
-				animation.start();
+//				fabIconNew.setRotation(0);
+//				PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45);
+//				ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
+//				animation.start();
 
 			}
 
 			@Override
 			public void onMenuClosed(FloatingActionMenu menu) {
 				// Rotate the icon of rightLowerButton 45 degrees counter-clockwise
-				fabIconNew.setRotation(45);
-				PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0);
-				ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
-				animation.start();
+//				fabIconNew.setRotation(45);
+//				PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0);
+//				ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
+//				animation.start();
 
 			}
+
 		});
 
 	}
@@ -335,7 +397,6 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 				mHandler.postDelayed(new Runnable() {
 					@Override
 					public void run() {
-
 						webview.loadUrl(url);
 //						webview.loadData(url,"text/html","utf-8");
 					}
@@ -346,6 +407,7 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 
 	@Override
 	public void OnItemClickListener(View view, int position) {
+		movieItemAdapter.setCurrentPosition(position);
 		mDrawerLayout.closeDrawers();
 		home=beans.get(position).getItemUrl();
 		if(mDialog!=null) {
@@ -578,6 +640,16 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 					ToastUtil.showToastLong(this, "再次点击退出播放");
 				}
 			}
+	}
+	public abstract class ActionClickListenr implements View.OnClickListener {
+		@Override
+		public void onClick(View v) {
+			if(isOpen){
+				mDrawerLayout.closeDrawers();
+			}
+			myClick(v);
+		}
+		public abstract void myClick(View v);
 	}
 
 }

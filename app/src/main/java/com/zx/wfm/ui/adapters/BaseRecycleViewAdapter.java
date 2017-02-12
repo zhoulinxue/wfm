@@ -141,6 +141,7 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
 
     public void setColumnNum(int columnNum) {
         this.columnNum = columnNum;
+        notifyDataSetChanged();
     }
 }
 

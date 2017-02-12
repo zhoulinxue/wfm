@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
@@ -235,9 +236,12 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
 
     @Override
     public void OnItemClickListener(View view, int position) {
-        Televisionbean bean=DBManager.getInstance().getTelevisionById(movieAdapter.getmList().get(position).getTelevisionId());
+        Log.i("item",movieAdapter.getmList().get(position).toString());
+        Televisionbean bean=movieAdapter.getmList().get(position);
         Intent intent=new Intent(getActivity(),VideoDetailActivity.class);
-        intent.putExtra(Constants.VIDEO_OBJ,(Serializable) bean);
+        Bundle bundle=new Bundle();
+        bundle.putParcelable(Constants.VIDEO_OBJ,movieAdapter.getmList().get(position));
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

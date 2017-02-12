@@ -1,6 +1,7 @@
 package com.zx.wfm.ui.adapters;
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.zx.wfm.R;
@@ -23,6 +24,8 @@ public class MovieItemAdapter extends BaseRecycleViewAdapter<Moviebean> {
 
     @Override
     public void convert(RecyclerViewHolder holder, Moviebean data, int position) {
+        Log.i("数据",position+"!!"+data.toString());
+        holder.setText(R.id.video_num_tv, (position +1) +"集");
         if(position==getCurrentPosition()){
             if(position==0) {
                 holder.itemView.setBackgroundResource(R.drawable.shape_bottom_start_radus_now);
@@ -59,9 +62,14 @@ public class MovieItemAdapter extends BaseRecycleViewAdapter<Moviebean> {
                 holder.itemView.setBackgroundResource(R.drawable.shape_four_radus_nomal);
             }
         }
-            holder.findView(R.id.video_num_tv).setLayoutParams(
-                    new LinearLayout.LayoutParams(PhoneUtils.getScreenWidth((Activity) mContext) / columnNum,
-                            PhoneUtils.getScreenWidth((Activity) mContext) / columnNum));
-            holder.setText(R.id.video_num_tv, (position +1) +"集");
+//           holder.itemView.setLayoutParams(
+//                    new LinearLayout.LayoutParams(PhoneUtils.getScreenWidth((Activity) mContext) / columnNum,
+//                            PhoneUtils.getScreenWidth((Activity) mContext) / columnNum));
+
+    }
+
+    public String getNextUrl() {
+        setCurrentPosition(getCurrentPosition()+1);
+        return mList.get(getCurrentPosition()).getItemUrl();
     }
 }

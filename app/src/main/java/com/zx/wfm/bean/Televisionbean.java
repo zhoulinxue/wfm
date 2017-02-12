@@ -1,8 +1,16 @@
 package com.zx.wfm.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.text.TextUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.avos.avoscloud.AVClassName;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVUser;
 import com.zx.wfm.dao.DaoSession;
 import de.greenrobot.dao.DaoException;
 
@@ -212,20 +220,12 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
     }
 
     // KEEP METHODS - put your custom methods here
-    public void setMoviebeans(List<Moviebean> moviebeans) {
-        this.moviebeans = moviebeans;
-    }
+    //此处为我们的默认实现，当然你也可以自行实现
 
-    public List<Moviebean> childrens(){
-        return moviebeans;
-    }
 
     @Override
-    public boolean equals(Object o) {
-        if(o!=null){
-           return getAddressUrl().equals(((Televisionbean) o).getAddressUrl());
-        }
-        return super.equals(o);
+    public int describeContents() {
+        return 0;
     }
 
     @Override
@@ -247,13 +247,106 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
                 ", movieCourseList=" + movieCourseList +
                 '}';
     }
+
+    @Override
+    public void writeToParcel(Parcel out, int i) {
+        out.writeString(objectId);
+        out.writeString(TelevisionId);
+        out.writeString(addressUrl);
+        out.writeString(desc);
+        out.writeString(videoName);
+        out.writeString(headUrl);
+        out.writeString(rating);
+        out.writeString(from);
+        out.writeLong(time);
+        out.writeString(netPage);
+
+//        private String objectId;
+//        private String TelevisionId;
+//        private String addressUrl;
+//        private String desc;
+//        private String videoName;
+//        private String headUrl;
+//        private String rating;
+//        private String from;
+//        private Long time;
+//        private String netPage;
+    }
+    private Televisionbean(Parcel in)
+    {
+        objectId = in.readString();
+        TelevisionId=in.readString();
+        addressUrl=in.readString();
+        desc=in.readString();
+        videoName=in.readString();
+        headUrl=in.readString();
+        rating=in.readString();
+        from=in.readString();
+        time=in.readLong();
+        netPage=in.readString();
+    }
+
+    public static final Creator CREATOR = new Creator<Televisionbean>() {
+        @Override
+        public Televisionbean createFromParcel(Parcel source) {
+            return new Televisionbean(source);
+        }
+
+        @Override
+        public Televisionbean[] newArray(int size) {
+            return new Televisionbean[0];
+        }
+    };
+
+    public void setMoviebeans(List<Moviebean> moviebeans) {
+        this.moviebeans = moviebeans;
+    }
+
+    public List<Moviebean> childrens(){
+        return moviebeans;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if(o!=null){
+           return getAddressUrl().equals(((Televisionbean) o).getAddressUrl());
+        }
+        return super.equals(o);
+    }
+
+
+    @Override
+    protected List<String> getField() {
+        return Arrays.asList("objectId","netPage","time","from","rating","headUrl","videoName","desc","addressUrl","TelevisionId");
+    }
     public String getObjectId() {
+        if(!TextUtils.isEmpty(objectId)){
+            return objectId;
+        }
         return super.getObjectId();
     }
 
     public void setObjectId(String objectId) {
+        this.objectId=objectId;
         super.setObjectId(objectId);
     }
+    public Televisionbean toself(){
+        Televisionbean bean=new Televisionbean();
+        bean.setObjectId(getObjectId());
+        bean.setFrom(AVUser.getCurrentUser().getObjectId());
+        bean.setTelevisionId(getTelevisionId());
+        bean.setTime(getTime());
+        bean.setAddressUrl(getAddressUrl());
+        bean.setDesc(getDesc());
+        bean.setHeadUrl(getHeadUrl());
+        bean.setNetPage(getNetPage());
+        bean.setRating(getRating());
+        bean.setVideoName(getVideoName());
+        return bean;
+    }
+
+
     // KEEP METHODS END
 // KEEP METHODS END
 

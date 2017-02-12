@@ -184,6 +184,9 @@ public class DBManager {
     }
 
     public List<Moviebean> getMovieListByTeleId(String televisionId) {
+        if(TextUtils.isEmpty(televisionId)){
+            return null;
+        }
      return    moviebeanDao.queryBuilder().where(MoviebeanDao.Properties.TelevisionId.eq(televisionId)).list();
     }
 

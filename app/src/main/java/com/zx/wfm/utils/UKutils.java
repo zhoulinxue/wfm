@@ -47,7 +47,7 @@ public class UKutils {
         final List<Televisionbean> list=new ArrayList<>();
 
         if (doc == null) {
-            Log.e("Jsoup", "doc==null");
+            Log.e("Jsoup", "dot==null");
             return null;
         }
         Elements divs_info = doc.getElementsByClass("p_link");// 视频专辑url，如电视剧
@@ -158,14 +158,13 @@ public class UKutils {
      * @param vbean
      * @return
      */
-    private static List<Moviebean> getVideoList(Televisionbean vbean) {
+    public static List<Moviebean> getVideoList(Televisionbean vbean) {
         Document doc = getDoc(vbean.getAddressUrl());
         if(doc==null){
             return null;
         }
         List<Moviebean> list=new ArrayList<>();
         Elements link_info = doc.getElementsByClass("linkpanel");
-
         if(link_info!=null&&link_info.size()!=0){
             Elements urls = link_info.get(0).select("a[href]");
             for(Element e:urls) {
@@ -217,7 +216,8 @@ public class UKutils {
      * @return
      */
     public static Document getDoc(String url) {
-        Log.d(TAG,url);
+        Log.d(TAG,url+"");
+
         try {
            return Jsoup.connect(url).timeout(6000).get();
             // Added a maximum body response size to Jsoup.Connection, to

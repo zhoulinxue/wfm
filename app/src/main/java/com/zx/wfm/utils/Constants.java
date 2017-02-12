@@ -17,6 +17,8 @@ public class Constants {
     public static String PAGE_NUM="page_num";
     public static String NET_PAGE_NUM="net_page_num";
     public static String VIDEO_OBJ_POS="video_postion";
+    public static String PAGE_URL="detail_url";
+    public static String OBJ_ID="object_id";
 
     public static class Request_Code{
         public static  final  int RC_SETTINGS_SCREEN=1000;
@@ -32,9 +34,6 @@ public class Constants {
         public static String VARIETY_URL="http://www.soku.com/channel/varietylist_0_0_0_1_1.html";
         // 动漫
         public static String CARTOON_URL="http://www.soku.com/channel/animelist_0_0_0_1_1.html";
-
-
-
         public static String HIML=".html";
     }
 }

@@ -23,6 +23,7 @@ import com.tencent.bugly.beta.Beta;
 import com.zx.wfm.MainActivity;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.AVErrorbean;
+import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.bean.Televisionbean;
 import com.zx.wfm.bean.Userbean;
 import com.zx.wfm.dao.DBManager;
@@ -116,6 +117,8 @@ public class InitActivity extends Activity{
             }
         });
         animateView(suitv);
+        AVObject.registerSubclass(Televisionbean.class);
+        AVObject.registerSubclass(Moviebean.class);
         AVOSCloud.initialize(InitActivity.this,"2zBSbem5VbsxPa1dou5nH8EQ-gzGzoHsz","ra2GN4GM8uypJQ8khu7H2wqg");
         AVOSCloud.setDebugLogEnabled(true);
     }

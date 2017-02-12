@@ -54,26 +54,27 @@ public class BaseFragment extends Fragment {
     protected void postToServer(final List<Televisionbean> list) {
 //      final List<Televisionbean> list=  DBManager.getInstance().findLocalTelevision();
         Log.i("未上传数据",(list==null)+"");
-        List<AVObject> objList=null;
+        List<Televisionbean> objList=null;
         if(list!=null&&list.size()!=0){
         objList=new ArrayList<>();
         }else {
             return;
         }
         for(Televisionbean bean:list){
-            objList.add(bean.toAVObject());
+            objList.add((Televisionbean) bean.toself().toAVObject());
+            Log.i("未上传数据",((Televisionbean) bean.toself().toAVObject()).toString());
         }
         if(list!=null&&list.size()!=0) {
-            Log.i("未上传数据",list.size()+"");
+            final List<Televisionbean> finalObjList = objList;
             AVObject.saveAllInBackground(objList, new SaveCallback() {
                 @Override
                 public void done(AVException e) {
-                    e.printStackTrace();
                     if (e != null) {
+                        e.printStackTrace();
                         Log.e("保存数据", e.getMessage());
                     } else {
                         Log.e("保存数据", "成功");
-                        DBManager.getInstance().saveTelevisions(list);
+                        DBManager.getInstance().saveTelevisions(finalObjList);
                     }
                 }
             });

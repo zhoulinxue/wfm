@@ -1,9 +1,11 @@
 package com.zx.wfm.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by 周学 on 2016/12/31.
  */
-public class News extends Basebean{
+public class News implements Serializable{
     private String title;
     private String date;
 

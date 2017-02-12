@@ -1,5 +1,8 @@
 package com.zx.wfm.bean;
 
+import android.annotation.SuppressLint;
+import android.os.Parcel;
+
 import java.util.List;
 
 import com.avos.avoscloud.AVClassName;
@@ -66,6 +69,9 @@ public class BaseUser extends com.zx.wfm.bean.Basebean  implements java.io.Seria
         this.rechargeTime = rechargeTime;
         this.cardId = cardId;
     }
+
+
+
 
     /** called by internal mechanisms, do not call yourself. */
     public void __setDaoSession(DaoSession daoSession) {
@@ -233,6 +239,36 @@ public class BaseUser extends com.zx.wfm.bean.Basebean  implements java.io.Seria
     }
 
     // KEEP METHODS - put your custom methods here
+    public static final Creator CREATOR = new Creator<BaseUser>() {
+        @Override
+        public BaseUser createFromParcel(Parcel source) {
+            return new BaseUser(source);
+        }
+
+        @Override
+        public BaseUser[] newArray(int size) {
+            return new BaseUser[0];
+        }
+    };
+
+    public BaseUser(Parcel source) {
+        super(source);
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int i) {
+        out.writeString(objectId);
+        out.writeString(uid);
+        out.writeString( sex);
+        out.writeLong( age);
+        out.writeString( headUrl);
+        out.writeString(nickName);
+        out.writeString( deviceId);
+        out.writeString( userType);
+       out.writeByte(((byte)(isVip?1:0)));
+        out.writeString( rechargeTime);
+       out.writeLong( cardId);
+    }
     // KEEP METHODS END
 
 }
