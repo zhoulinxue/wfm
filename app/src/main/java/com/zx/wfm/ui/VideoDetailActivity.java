@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -133,9 +134,15 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void OnItemClickListener(View view, final int position) {
         movieItemAdapter.setCurrentPosition(position);
+        final ProgressBar bar= (ProgressBar) view.findViewById(R.id.progressbar);
+        final  TextView tv= (TextView) view.findViewById(R.id.video_num_tv);
+        tv.setVisibility(View.GONE);
+        bar.setVisibility(View.VISIBLE);
         ThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                bar.setVisibility(View.GONE);
+                tv.setVisibility(View.VISIBLE);
                 Intent intent=new Intent(VideoDetailActivity.this,PlayActivity.class);
                 intent.putParcelableArrayListExtra(Constants.VIDEO_OBJ_LIST, (ArrayList<? extends Parcelable>) movieItemAdapter.getmList());
                 intent.putExtra(Constants.VIDEO_OBJ_POS,position);

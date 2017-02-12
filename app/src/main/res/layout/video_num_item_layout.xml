@@ -4,6 +4,17 @@
     android:layout_height="wrap_content"
     android:background="@drawable/touchable_background_white"
     android:padding="3dp">
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ProgressBar
+            android:id="@+id/progressbar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            style="?android:attr/progressBarStyleSmall"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            />
     <TextView
         android:id="@+id/video_num_tv"
         android:layout_width="80dp"
@@ -12,5 +23,6 @@
         android:textSize="20dp"
         android:gravity="center"
         android:textColor="@color/white"/>
+    </FrameLayout>
 
 </LinearLayout>

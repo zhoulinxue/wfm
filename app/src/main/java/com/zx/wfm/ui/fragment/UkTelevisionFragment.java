@@ -159,25 +159,26 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         final String urlpage=UKutils.getNextPageUrl(currentlist.get(currentlist.size()-1).getNetPage());
         final List<Televisionbean> list=DBManager.getInstance().getTelevisionList(urlpage);
         if(list==null||list.size()==0){
-            ThreadUtil.runOnNewThread(new Runnable() {
-                @Override
-                public void run() {
-                    List<Televisionbean> newlist=UKutils.getVideoInfo(urlpage, new FindCallback<Televisionbean>() {
-                        @Override
-                        public void done(List<Televisionbean> list, AVException e) {
-                            for(Televisionbean televisionbean:list){
-                                Log.i("服务器",televisionbean.toString());
-                            }
-                            loadMoreCompelete();
-                            DBManager.getInstance().saveTelevisions(list);
-                            movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
-                        }
-                    });
-                    loadMoreCompelete();
-                    DBManager.getInstance().saveTelevisions(newlist);
-                    movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
-                }
-            });
+//            ThreadUtil.runOnNewThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    List<Televisionbean> newlist=UKutils.getVideoInfo(urlpage, new FindCallback<Televisionbean>() {
+//                        @Override
+//                        public void done(List<Televisionbean> list, AVException e) {
+//                            for(Televisionbean televisionbean:list){
+//                                Log.i("服务器",televisionbean.toString());
+//                            }
+//                            loadMoreCompelete();
+//                            DBManager.getInstance().saveTelevisions(list);
+//                            movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
+//                        }
+//                    });
+//                    loadMoreCompelete();
+//                    DBManager.getInstance().saveTelevisions(newlist);
+//                    movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
+//                }
+//            });
+            getDataFromNet(urlpage);
         }else {
             loadMoreCompelete();
             movieAdapter.addAll(list);
@@ -187,33 +188,50 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
     public void onRefresh() {
             page = 0;
             if (NetWorkUtils.isNetworkConnected(getActivity())) {
-                getDataFromNet();
+                getDataFromNet(Constants.Net.TELEVISION_URL);
             } else {
                 refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
             }
 
     }
-    private void   getDataFromNet(){
+    private void   getDataFromNet(final String url){
+        AVQuery<Televisionbean> query = AVObject.getQuery(Televisionbean.class);
+        query.whereEqualTo("netPage", url);
+        query.findInBackground(new FindCallback<Televisionbean>() {
+            @Override
+            public void done(List<Televisionbean> results, AVException e) {
+                Log.i("从野狗获取数据",(results==null)+""+results.size());
+                if(results!=null&&results.size()!=0) {
+                    DBManager.getInstance().saveTelevisions(results);
+                    movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL));
+                    refreshCompelete(swipeToLoadLayout,null);
+                }else {
+                    getDataFromYK(url);
+                }
+            }
+        });
+
+    }
+
+    private void getDataFromYK( final  String televisionUrl) {
         ThreadUtil.runOnNewThread( new Runnable() {
             @Override
             public void run() {
                 try {
-                    List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.TELEVISION_URL, new FindCallback<Televisionbean>() {
+                    List<Televisionbean> list=UKutils.getVideoInfo(televisionUrl, new FindCallback<Televisionbean>() {
                         @Override
                         public void done(List<Televisionbean> list, AVException e) {
                             DBManager.getInstance().saveTelevisions(list);
                             if(movieAdapter.getItemCount()==0) {
-                                movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL));
+                                movieAdapter.addAll(DBManager.getInstance().getTelevisionList(televisionUrl));
                             }
                         }
                     });
                     DBManager.getInstance().saveTelevisions(list);
-                    if(movieAdapter.getItemCount()==0) {
-                        movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL));
-                    }
+                    movieAdapter.addAll(DBManager.getInstance().getTelevisionList(televisionUrl));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
+                    refreshCompelete(swipeToLoadLayout,null);
                 }
                 refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
             }

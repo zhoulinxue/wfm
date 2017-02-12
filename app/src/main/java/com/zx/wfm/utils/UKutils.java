@@ -37,12 +37,6 @@ public class UKutils {
      * @return
      */
     public static List<Televisionbean> getVideoInfo(String pageUrl,FindCallback<Televisionbean> callback) {// 一页调用一次
-//        if(!"A0000044F8E372".equals(PhoneUtils.getImeiInfo(App.wfmApplication.getApplicationContext()))) {
-//            AVQuery<Televisionbean> query =new AVQuery<>("Televisionbean");
-//            query.whereEqualTo("netPage", pageUrl);
-//            query.findInBackground(callback);
-//            return null;
-//        }
         Document doc =getDoc(pageUrl);
         final List<Televisionbean> list=new ArrayList<>();
 

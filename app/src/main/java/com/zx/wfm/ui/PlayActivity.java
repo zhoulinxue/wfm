@@ -105,6 +105,7 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	@InjectView(R.id.video_items)
 	TextView itemsTv;
 	private PopupWindow mPopupWindow;
+	 FloatingActionMenu rightLowerMenu;
 
 
 	@SuppressLint("JavascriptInterface")
@@ -270,7 +271,7 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 		SubActionButton rightImg=rLSubBuilder.setContentView(rlIcon5).build();
 		// Build the menu with default options: light theme, 90 degrees, 72dp radius.
 		// Set 4 default SubActionButtons
-		final FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
+		rightLowerMenu = new FloatingActionMenu.Builder(this)
 				.addSubActionView(nextImg)
 				.addSubActionView(refreshimg)
 //				.addSubActionView(pauseImg)
@@ -302,36 +303,52 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 
 			@Override
 			public void myClick(View v) {
-				rightLowerMenu.close(true);
-				if(movieItemAdapter!=null&&movieItemAdapter.getmList().size()!=0){
-					if(movieItemAdapter.getCurrentPosition()+1<movieItemAdapter.getmList().size())
-						OnItemClickListener(v,movieItemAdapter.getCurrentPosition()+1);
-					else {
-						ToastUtil.showToastShort(PlayActivity.this,"没有下一集了");
+				noticItem("是否加载下一集？", new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						rightLowerMenu.close(true);
+						if(movieItemAdapter!=null&&movieItemAdapter.getmList().size()!=0){
+							if(movieItemAdapter.getCurrentPosition()+1<movieItemAdapter.getmList().size())
+								OnItemClickListener(v,movieItemAdapter.getCurrentPosition()+1);
+							else {
+								ToastUtil.showToastShort(PlayActivity.this,"没有下一集了");
+							}
+						}
 					}
-				}
+				});
 			}
 		});
 		lastImg.setOnClickListener(new ActionClickListenr() {
 			@Override
 			public void myClick(View v) {
-				rightLowerMenu.close(true);
-				if(movieItemAdapter!=null&&movieItemAdapter.getmList().size()!=0){
-					if(movieItemAdapter.getCurrentPosition()>0)
-						OnItemClickListener(v,movieItemAdapter.getCurrentPosition()-1);
-					else {
-						ToastUtil.showToastShort(PlayActivity.this,"已经是第一集了");
+				noticItem("是否加载上一集？", new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						rightLowerMenu.close(true);
+						if(movieItemAdapter!=null&&movieItemAdapter.getmList().size()!=0){
+							if(movieItemAdapter.getCurrentPosition()>0)
+								OnItemClickListener(v,movieItemAdapter.getCurrentPosition()-1);
+							else {
+								ToastUtil.showToastShort(PlayActivity.this,"已经是第一集了");
+							}
+						}
 					}
-				}
+				});
+
 			}
 		} );
 		refreshimg.setOnClickListener(new ActionClickListenr() {
 			@Override
 			public void myClick(View v) {
-				rightLowerMenu.close(true);
-				if(mDialog!=null){
-					mDialog.show();
-				}
+				noticItem("是否刷新？", new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						rightLowerMenu.close(true);
+						if(mDialog!=null){
+							mDialog.show();
+						}
+					}
+				});
 			}
 		});
 		pauseImg.setOnClickListener(new ActionClickListenr() {
@@ -370,6 +387,29 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 
 		});
 
+	}
+	private void noticItem(String notic, final View.OnClickListener click){
+		mPopupWindow=DialogUtils.createPopupWindow(PlayActivity.this, new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				switch (v.getId()){
+					case R.id.certain:
+						click.onClick(v);
+						break;
+					case R.id.cancel:
+						mPopupWindow.dismiss();
+						break;
+				}
+			}
+		}, PlayActivity.this.getWindow().getDecorView(), notic, "取消", "确认");
+		mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+			@Override
+			public void onDismiss() {
+				if(rightLowerMenu!=null) {
+					rightLowerMenu.close(true);
+				}
+			}
+		});
 	}
 
 	Runnable getRealUrl=new Runnable() {
