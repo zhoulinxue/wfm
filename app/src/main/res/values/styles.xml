@@ -16,13 +16,12 @@
         <item name="colorPrimary">@color/style_color_primary</item>
         <item name="colorPrimaryDark">@color/style_color_primary_dark</item>
         <item name="colorAccent">@color/style_color_accent</item>
+        <item name="android:windowBackground">@color/style_color_primary_dark</item>
     </style>
 
     <style name="AppTheme.Base.Widget.Design.NavigationView.Light" parent="Widget.Design.NavigationView">
         <item name="android:background">@color/style_window_background_light</item>
     </style>
-
-    <style name="AppTheme" parent="Base.AppTheme" />
 
     <style name="TextViewStyle">
         <item name="android:layout_width">wrap_content</item>

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="greDao.greDao">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/greDao/build/libs/greDao.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
