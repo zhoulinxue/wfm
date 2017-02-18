@@ -42,8 +42,10 @@ public class NavTwitterFragment extends BaseNavPagerFragment {
 
     @Override
     protected String[] getTitles() {
-        return new String[]{"电视剧","电影","动漫","综艺", "明星",
-                "音乐" };
+        return new String[]{"电视剧","电影","动漫","综艺"
+//                , "明星",
+//                "音乐"
+        };
     }
 
     @Override
