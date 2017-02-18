@@ -61,7 +61,7 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
             ThreadUtil.runOnNewThread(new Runnable() {
                 @Override
                 public void run() {
-                 movieItemAdapter.setmList(UKutils.getVideoList(videobean));
+                    movieItemAdapter.setmList(UKutils.getVideoList(videobean));
                     postToserver();
                 }
             });

@@ -159,7 +159,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         final String urlpage=UKutils.getNextPageUrl(currentlist.get(currentlist.size()-1).getNetPage());
         final List<Televisionbean> list=DBManager.getInstance().getTelevisionList(urlpage);
         if(list==null||list.size()==0){
-            getDataFromNet(urlpage);
+            server.getDataFromNet(urlpage);
         }else {
             loadMoreCompelete();
             movieAdapter.addAll(list);
@@ -169,7 +169,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
     public void onRefresh() {
             page = 0;
             if (NetWorkUtils.isNetworkConnected(getActivity())) {
-                getDataFromNet(Constants.Net.TELEVISION_URL);
+                server.getDataFromNet(Constants.Net.TELEVISION_URL);
             } else {
                 refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
             }
@@ -208,13 +208,13 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
 
     @Override
     public void onParsrUrlCallback(List<Televisionbean> list,String url) {
-        refreshCompelete(swipeToLoadLayout,null);
         DBManager.getInstance().saveTelevisions(list);
         movieAdapter.addAll(DBManager.getInstance().getTelevisionList(url));
+        refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
     }
 
     @Override
-    public void OnParseUrlError(Exception e) {
+    public void onParseUrlError(Exception e) {
         refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
     }
 }

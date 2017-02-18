@@ -158,7 +158,7 @@ public class UkCartoonFragment extends BaseFragment implements OnRefreshListener
 //                    movieAdapter.addAll(DBManager.getInstance().getTelevisionList(urlpage));
 //                }
 //            });
-            getDataFromNet(Constants.Net.CARTOON_URL);
+            server.getDataFromNet(Constants.Net.CARTOON_URL);
         }else {
             loadMoreCompelete(swipeToLoadLayout);
             movieAdapter.addAll(list);
@@ -169,7 +169,7 @@ public class UkCartoonFragment extends BaseFragment implements OnRefreshListener
         Log.i("desc","下啦");
         page=0;
         if(NetWorkUtils.isNetworkConnected(getActivity())){
-            getDataFromNet(Constants.Net.CARTOON_URL);
+            server.getDataFromNet(Constants.Net.CARTOON_URL);
         }else {
             refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
         }
@@ -224,7 +224,7 @@ public class UkCartoonFragment extends BaseFragment implements OnRefreshListener
     }
 
     @Override
-    public void OnParseUrlError(Exception e) {
+    public void onParseUrlError(Exception e) {
         refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
     }
 

@@ -11,8 +11,8 @@ import java.util.List;
  *  
  */
 public interface ParseUrlServer {
-    public void OnGetFromLeadCload(List<Televisionbean> list,String url);
+    public void   OnGetFromLeadCload(List<Televisionbean> list,String url);
     public  void  onParsrUrlCallback(List<Televisionbean> list,String url);
-    public void OnParseUrlError(Exception e);
+    public void   onParseUrlError(Exception e);
 
 }
