@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:android_custom="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:fitsSystemWindows="true"
@@ -120,7 +121,6 @@
             android:textColor="@color/white"
             />
         <TextView
-
             android:id="@+id/sheng_dot"
             android:textSize="30sp"
             android:text="@string/sheng"
@@ -132,4 +132,16 @@
             android:gravity="center"
             />
     </LinearLayout>
+    <com.romainpiel.shimmer.ShimmerTextView
+        android:layout_alignParentBottom="true"
+        android:id="@+id/shimmer_tv"
+        android:text="@string/init_string"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#444"
+        android:gravity="center"
+       android:layout_centerHorizontal="true"
+        android:textSize="16sp"
+        app:reflectionColor="#fff"
+        android:layout_marginBottom="20dp"/>
 </RelativeLayout>

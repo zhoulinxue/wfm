@@ -15,6 +15,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.bean.Televisionbean;
 import com.zx.wfm.dao.DBManager;
 import com.zx.wfm.service.Impl.NetWorkServerImpl;
@@ -124,12 +125,22 @@ public class BaseFragment extends Fragment implements ParseUrlServer {
     }
 
     @Override
-    public void OnGetFromLeadCload(List<Televisionbean> list,String url) {
+    public void OnGetTelevisionFromLeadCload(List<Televisionbean> list, String url) {
 
     }
 
     @Override
-    public void onParsrUrlCallback(List<Televisionbean> list,String url) {
+    public void OnGetMovieFromLeadCload(List<Moviebean> list, String url) {
+
+    }
+
+    @Override
+    public void onParsrTelevisionUrlCallback(List<Televisionbean> list,String url) {
+    }
+
+    @Override
+    public void onParsrMovieUrlCallback(List<Moviebean> list, String url) {
+
     }
 
     @Override

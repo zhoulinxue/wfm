@@ -1,5 +1,6 @@
 package com.zx.wfm.service;
 
+import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.bean.Televisionbean;
 
 import java.util.List;
@@ -11,8 +12,11 @@ import java.util.List;
  *  
  */
 public interface ParseUrlServer {
-    public void   OnGetFromLeadCload(List<Televisionbean> list,String url);
-    public  void  onParsrUrlCallback(List<Televisionbean> list,String url);
+    public void   OnGetTelevisionFromLeadCload(List<Televisionbean> list,String url);
+    public void   OnGetMovieFromLeadCload(List<Moviebean> list, String url);
+    public  void  onParsrTelevisionUrlCallback(List<Televisionbean> list,String url);
+    public  void  onParsrMovieUrlCallback(List<Moviebean> list,String url);
     public void   onParseUrlError(Exception e);
+
 
 }

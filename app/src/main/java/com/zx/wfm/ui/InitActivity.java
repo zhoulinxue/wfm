@@ -18,6 +18,8 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
 import com.avos.avoscloud.SignUpCallback;
 import com.nineoldandroids.animation.Animator;
+import com.romainpiel.shimmer.Shimmer;
+import com.romainpiel.shimmer.ShimmerTextView;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.zx.wfm.MainActivity;
@@ -27,6 +29,8 @@ import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.bean.Televisionbean;
 import com.zx.wfm.bean.Userbean;
 import com.zx.wfm.dao.DBManager;
+import com.zx.wfm.service.Impl.NetWorkServerImpl;
+import com.zx.wfm.service.NetWorkServer;
 import com.zx.wfm.ui.view.RoundProgressBar;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
@@ -42,10 +46,11 @@ import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
  */
 
 public class InitActivity extends Activity{
-    private static final long DURATION_TIME =1500 ;
+    private static final long DURATION_TIME =1250 ;
     private Handler mHandler;
     private  int second=0;
-    private RoundProgressBar bar;
+    @InjectView(R.id.roundProgressBar)
+    protected RoundProgressBar bar;
     boolean isOnPause=false;
     @InjectView(R.id.sui)
     TextView suitv;
@@ -55,19 +60,27 @@ public class InitActivity extends Activity{
     TextView liutv;
     @InjectView(R.id.sheng)
     TextView sheng;
+    @InjectView(R.id.shimmer_tv)
+    ShimmerTextView shimmerTextView;
     private int width;
     private int hight;
     private int index=0;
+    Shimmer shimmer;
+    boolean isDownLoad=false;
+    NetWorkServer service;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.init_layout);
         ButterKnife.inject(this);
         mHandler=new Handler();
-        bar = (RoundProgressBar) findViewById(R.id.roundProgressBar);
         width=PhoneUtils.getScreenWidth(this);
         hight=PhoneUtils.getScreenHight(this);
         mHandler.postDelayed(gotoMainRunable,1000);
+        shimmer = new Shimmer();
+        shimmer.setDuration(3000);
+        shimmer.start(shimmerTextView);
+        service=new NetWorkServerImpl();
         initData();
     }
     Animator.AnimatorListener listener=new Animator.AnimatorListener() {
@@ -121,6 +134,17 @@ public class InitActivity extends Activity{
         AVObject.registerSubclass(Moviebean.class);
         AVOSCloud.initialize(InitActivity.this,"2zBSbem5VbsxPa1dou5nH8EQ-gzGzoHsz","ra2GN4GM8uypJQ8khu7H2wqg");
         AVOSCloud.setDebugLogEnabled(true);
+        DownLoadDataToLocal();
+    }
+
+    private void DownLoadDataToLocal() {
+        ThreadUtil.runOnNewThread(new Runnable() {
+            @Override
+            public void run() {
+                service.getAllMovieDataFromNet();
+                service.getAllTeleVisionDataFromNet();
+            }
+        });
     }
 
     public void logintoServer() {
@@ -190,17 +214,13 @@ public class InitActivity extends Activity{
     Runnable gotoMainRunable=new Runnable() {
         @Override
         public void run() {
-            if(second>=5000) {
+            if(second>=3000) {
                 mHandler.removeCallbacks(null);
                 Intent intent = new Intent(InitActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }else {
-
-                    bar.setProgress(second / 50);
-//                if(second%1000==0) {
-//                    bar.setProgressText(second / 100 + "s");
-//                }
+                    bar.setProgress(second / 30);
                     mHandler.postDelayed(gotoMainRunable, 10);
                 if(!isOnPause) {
                     second += 10;
@@ -208,4 +228,10 @@ public class InitActivity extends Activity{
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        shimmer.cancel();
+    }
 }

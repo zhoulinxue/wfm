@@ -1,6 +1,7 @@
 package com.zx.wfm.bean;
 
 import android.os.Parcel;
+import android.text.TextUtils;
 
 import com.avos.avoscloud.AVClassName;
 import com.zx.wfm.dao.DaoSession;
@@ -255,6 +256,21 @@ public class Moviebean extends com.zx.wfm.bean.Basebean  implements java.io.Seri
                 ", televisionbean=" + televisionbean +
                 ", televisionbean__resolvedKey='" + televisionbean__resolvedKey + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        String self=get("movieId")+"";
+        Moviebean bean= (Moviebean) obj;
+        if(bean==null){
+            return  false;
+        }
+        if(!TextUtils.isEmpty(self)){
+            return self.equals(bean.get("movieId"))||self.equals(bean.getMovieId());
+        }else if(!TextUtils.isEmpty(getMovieId())){
+            return getMovieId().equals(bean.getMovieId())||getMovieId().equals(bean.get("movieId"));
+        }
+        return false;
     }
 
     @Override

@@ -31,5 +31,7 @@
     <string name="yue">月</string>
     <string name="liu">留</string>
     <string name="sheng">声</string>
+    <string name="lorem">lorem</string>
+    <string name="init_string">194093798@qq.com\n code by:zx</string>
 
 </resources>

@@ -20,14 +20,13 @@
         android:theme="@style/Base.AppTheme" >
         <activity android:name=".ui.InitActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/ThemeSplash"
-            >
+            android:theme="@style/ThemeSplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"></action>
                 <category android:name="android.intent.category.LAUNCHER"></category>
             </intent-filter>
-        </activity>
 
+        </activity>
         <activity
             android:name="com.zx.wfm.MainActivity"
             android:label="@string/app_name"
@@ -38,6 +37,7 @@
             android:name=".ui.PlayActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
+            android:theme="@style/ThemeSplash"
             android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
 
@@ -48,8 +48,8 @@
         <activity android:name=".ui.VideoDetailActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.SimpleCoordinatorTheme"
             ></activity>
-
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:theme="@android:style/Theme.Translucent" />

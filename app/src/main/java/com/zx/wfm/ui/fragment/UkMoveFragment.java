@@ -144,7 +144,7 @@ public class UkMoveFragment extends BaseFragment implements OnRefreshListener, O
         final String urlpage=UKutils.getNextPageUrl(currentlist.get(currentlist.size()-1).getNetPage());
         final List<Televisionbean> list=DBManager.getInstance().getTelevisionList(urlpage);
         if(list==null||list.size()==0){
-            server.getDataFromNet(Constants.Net.MOVIE_URL);
+            server.getTeleVisionDataFromNet(Constants.Net.MOVIE_URL);
         }else {
             loadMoreCompelete(swipeToLoadLayout);
             movieAdapter.addAll(list);
@@ -155,7 +155,7 @@ public class UkMoveFragment extends BaseFragment implements OnRefreshListener, O
         Log.i("desc","下啦");
         page=0;
         if(NetWorkUtils.isNetworkConnected(getActivity())){
-            server.getDataFromNet(Constants.Net.MOVIE_URL);
+            server.getTeleVisionDataFromNet(Constants.Net.MOVIE_URL);
         }else {
             refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
         }
@@ -198,13 +198,13 @@ public class UkMoveFragment extends BaseFragment implements OnRefreshListener, O
     }
 
     @Override
-    public void OnGetFromLeadCload(List<Televisionbean> list,String url) {
+    public void OnGetTelevisionFromLeadCload(List<Televisionbean> list,String url) {
         movieAdapter.addAll(DBManager.getInstance().getTelevisionList(url));
         refreshCompelete(swipeToLoadLayout,null);
     }
 
     @Override
-    public void onParsrUrlCallback(List<Televisionbean> list,String url) {
+    public void onParsrTelevisionUrlCallback(List<Televisionbean> list,String url) {
         refreshCompelete(swipeToLoadLayout,null);
         DBManager.getInstance().saveTelevisions(list);
         movieAdapter.addAll(DBManager.getInstance().getTelevisionList(url));

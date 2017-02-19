@@ -12,6 +12,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.zx.wfm.R;
+import com.zx.wfm.bean.Moviebean;
+import com.zx.wfm.bean.Televisionbean;
+import com.zx.wfm.service.Impl.NetWorkServerImpl;
+import com.zx.wfm.service.NetWorkServer;
+import com.zx.wfm.service.ParseUrlServer;
 import com.zx.wfm.utils.Constants;
 
 import java.util.List;
@@ -25,16 +30,18 @@ import pub.devrel.easypermissions.EasyPermissions;
  * Created by ${zhouxue} on 16/10/11 02: 23.
  * QQ:515278502
  */
-public class BaseActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
+public class BaseActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks,ParseUrlServer{
     private String TAG=BaseActivity.class.getSimpleName();
     protected SharedPreferences preferences;
     protected SharedPreferences.Editor editor;
+    protected NetWorkServer server;
 
     @Override
     protected  void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         preferences= PreferenceManager.getDefaultSharedPreferences(this);
         editor=preferences.edit();
+        server=new NetWorkServerImpl(this);
     }
 
     @Override
@@ -91,5 +98,29 @@ public class BaseActivity extends AppCompatActivity implements EasyPermissions.P
             Toast.makeText(this, R.string.returned_from_app_settings_to_activity, Toast.LENGTH_SHORT)
                     .show();
         }
+    }
+
+    @Override
+    public void OnGetTelevisionFromLeadCload(List<Televisionbean> list, String url) {
+
+    }
+    @Override
+    public void OnGetMovieFromLeadCload(List<Moviebean> list, String url) {
+
+    }
+
+    @Override
+    public void onParsrTelevisionUrlCallback(List<Televisionbean> list, String url) {
+
+    }
+
+    @Override
+    public void onParsrMovieUrlCallback(List<Moviebean> list, String url) {
+
+    }
+
+    @Override
+    public void onParseUrlError(Exception e) {
+
     }
 }

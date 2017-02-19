@@ -31,4 +31,5 @@
 
     <!-- jd -->
     <dimen name="refresh_header_height_jd">100dp</dimen>
+    <dimen name="title_size">20sp</dimen>
 </resources>

@@ -3,23 +3,31 @@ package com.zx.wfm.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.bartoszlipinski.recyclerviewheader.RecyclerViewHeader;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.zx.wfm.Application.App;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.bean.Televisionbean;
@@ -38,51 +46,64 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
+import de.hdodenhof.circleimageview.CircleImageView;
+import jp.wasabeef.glide.transformations.BlurTransformation;
 
 
 /**
  * Created by zhouxue on 2016/7/29.
  * Company czl_zva
  */
-public class VideoDetailActivity extends BaseActivity implements View.OnClickListener ,BaseRecycleViewAdapter.OnItemClickListener{
+public class VideoDetailActivity extends BaseActivity implements View.OnClickListener ,BaseRecycleViewAdapter.OnItemClickListener,AppBarLayout.OnOffsetChangedListener{
     @InjectView(R.id.video_numn_recycal)
      RecyclerView mRecyclerView;
+    @InjectView(R.id.main_collapsing)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @InjectView(R.id.head_img)
+    ImageView headimg;
+    @InjectView(R.id.circleImageView_head)
+    CircleImageView circleimageview;
+    @InjectView(R.id.main_appbar)
+    AppBarLayout appBarLayout;
+    @InjectView(R.id.video_desc)
+    TextView descTv;
     MovieItemAdapter movieItemAdapter;
+    @InjectView(R.id.header_layout)
+    LinearLayout headerLayout;
+    @InjectView(R.id.main_toolbar)
+    Toolbar toolbar ;
     private Televisionbean videobean;
+    private int mMaxScrollSize;
+    private static final int PERCENTAGE_TO_ANIMATE_AVATAR = 20;
+    private boolean mIsAvatarShown = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.video_detail_layout);
+        setContentView(R.layout.activity_simple_coordinator);
         Intent intent=getIntent();
         videobean= (Televisionbean) intent.getExtras().getParcelable(Constants.VIDEO_OBJ);
         final List<Moviebean> list= DBManager.getInstance().getMovieListByTeleId(videobean.getTelevisionId());
-        if(list==null){
-            ThreadUtil.runOnNewThread(new Runnable() {
-                @Override
-                public void run() {
-                    movieItemAdapter.setmList(UKutils.getVideoList(videobean));
-                    postToserver();
-                }
-            });
+        if(list==null||list.size()==0){
+            server.getMovieDataFromNet(videobean);
         }
+        appBarLayout.addOnOffsetChangedListener(this);
+        Glide.with(this).load(videobean.getHeadUrl()).bitmapTransform(new BlurTransformation(this, 50)).into(headimg);
+        Glide.with(this).load(videobean.getHeadUrl()).into(circleimageview);
+        descTv.setText(videobean.getDesc());
         movieItemAdapter=new MovieItemAdapter(this,list,R.layout.video_num_item_layout);
         movieItemAdapter.setColumnNum(4);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         mRecyclerView.addItemDecoration(new ItemDecoration());
-        RecyclerViewHeader header = (RecyclerViewHeader) findViewById(R.id.header);
-        ImageView headimg= (ImageView) header.findViewById(R.id.video_header_head_img);
-        headimg.setLayoutParams(new RelativeLayout.LayoutParams(PhoneUtils.getScreenWidth(this)*3/7, ViewGroup.LayoutParams.WRAP_CONTENT));
-        Glide.with(this).load(videobean.getHeadUrl()).into(headimg);
-        TextView name= (TextView) header.findViewById(R.id.video_header_name);
-        name.setText(videobean.getVideoName());
-        TextView desc= (TextView) header.findViewById(R.id.video_desc);
-
-        desc.setText("    "+videobean.getDesc());
-        header.attachTo(mRecyclerView,true);
+        collapsingToolbarLayout.setTitle(videobean.getVideoName());
+        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.style_color_primary_dark));
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         mRecyclerView.setAdapter(movieItemAdapter);
         movieItemAdapter.setOnItemClickListener(this);
-        postToserver();
     }
 
     private void postToserver() {
@@ -151,5 +172,87 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         },200);
 
 
+    }
+
+    @Override
+    public void OnGetMovieFromLeadCload(List<Moviebean> list, String url) {
+        DBManager.getInstance().saveMoveBean(list);
+        movieItemAdapter.setmList(list);
+    }
+
+    @Override
+    public void onParsrMovieUrlCallback(List<Moviebean> list, String url) {
+        DBManager.getInstance().saveMoveBean(list);
+        movieItemAdapter.setmList(list);
+        postToserver();
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        if (mMaxScrollSize == 0) {
+            mMaxScrollSize = appBarLayout.getTotalScrollRange();
+        }
+
+        int percentage = (Math.abs(verticalOffset)) * 100 / mMaxScrollSize;
+
+        if (percentage >= PERCENTAGE_TO_ANIMATE_AVATAR && mIsAvatarShown) {
+            mIsAvatarShown = false;
+            headerLayout.animate().scaleY(0).scaleX(0).setDuration(2000).start();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        if (percentage <= PERCENTAGE_TO_ANIMATE_AVATAR && !mIsAvatarShown) {
+            mIsAvatarShown = true;
+            headerLayout.animate()
+                    .scaleY(1).scaleX(1)
+                    .start();
+        }
     }
 }

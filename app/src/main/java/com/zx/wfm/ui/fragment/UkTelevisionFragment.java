@@ -68,20 +68,17 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         return fragment;
     }
     public UkTelevisionFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        mType = getArguments().getInt("LAYOUT_MANAGER_TYPE", TYPE_LINEAR);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.uk_activity_main,container,false);
-//        ButterKnife.inject(this,view);
         return view;
     }
     @Override
@@ -104,7 +101,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         pageNum=preferences.getInt(Constants.PAGE_NUM,Constants.PAGE_MIN_NUM);
         netPage=preferences.getInt(Constants.NET_PAGE_NUM,0);
         list= DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL);
-        Log.i("下一页", UKutils.getNextPageUrl(Constants.Net.TELEVISION_URL));
+//        Log.i("下一页", UKutils.getNextPageUrl(Constants.Net.TELEVISION_URL));
         movieAdapter=new MovieAdapter(getActivity(),list,R.layout.movie_item);
         movieAdapter.setColumnNum(2);
         movieAdapter.setOnItemClickListener(this);
@@ -159,7 +156,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         final String urlpage=UKutils.getNextPageUrl(currentlist.get(currentlist.size()-1).getNetPage());
         final List<Televisionbean> list=DBManager.getInstance().getTelevisionList(urlpage);
         if(list==null||list.size()==0){
-            server.getDataFromNet(urlpage);
+            server.getTeleVisionDataFromNet(urlpage);
         }else {
             loadMoreCompelete();
             movieAdapter.addAll(list);
@@ -169,7 +166,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
     public void onRefresh() {
             page = 0;
             if (NetWorkUtils.isNetworkConnected(getActivity())) {
-                server.getDataFromNet(Constants.Net.TELEVISION_URL);
+                server.getTeleVisionDataFromNet(Constants.Net.TELEVISION_URL);
             } else {
                 refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
             }
@@ -201,13 +198,13 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
     }
 
     @Override
-    public void OnGetFromLeadCload(List<Televisionbean> list,String url) {
+    public void OnGetTelevisionFromLeadCload(List<Televisionbean> list,String url) {
         movieAdapter.addAll(DBManager.getInstance().getTelevisionList(url));
         refreshCompelete(swipeToLoadLayout,null);
     }
 
     @Override
-    public void onParsrUrlCallback(List<Televisionbean> list,String url) {
+    public void onParsrTelevisionUrlCallback(List<Televisionbean> list,String url) {
         DBManager.getInstance().saveTelevisions(list);
         movieAdapter.addAll(DBManager.getInstance().getTelevisionList(url));
         refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());

@@ -1,5 +1,7 @@
 package com.zx.wfm.service;
 
+import com.zx.wfm.bean.Televisionbean;
+
 /**
  *   作者：周学 on 2017/2/18 19:28
  *   功能：
@@ -7,6 +9,10 @@ package com.zx.wfm.service;
  *  
  */
 public interface NetWorkServer {
-    public void   getDataFromNet(String url);
-    public void   getDataFromYK(String televisionUrl);
+    public void   getAllTeleVisionDataFromNet();
+    public void   getAllMovieDataFromNet();
+    public void   getTeleVisionDataFromNet(String url);
+    public void   getTeleVisionDataFromYK(String televisionUrl);
+    public void   getMovieDataFromNet(Televisionbean url);
+    public void   getMovieDataFromYK(Televisionbean televisionbean);
 }

@@ -308,15 +308,6 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
 
 
     @Override
-    public boolean equals(Object o) {
-        if(o!=null){
-           return getAddressUrl().equals(((Televisionbean) o).getAddressUrl());
-        }
-        return super.equals(o);
-    }
-
-
-    @Override
     protected List<String> getField() {
         return Arrays.asList("objectId","netPage","time","from","rating","headUrl","videoName","desc","addressUrl","TelevisionId");
     }
@@ -325,6 +316,20 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
             return objectId;
         }
         return super.getObjectId();
+    }
+    @Override
+    public boolean equals(Object obj) {
+        String self=get("TelevisionId")+"";
+        Televisionbean bean= (Televisionbean) obj;
+        if(bean==null){
+            return  false;
+        }
+        if(!TextUtils.isEmpty(self)){
+            return self.equals(bean.get("TelevisionId"))||self.equals(bean.getTelevisionId());
+        }else if(!TextUtils.isEmpty(getTelevisionId())){
+            return getTelevisionId().equals(bean.getTelevisionId())||getTelevisionId().equals(bean.get("TelevisionId"));
+        }
+        return false;
     }
 
     public void setObjectId(String objectId) {

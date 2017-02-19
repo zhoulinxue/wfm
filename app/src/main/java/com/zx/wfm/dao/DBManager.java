@@ -180,7 +180,29 @@ public class DBManager {
         if(list==null){
             return;
         }
-        moviebeanDao.insertOrReplaceInTx(list);
+        if(list==null){
+            return;
+        }
+        for(Moviebean bean:list){
+            Moviebean oldbean=findLocalMovieById(bean.getMovieId());
+            if(oldbean==null){
+                moviebeanDao.insertInTx(bean);
+            }else {
+                bean.setObjectId(oldbean.getObjectId());
+                moviebeanDao.update(bean);
+            };
+        }
+    }
+
+    /**
+     * 按 id 查询电影
+     * @param movieId
+     * @return
+     */
+    private Moviebean findLocalMovieById(String movieId) {
+        QueryBuilder<Moviebean> builder=moviebeanDao.queryBuilder();
+        builder.where(MoviebeanDao.Properties.MovieId.eq(movieId));
+        return builder.unique();
     }
 
     public List<Moviebean> getMovieListByTeleId(String televisionId) {

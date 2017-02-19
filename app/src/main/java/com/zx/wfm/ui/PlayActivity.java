@@ -37,6 +37,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.avos.avoscloud.LogUtil;
 import com.gongwen.marqueen.MarqueeFactory;
 import com.gongwen.marqueen.MarqueeView;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
@@ -395,6 +396,7 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 				switch (v.getId()){
 					case R.id.certain:
 						click.onClick(v);
+						mPopupWindow.dismiss();
 						break;
 					case R.id.cancel:
 						mPopupWindow.dismiss();
@@ -415,6 +417,7 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	Runnable getRealUrl=new Runnable() {
 		@Override
 		public void run() {
+			Log.e("播放地址",home);
 			Document doc= UKutils.getDoc(home);
 			if(doc==null){
 				return;
@@ -426,7 +429,6 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 				final Element ele= element.getElementById("link4");
 				String str= ele.attr("value");
 //				final	String url=str.replace("height=498","height="+(PhoneUtils.getScreenHight(WebActivity.this))).replace("width=510","width="+PhoneUtils.getScreenWidth(WebActivity.this));
-
 				int start=str.indexOf("src");
 				int end=str.indexOf("frameborder");
 				final  String url=str.substring(start+5,end-2);

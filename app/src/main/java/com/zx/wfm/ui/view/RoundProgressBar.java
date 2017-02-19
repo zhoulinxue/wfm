@@ -156,7 +156,6 @@ public class RoundProgressBar extends View {
 				break;
 			}
 		}
-
 	}
 
 
@@ -197,7 +196,7 @@ public class RoundProgressBar extends View {
 		}
 		if(progress <= max){
 			this.progress = progress;
-			progressText=(max-progress+20)/20 + "s";
+			progressText=(max-progress+33)/33 + "s";
 			postInvalidate();
 		}
 
