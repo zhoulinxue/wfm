@@ -23,4 +23,18 @@
     <color name="transparent">#00000000</color>
     <color name="edit_text_background_color">#e8e8e8</color>
 
+
+    <color name="init_text_color">#7b7b7b</color>
+    <color name="init_bg_color">#f8f8f8</color>
+    <color name="main_title_text_color">#3b3b3b</color>
+    <color name="main_titile_bar_bg_color">#3b3b3b</color>
+    <color name="main_titile_bar_icon_color">#595959</color>
+    <color name="main_red_dot_color">#f73226</color>
+    <color name="main_name_text_color">#f45f00</color>
+
+    <color name="main_small_text_color">#969696</color>
+
+    <color name="main_content_text_color">#333333</color>
+    <color name="main_content_turn_text_color">#dddddd</color>
+    <color name="main_spcial_color">#fe8c16</color>
 </resources>

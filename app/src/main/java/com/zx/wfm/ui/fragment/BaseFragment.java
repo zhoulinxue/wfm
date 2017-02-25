@@ -121,7 +121,7 @@ public class BaseFragment extends Fragment implements ParseUrlServer {
                     swipeToLoadLayout.setRefreshing(false);
             }
         });
-
+        loadMoreCompelete(swipeToLoadLayout);
     }
 
     @Override

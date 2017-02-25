@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:fitsSystemWindows="true"
     android:layout_height="match_parent"
-    android:background="@color/style_color_primary_dark">
+    android:background="@color/init_bg_color">
     <com.zx.wfm.ui.view.RoundProgressBar
         android:id="@+id/roundProgressBar"
         android:layout_width="40dip"
@@ -16,8 +16,8 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
         android_custom:roundColor="@color/trsnswhite"
-        android_custom:roundProgressColor="@color/style_color_primary_dark"
-        android_custom:textColor="@color/white"
+        android_custom:roundProgressColor="@color/init_text_color"
+        android_custom:textColor="@color/init_text_color"
         android_custom:roundWidth="3dip"
         android_custom:textSize="18sp"
         />
@@ -26,10 +26,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
+        android:layout_marginTop="100dp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
-        android:layout_centerInParent="true"
         >
         <TextView
             android:layout_weight="1"
@@ -40,7 +39,7 @@
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@color/init_text_color"
             />
         <TextView
             android:id="@+id/yue"
@@ -51,7 +50,7 @@
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@color/init_text_color"
             />
         <TextView
             android:id="@+id/liu"
@@ -62,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center|center_vertical"
-            android:textColor="@color/white"
+            android:textColor="@color/init_text_color"
             />
         <TextView
             android:layout_weight="1"
@@ -72,7 +71,7 @@
             android:alpha="0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@color/init_text_color"
             android:gravity="center"
             />
     </LinearLayout>
@@ -80,55 +79,53 @@
         android:visibility="gone"
         android:layout_below="@id/logo_text_layout"
         android:id="@+id/dot_layout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginTop="100dp"
         >
         <TextView
             android:id="@+id/sui_dot"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:text="@string/sui"
             android:gravity="center"
             android:layout_width="10dp"
             android:layout_height="10dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:background="@color/white"
-            android:textColor="@color/white"
+            android:textColor="@color/init_text_color"
             />
         <TextView
             android:id="@+id/yue_dot"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:text="@string/yue"
             android:gravity="center"
             android:layout_width="10dp"
             android:layout_height="10dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:background="@color/white"
-            android:textColor="@color/white"
+            android:textColor="@color/init_text_color"
             />
         <TextView
             android:id="@+id/liu_dot"
             android:text="@string/liu"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:layout_width="10dp"
             android:layout_height="10dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:background="@color/white"
             android:gravity="center|center_vertical"
-            android:textColor="@color/white"
+            android:textColor="@color/init_text_color"
             />
         <TextView
             android:id="@+id/sheng_dot"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:text="@string/sheng"
             android:layout_width="10dp"
             android:layout_height="10dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:background="@color/white"
-            android:textColor="@color/white"
+            android:textColor="@color/init_text_color"
             android:gravity="center"
             />
     </LinearLayout>
@@ -138,10 +135,10 @@
         android:text="@string/init_string"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#444"
+        android:textColor="@color/init_text_color"
         android:gravity="center"
        android:layout_centerHorizontal="true"
-        android:textSize="16sp"
-        app:reflectionColor="#fff"
+        android:textSize="12sp"
+        app:reflectionColor="@color/black"
         android:layout_marginBottom="20dp"/>
 </RelativeLayout>

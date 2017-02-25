@@ -161,34 +161,6 @@ public class UkMoveFragment extends BaseFragment implements OnRefreshListener, O
         }
 
     }
-//    private void   getDataFromNet(){
-//        ThreadUtil.runOnNewThread( new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    List<Televisionbean> list=UKutils.getVideoInfo(Constants.Net.MOVIE_URL, new FindCallback<Televisionbean>() {
-//                        @Override
-//                        public void done(List<Televisionbean> list, AVException e) {
-//                            DBManager.getInstance().saveTelevisions(list);
-//                            if(movieAdapter.getItemCount()==0) {
-//                                movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.MOVIE_URL));
-//                            }
-//                        }
-//                    });
-//                    Log.i("desc",list.size()+"!!");
-//                    DBManager.getInstance().saveTelevisions(list);
-//                    if(movieAdapter.getItemCount()==0) {
-//                        movieAdapter.addAll(DBManager.getInstance().getTelevisionList(Constants.Net.MOVIE_URL));
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
-//                }
-//                refreshCompelete(swipeToLoadLayout,movieAdapter.getmList());
-//            }
-//        });
-//    }
-
     @Override
     public void OnItemClickListener(View view, int position) {
         Televisionbean bean=DBManager.getInstance().getTelevisionById(movieAdapter.getmList().get(position).getTelevisionId());

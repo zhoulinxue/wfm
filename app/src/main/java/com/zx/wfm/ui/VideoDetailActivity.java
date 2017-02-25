@@ -197,7 +197,7 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
 
         if (percentage >= PERCENTAGE_TO_ANIMATE_AVATAR && mIsAvatarShown) {
             mIsAvatarShown = false;
-            headerLayout.animate().scaleY(0).scaleX(0).setDuration(2000).start();
+            headerLayout.animate().scaleY(0).scaleX(0).setDuration(500).start();
         }
 
 

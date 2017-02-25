@@ -36,7 +36,6 @@ public class DialogUtils {
         content.setVisibility(View.GONE);
         certain.setOnClickListener(onClickListener);
         cancel.setOnClickListener(onClickListener);
-
         popupWindow.setFocusable(false);
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.showAtLocation(rootView, Gravity.CENTER, 0, 0);
