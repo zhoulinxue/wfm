@@ -9,6 +9,7 @@
 
     <color name="white">#ffffff</color>
     <color name="trsnswhite">#70ffffff</color>
+    <color name="trsnsblack">#7000</color>
     <color name="black">#000000</color>
     <color name="red">#ff0000</color>
 

@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -50,6 +51,7 @@ import com.zx.wfm.factory.VerticalMF;
 import com.zx.wfm.ui.adapters.BaseRecycleViewAdapter;
 import com.zx.wfm.ui.adapters.MovieItemAdapter;
 import com.zx.wfm.ui.view.ItemDecoration;
+import com.zx.wfm.utils.AnimUtils;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.DialogUtils;
 import com.zx.wfm.utils.ToastUtil;
@@ -76,7 +78,8 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	private Context mContext;
 	private View customView;
 	String home="http://player.youku.com/embed/XMTg4NTkzNDg4";
-
+//	@InjectView(R.id.loading_img)
+	protected ImageView framImg;
 	private Context context;
 	private String[] hostStr;
 	private int index=0;
@@ -86,7 +89,6 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	TextView rightbottomView;
 	@InjectView(R.id.fresh_video)
 	Button refreshbtn;
-
 	@InjectView(R.id.marqueeView)
 	MarqueeView marqueeView;
 	@InjectView(R.id.marqueeView_left)
@@ -107,7 +109,6 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	TextView itemsTv;
 	private PopupWindow mPopupWindow;
 	 FloatingActionMenu rightLowerMenu;
-
 
 	@SuppressLint("JavascriptInterface")
 	@Override
@@ -192,16 +193,36 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 		home=beans.get(pos).getItemUrl();
 		videoName.setText(beans.get(pos).getVideoName());
 		itemsTv.setText("(共"+beans.size()+"集)");
+		final AnimationDrawable drawable= AnimUtils.getFramDrawable(this,new int[]{R.mipmap.loading_1,
+				R.mipmap.loading_2,R.mipmap.loading_3,
+				R.mipmap.loading_4,R.mipmap.loading_5,R.mipmap.loading_6,
+				R.mipmap.loading_7,R.mipmap.loading_8,R.mipmap.loading_9,R.mipmap.loading_10,
+				R.mipmap.loading_11,R.mipmap.loading_12});
+		mDialog = new ProgressDialog(mContext,R.style.CustomProgressDialog);
 
-		mDialog = new ProgressDialog(mContext);
+		mDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				drawable.stop();
+			}
+		});
+
+
 		mDialog.setOnShowListener(new DialogInterface.OnShowListener() {
 			@Override
 			public void onShow(DialogInterface dialog) {
+				if(framImg==null) {
+					mDialog.setContentView(R.layout.loading_layout);
+					framImg = (ImageView) mDialog.findViewById(R.id.loading_img);
+					framImg.setImageDrawable(drawable);
+				}
 				Log.i("index",index+"");
 //					webview.loadUrl(home);
+				 drawable.start();
 				new Thread(getRealUrl).start();
 			}
 		});
+
 		webview.setVerticalScrollBarEnabled(false);
 		webview.setDownloadListener(new WebViewDownLoadListener());
 		webview.setWebViewClient(new WeweWebViewClient());
