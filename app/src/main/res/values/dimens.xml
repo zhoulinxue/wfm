@@ -32,4 +32,5 @@
     <!-- jd -->
     <dimen name="refresh_header_height_jd">100dp</dimen>
     <dimen name="title_size">20sp</dimen>
+    <dimen name="tool_bar_height">56dp</dimen>
 </resources>

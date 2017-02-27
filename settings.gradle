@@ -1,1 +1,1 @@
-include ':app', ':library',':greDao'
+include ':app', ':library', ':greDao', ':contextMenu'

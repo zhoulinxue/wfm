@@ -11,8 +11,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +25,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.JsResult;
@@ -44,6 +47,11 @@ import com.gongwen.marqueen.MarqueeView;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
+import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
+import com.yalantis.contextmenu.lib.MenuObject;
+import com.yalantis.contextmenu.lib.MenuParams;
+import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
+import com.yalantis.contextmenu.lib.interfaces.OnMenuItemLongClickListener;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.factory.NoticeMF;
@@ -61,6 +69,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -68,7 +77,7 @@ import butterknife.InjectView;
 
 import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 
-public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter.OnItemClickListener {
+public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter.OnItemClickListener,OnMenuItemClickListener, OnMenuItemLongClickListener {
     @InjectView(R.id.id_drawerlayout2)
 	protected DrawerLayout mDrawerLayout;
 	private FragmentManager mFragmentMannager;
@@ -109,12 +118,17 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	TextView itemsTv;
 	private PopupWindow mPopupWindow;
 	 FloatingActionMenu rightLowerMenu;
+	private FragmentManager fragmentManager;
+	private ContextMenuDialogFragment mMenuDialogFragment;
+	private boolean isShowMenu=false;
+	List<MenuObject> menuList;
 
 	@SuppressLint("JavascriptInterface")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.play_activity);
+		fragmentManager = getSupportFragmentManager();
 		mContext = this;
 		mFragmentMannager=getSupportFragmentManager();
 		mDrawerLayout.closeDrawers();
@@ -159,7 +173,61 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 			}
 		});
 		initWeb();
+		initMenuFragment();
+	}
+	private void initMenuFragment() {
+		menuList=getMenuObjects();
 
+		MenuParams menuParams = new MenuParams();
+		menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.tool_bar_height));
+		menuParams.setMenuObjects(menuList);
+		menuParams.setClosableOutside(true);
+		mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
+		mMenuDialogFragment.setItemClickListener(this);
+		mMenuDialogFragment.setItemLongClickListener(this);
+	}
+	private List<MenuObject> getMenuObjects() {
+		// You can use any [resource, bitmap, drawable, color] as image:
+		// item.setResource(...)
+		// item.setBitmap(...)
+		// item.setDrawable(...)
+		// item.setColor(...)
+		// You can set image ScaleType:
+		// item.setScaleType(ScaleType.FIT_XY)
+		// You can use any [resource, drawable, color] as background:
+		// item.setBgResource(...)
+		// item.setBgDrawable(...)
+		// item.setBgColor(...)
+		// You can use any [color] as text color:
+		// item.setTextColor(...)
+		// You can set any [color] as divider color:
+		// item.setDividerColor(...)
+
+		List<MenuObject> menuObjects = new ArrayList<>();
+
+		MenuObject close = new MenuObject();
+		close.setResource(R.mipmap.ic_action_new_light);
+
+		MenuObject send = new MenuObject("刷新");
+		send.setResource(R.mipmap.icon_yuan);
+
+		MenuObject like = new MenuObject("下一集");
+		Bitmap b = BitmapFactory.decodeResource(getResources(),R.mipmap.next);
+		like.setBitmap(b);
+
+		MenuObject addFr = new MenuObject("上一集");
+		BitmapDrawable bd = new BitmapDrawable(getResources(),
+				BitmapFactory.decodeResource(getResources(), R.mipmap.last));
+		addFr.setDrawable(bd);
+
+		MenuObject addFav = new MenuObject("选集");
+		addFav.setResource(R.mipmap.right);
+
+		menuObjects.add(like);
+		menuObjects.add(send);
+		menuObjects.add(addFr);
+		menuObjects.add(addFav);
+		return menuObjects;
 	}
 
 	@Override
@@ -176,7 +244,7 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 
 	@SuppressLint("JavascriptInterface")
 	private void initWeb() {
-		initFloatbtn();
+//		initFloatbtn();
 		beans= getIntent().getParcelableArrayListExtra(Constants.VIDEO_OBJ_LIST);
 		 int pos=getIntent().getIntExtra(Constants.VIDEO_OBJ_POS,0);
 
@@ -263,6 +331,15 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 		refreshbtn.bringToFront();
 		mHandler.postDelayed(freshbtnRunable,20*1000);
 		initMaqueeView();
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		if (fragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null&&isShowMenu&&!isOpen) {
+				mMenuDialogFragment.show(fragmentManager, ContextMenuDialogFragment.TAG);
+				return  true;
+		}
+		return super.dispatchTouchEvent(ev);
 	}
 
 	private void initFloatbtn() {
@@ -480,6 +557,79 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 
 	}
 
+	@Override
+	public void onMenuItemClick(View clickedView, int position) {
+		switch (position){
+			case 0:
+				// 刷新
+				noticItem("是否刷新？", new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+						if(mDialog!=null){
+							mDialog.show();
+						}
+					}
+				});
+				break;
+			case 1:
+				//下一集
+				noticItem("是否加载下一集？", new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+						if(movieItemAdapter!=null&&movieItemAdapter.getmList().size()!=0){
+							if(movieItemAdapter.getCurrentPosition()+1<movieItemAdapter.getmList().size())
+								OnItemClickListener(v,movieItemAdapter.getCurrentPosition()+1);
+							else {
+								ToastUtil.showToastShort(PlayActivity.this,"没有下一集了");
+							}
+						}
+					}
+				});
+				break;
+			case 2:
+				// 上一集
+				noticItem("是否加载上一集？", new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+						if(movieItemAdapter!=null&&movieItemAdapter.getmList().size()!=0){
+							if(movieItemAdapter.getCurrentPosition()>0)
+								OnItemClickListener(v,movieItemAdapter.getCurrentPosition()-1);
+							else {
+								ToastUtil.showToastShort(PlayActivity.this,"已经是第一集了");
+							}
+						}
+					}
+				});
+				break;
+			case 3:
+				//选集
+				if(!isOpen) {
+					mDrawerLayout.openDrawer(GravityCompat.START);
+					clickedView.setRotation(0);
+					PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 180);
+					ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(clickedView, pvhR);
+					animation.setDuration(100);
+					animation.start();
+				}else {
+					mDrawerLayout.closeDrawers();
+					clickedView.setRotation(180);
+					PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION,0);
+					ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(clickedView, pvhR);
+					animation.setDuration(100);
+					animation.start();
+				}
+				break;
+		}
+	}
+
+	@Override
+	public void onMenuItemLongClick(View clickedView, int position) {
+
+	}
+
 	private class WebViewDownLoadListener implements DownloadListener {
 
 		@Override
@@ -506,8 +656,10 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 			url = url.toLowerCase();
 			if((index%7==0||index%11==0)&&!url.equals("http://player.youku.com/h5player/img/xplayerv4.png")) {
 				Log.i("广告",index+"  url"+url);
+				isShowMenu=true;
 				return new WebResourceResponse(null, null, null);
 			}
+			isShowMenu=false;
 			return super.shouldInterceptRequest(view, url);
 		}
 
