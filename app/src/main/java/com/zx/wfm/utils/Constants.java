@@ -20,9 +20,11 @@ public class Constants {
     public static String PAGE_URL="detail_url";
     public static String OBJ_ID="object_id";
 
+
     public static class Request_Code{
         public static  final  int RC_SETTINGS_SCREEN=1000;
         public static  final  int RC_CAMERA_AND_WIFI=1001;
+        public static  final  int RC_READ_PHONE_STATE=1002;
     }
 
     public static class Net {
@@ -35,5 +37,14 @@ public class Constants {
         // 动漫
         public static String CARTOON_URL="http://www.soku.com/channel/animelist_0_0_0_1_1.html";
         public static String HIML=".html";
+    }
+
+    public static class Tag {
+        public static String PERMISSIONS="permission_deni";
+        public static String PERMISSIONS_GRAND="permission_grand";
+    }
+
+    public static class User {
+        public static String USER_UUID="user_uuid";
     }
 }

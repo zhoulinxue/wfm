@@ -18,6 +18,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -52,6 +53,7 @@ import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
 import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 import com.yalantis.contextmenu.lib.interfaces.OnMenuItemLongClickListener;
+import com.zx.wfm.MainActivity;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.factory.NoticeMF;
@@ -122,12 +124,20 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	private ContextMenuDialogFragment mMenuDialogFragment;
 	private boolean isShowMenu=false;
 	List<MenuObject> menuList;
+	@InjectView(R.id.title)
+	protected TextView titleTv;
+	@InjectView(R.id.toolbar)
+	protected FrameLayout toobar;
+	@InjectView(R.id.rightTextView)
+	protected ImageView moreImg;
+	private int second=0;
 
 	@SuppressLint("JavascriptInterface")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.play_activity);
+		toobar.getBackground().setAlpha(150);
 		fragmentManager = getSupportFragmentManager();
 		mContext = this;
 		mFragmentMannager=getSupportFragmentManager();
@@ -174,10 +184,38 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 		});
 		initWeb();
 		initMenuFragment();
+		moreImg.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (fragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
+					second=0;
+					mMenuDialogFragment.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+					mMenuDialogFragment.show(fragmentManager, ContextMenuDialogFragment.TAG);
+				}
+			}
+		});
 	}
+
+
+	private boolean isRuning=false;
+	Runnable gotoMainRunable=new Runnable() {
+		@Override
+		public void run() {
+			Log.e("toolbar",second+"");
+			if(second>=30*1000) {
+				isRuning=false;
+				mHandler.removeCallbacks(null);
+				toobar.setAlpha(1f);
+				animate(toobar).setDuration(1000).alpha(0f);
+			}else {
+				isRuning=true;
+				second+=5*1000;
+				mHandler.postDelayed(gotoMainRunable, 5*1000);
+			}
+		}
+	};
 	private void initMenuFragment() {
 		menuList=getMenuObjects();
-
 		MenuParams menuParams = new MenuParams();
 		menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.tool_bar_height));
 		menuParams.setMenuObjects(menuList);
@@ -185,6 +223,7 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 		mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
 		mMenuDialogFragment.setItemClickListener(this);
 		mMenuDialogFragment.setItemLongClickListener(this);
+		mHandler.postDelayed(gotoMainRunable,10);
 	}
 	private List<MenuObject> getMenuObjects() {
 		// You can use any [resource, bitmap, drawable, color] as image:
@@ -208,25 +247,22 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 		MenuObject close = new MenuObject();
 		close.setResource(R.mipmap.ic_action_new_light);
 
-		MenuObject send = new MenuObject("刷新");
-		send.setResource(R.mipmap.icon_yuan);
+		MenuObject next = new MenuObject("下一集");
+		next.setResource(R.mipmap.next);
 
-		MenuObject like = new MenuObject("下一集");
-		Bitmap b = BitmapFactory.decodeResource(getResources(),R.mipmap.next);
-		like.setBitmap(b);
 
-		MenuObject addFr = new MenuObject("上一集");
-		BitmapDrawable bd = new BitmapDrawable(getResources(),
-				BitmapFactory.decodeResource(getResources(), R.mipmap.last));
-		addFr.setDrawable(bd);
+		MenuObject refrsh = new MenuObject("刷新");
+		refrsh.setResource(R.mipmap.icon_yuan);
 
-		MenuObject addFav = new MenuObject("选集");
-		addFav.setResource(R.mipmap.right);
+		MenuObject last = new MenuObject("上一集");
+		last.setResource(R.mipmap.last);
 
-		menuObjects.add(like);
-		menuObjects.add(send);
-		menuObjects.add(addFr);
-		menuObjects.add(addFav);
+		MenuObject right = new MenuObject("选集");
+		right.setResource(R.mipmap.right);
+		menuObjects.add(next);
+		menuObjects.add(refrsh);
+		menuObjects.add(last);
+		menuObjects.add(right);
 		return menuObjects;
 	}
 
@@ -241,7 +277,6 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 		super.onResume();
 		webview.onResume();
 	}
-
 	@SuppressLint("JavascriptInterface")
 	private void initWeb() {
 //		initFloatbtn();
@@ -254,11 +289,17 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 
 		movieItemAdapter=new MovieItemAdapter(this,beans,R.layout.video_num_item_layout);
 		movieItemAdapter.setCurrentPosition(pos);
+
 		mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
 		mRecyclerView.addItemDecoration(new ItemDecoration());
 		mRecyclerView.setAdapter(movieItemAdapter);
 		movieItemAdapter.setOnItemClickListener(this);
 		home=beans.get(pos).getItemUrl();
+		if(beans.size()==1) {
+			titleTv.setText(beans.get(pos).getVideoName());
+		}else {
+			titleTv.setText(beans.get(pos).getVideoName() + "(" + (pos+1) + "集)");
+		}
 		videoName.setText(beans.get(pos).getVideoName());
 		itemsTv.setText("(共"+beans.size()+"集)");
 		final AnimationDrawable drawable= AnimUtils.getFramDrawable(this,new int[]{R.mipmap.loading_1,
@@ -335,9 +376,9 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
-		if (fragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null&&isShowMenu&&!isOpen) {
-				mMenuDialogFragment.show(fragmentManager, ContextMenuDialogFragment.TAG);
-				return  true;
+		if (toobar.getVisibility()==View.GONE&&!isRuning) {
+				toobar.setVisibility(View.VISIBLE);
+			mHandler.postDelayed(gotoMainRunable,10);
 		}
 		return super.dispatchTouchEvent(ev);
 	}
@@ -551,7 +592,12 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 		mDrawerLayout.closeDrawers();
 		home=beans.get(position).getItemUrl();
 		if(mDialog!=null) {
-			ToastUtil.showToastShort(this,"第"+(position+1)+"集");
+			if(beans.size()==1){
+				titleTv.setText(beans.get(position).getVideoName());
+			}else {
+				ToastUtil.showToastShort(this,"第"+(position+1)+"集");
+				titleTv.setText(beans.get(position).getVideoName() + "(" + (position + 1) + "集)");
+			}
 			mDialog.show();
 		}
 
@@ -559,20 +605,23 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 
 	@Override
 	public void onMenuItemClick(View clickedView, int position) {
+			second=0;
+		if(!isRuning) {
+			mHandler.postDelayed(gotoMainRunable,10);
+		}
 		switch (position){
-			case 0:
+			case 1:
 				// 刷新
 				noticItem("是否刷新？", new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-
 						if(mDialog!=null){
 							mDialog.show();
 						}
 					}
 				});
 				break;
-			case 1:
+			case 0:
 				//下一集
 				noticItem("是否加载下一集？", new View.OnClickListener() {
 					@Override

@@ -1,7 +1,9 @@
 package com.zx.wfm.ui;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -34,10 +36,15 @@ import com.zx.wfm.service.NetWorkServer;
 import com.zx.wfm.ui.view.RoundProgressBar;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
+import com.zx.wfm.utils.SharedPreferencesUtil;
 import com.zx.wfm.utils.ThreadUtil;
+import com.zx.wfm.utils.ToastUtil;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import pub.devrel.easypermissions.EasyPermissions;
 
 import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 
@@ -45,7 +52,7 @@ import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
  * Created by Administrator on 2017/1/17.
  */
 
-public class InitActivity extends Activity{
+public class InitActivity extends BaseActivity{
     private static final long DURATION_TIME =1250 ;
     private Handler mHandler;
     private  int second=0;
@@ -72,17 +79,45 @@ public class InitActivity extends Activity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.init_layout);
-        ButterKnife.inject(this);
+        service=new NetWorkServerImpl();
         mHandler=new Handler();
         width=PhoneUtils.getScreenWidth(this);
         hight=PhoneUtils.getScreenHight(this);
-        mHandler.postDelayed(gotoMainRunable,1000);
         shimmer = new Shimmer();
         shimmer.setDuration(3000);
         shimmer.start(shimmerTextView);
-        service=new NetWorkServerImpl();
-        initData();
+        RequiresPermissionMethod();
     }
+    private void RequiresPermissionMethod() {
+        String[] perms = {Manifest.permission.READ_PHONE_STATE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            // Already have permission, do the thing
+            // ...
+            initData(PhoneUtils.getImeiInfo(this));
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "读取手机信息",
+                    Constants.Request_Code.RC_READ_PHONE_STATE, perms);
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        super.onPermissionsDenied(requestCode, perms);
+        if(Constants.Request_Code.RC_READ_PHONE_STATE==requestCode){
+            Log.e(Constants.Tag.PERMISSIONS,"拒绝读取手机信息");
+            initData(SharedPreferencesUtil.getInstance().getUUID());
+        }
+    }
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        super.onPermissionsGranted(requestCode, perms);
+        if(Constants.Request_Code.RC_READ_PHONE_STATE==requestCode){
+            Log.e(Constants.Tag.PERMISSIONS_GRAND,"权限允许手机信息");
+            initData(PhoneUtils.getImeiInfo(this));
+        }
+    }
+
     Animator.AnimatorListener listener=new Animator.AnimatorListener() {
         @Override
         public void onAnimationStart(Animator animation) {
@@ -119,14 +154,15 @@ public class InitActivity extends Activity{
         animate(view).setDuration(DURATION_TIME).alpha(1f).setListener(listener);
     }
 
-    private void initData() {
+    private void initData(final String name) {
+        mHandler.postDelayed(gotoMainRunable,1000);
         ThreadUtil.runOnNewThread(new Runnable() {
             @Override
             public void run() {
                 initBugly();
                 DBManager.init(InitActivity.this);
                 setnetWorkType();
-                logintoServer();
+                logintoServer(name);
             }
         });
         animateView(suitv);
@@ -147,8 +183,8 @@ public class InitActivity extends Activity{
         });
     }
 
-    public void logintoServer() {
-        AVUser.logInInBackground(PhoneUtils.getImeiInfo(this), Constants.DEFAULT_PASS_WORD, new LogInCallback<AVUser>() {
+    public void logintoServer(String name) {
+        AVUser.logInInBackground(name, Constants.DEFAULT_PASS_WORD, new LogInCallback<AVUser>() {
             @Override
             public void done(AVUser avUser, AVException e) {
                 if (e == null) {
@@ -234,4 +270,5 @@ public class InitActivity extends Activity{
         super.onDestroy();
         shimmer.cancel();
     }
+
 }
