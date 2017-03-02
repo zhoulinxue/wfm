@@ -94,7 +94,6 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	private Context context;
 	private String[] hostStr;
 	private int index=0;
-	private boolean hasPress = false;
 	private long firstTouchBackBt;
 	@InjectView(R.id.right_bottom_view)
 	TextView rightbottomView;
@@ -131,6 +130,8 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	@InjectView(R.id.rightTextView)
 	protected ImageView moreImg;
 	private int second=0;
+	@InjectView(R.id.returnBtn)
+	protected ImageView returnBtn;
 
 	@SuppressLint("JavascriptInterface")
 	@Override
@@ -194,20 +195,26 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 				}
 			}
 		});
+		returnBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onBackPressed();
+			}
+		});
 	}
+
 
 
 	private boolean isRuning=false;
 	Runnable gotoMainRunable=new Runnable() {
 		@Override
 		public void run() {
-			Log.e("toolbar",second+"");
+//			Log.e("toolbar",second+"");
 			if(second>=30*1000) {
 				isRuning=false;
 				mHandler.removeCallbacks(null);
-				toobar.setAlpha(1f);
-				animate(toobar).setDuration(1000).alpha(0f);
-			}else {
+				toobar.setVisibility(View.GONE);
+			}else if(toobar.getVisibility()==View.VISIBLE) {
 				isRuning=true;
 				second+=5*1000;
 				mHandler.postDelayed(gotoMainRunable, 5*1000);
@@ -376,9 +383,10 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
-		if (toobar.getVisibility()==View.GONE&&!isRuning) {
-				toobar.setVisibility(View.VISIBLE);
-			mHandler.postDelayed(gotoMainRunable,10);
+		second=0;
+		if (toobar.getVisibility()==View.GONE) {
+			toobar.setVisibility(View.VISIBLE);
+			mHandler.postDelayed(gotoMainRunable,2000);
 		}
 		return super.dispatchTouchEvent(ev);
 	}
@@ -889,21 +897,21 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 			mDrawerLayout.closeDrawers();
 			return;
       	}
-			if (!hasPress) {
-				firstTouchBackBt = System.currentTimeMillis();
-				ToastUtil.showToastLong(this, "再次点击退出播放");
-				hasPress = true;
-			} else {
-				if ((System.currentTimeMillis() - firstTouchBackBt) < 2000) {
-					hasPress = false;
-					webview.destroy();
-					super.onBackPressed();
-				} else {
-					hasPress = true;
-					firstTouchBackBt = System.currentTimeMillis();
-					ToastUtil.showToastLong(this, "再次点击退出播放");
+		noticItem("退出播放", new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				switch (v.getId()){
+					case R.id.certain:
+						mPopupWindow.dismiss();
+						webview.destroy();
+						PlayActivity.super.onBackPressed();
+						break;
+					case R.id.cancel:
+						mPopupWindow.dismiss();
+						break;
 				}
 			}
+		});
 	}
 	public abstract class ActionClickListenr implements View.OnClickListener {
 		@Override
