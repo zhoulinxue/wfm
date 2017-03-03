@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/contextMenu/contextMenu.iml" filepath="$PROJECT_DIR$/contextMenu/contextMenu.iml" />
       <module fileurl="file://$PROJECT_DIR$/greDao/greDao.iml" filepath="$PROJECT_DIR$/greDao/greDao.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/wfm.iml" filepath="$PROJECT_DIR$/wfm.iml" />
