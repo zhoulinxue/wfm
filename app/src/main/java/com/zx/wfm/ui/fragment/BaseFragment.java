@@ -58,7 +58,6 @@ public class BaseFragment extends Fragment implements ParseUrlServer {
 
     protected void refreshFragment() {
     }
-
     protected void postToServer(final List<Televisionbean> list) {
 //      final List<Televisionbean> list=  DBManager.getInstance().findLocalTelevision();
         Log.i("未上传数据",(list==null)+"");

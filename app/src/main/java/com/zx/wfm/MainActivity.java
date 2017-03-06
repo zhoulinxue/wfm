@@ -7,11 +7,13 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.aspsine.fragmentnavigator.FragmentNavigator;
 import com.zx.wfm.ui.BaseActivity;
 import com.zx.wfm.ui.fragment.BaseToolbarFragment;
+import com.zx.wfm.utils.UKutils;
 
 import java.util.Arrays;
 import java.util.List;

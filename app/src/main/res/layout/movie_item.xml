@@ -1,24 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/touchable_background_white"
     >
     <ImageView
         android:id="@+id/movie_head"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:adjustViewBounds="true"
-        android:minHeight="200dp"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/icon"/>
+        android:minHeight="160dp"
+        android:scaleType="centerCrop" />
+    <LinearLayout
+        android:id="@+id/name_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/black"
+        android:layout_alignParentBottom="true"
+        >
     <TextView
         android:layout_alignParentBottom="true"
         android:id="@+id/movie_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="mingzi"
+        android:layout_gravity="center"
+        android:gravity="center|center_horizontal"
         android:textColor="@color/white"
        />
+    </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

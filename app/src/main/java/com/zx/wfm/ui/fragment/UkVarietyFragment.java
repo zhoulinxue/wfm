@@ -87,14 +87,14 @@ public class UkVarietyFragment extends BaseFragment implements OnRefreshListener
         movieAdapter=new MovieAdapter(getActivity(),list,R.layout.movie_item);
         movieAdapter.setColumnNum(2);
         movieAdapter.setOnItemClickListener(this);
-        final StaggeredGridLayoutManager manager=new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        final StaggeredGridLayoutManager manager=new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setAdapter(movieAdapter);
         swipeToLoadLayout.setOnRefreshListener(this);
         swipeToLoadLayout.setOnLoadMoreListener(this);
         //设置item之间的间隔
-        SpacesItemDecoration decoration = new SpacesItemDecoration(5);
+        SpacesItemDecoration decoration = new SpacesItemDecoration(15);
         mRecyclerView.addItemDecoration(decoration);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

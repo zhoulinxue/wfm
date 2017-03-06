@@ -25,17 +25,27 @@ public class Constants {
         public static  final  int RC_SETTINGS_SCREEN=1000;
         public static  final  int RC_CAMERA_AND_WIFI=1001;
         public static  final  int RC_READ_PHONE_STATE=1002;
+        public static final int INTERNET=1003;
+        public static final int RC_LOCATION_CONTACTS_PERM = 1004;
     }
 
     public static class Net {
         // 电视剧
-        public static String TELEVISION_URL="http://www.soku.com/channel/teleplaylist_0_0_0_1_1.html";
+//        http://list.youku.com/category/show/c_97_s_1_d_1_p_1.html
+//        http://www.soku.com/channel/teleplaylist_0_0_0_1_1.html
+        public static String TELEVISION_URL="http://list.youku.com/category/show/c_97_s_1_d_1_p_1.html";
         // 电影
-        public static String MOVIE_URL="http://www.soku.com/channel/movielist_0_0_0_1_1.html";
+//
+        public static String MOVIE_URL="http://list.youku.com/category/show/c_96_pt_1_s_1_d_1_u_1.html";
+//        public static String MOVIE_URL="http://www.soku.com/channel/movielist_0_0_0_1_1.html";
         // 综艺
-        public static String VARIETY_URL="http://www.soku.com/channel/varietylist_0_0_0_1_1.html";
+//        http://list.youku.com/category/show/c_85_s_1_d_1_p_1.html
+          public static String VARIETY_URL="http://list.youku.com/category/show/c_85_s_1_d_1_p_1.html";
+//        public static String VARIETY_URL="http://www.soku.com/channel/varietylist_0_0_0_1_1.html";
         // 动漫
-        public static String CARTOON_URL="http://www.soku.com/channel/animelist_0_0_0_1_1.html";
+        public static String CARTOON_URL="http://list.youku.com/category/show/c_100_s_1_d_2_p_1.html";
+//        public static String CARTOON_URL="http://www.soku.com/channel/animelist_0_0_0_1_1.html";
+        public static  String SEARCH_URL="http://www.soku.com/search_video/q_";
         public static String HIML=".html";
     }
 

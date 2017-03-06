@@ -87,7 +87,7 @@ public class UkCartoonFragment extends BaseFragment implements OnRefreshListener
         movieAdapter=new MovieAdapter(getActivity(),list,R.layout.movie_item);
         movieAdapter.setColumnNum(2);
         movieAdapter.setOnItemClickListener(this);
-        final StaggeredGridLayoutManager manager=new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        final StaggeredGridLayoutManager manager=new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setAdapter(movieAdapter);

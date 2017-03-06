@@ -1,15 +1,12 @@
 package com.zx.wfm.bean;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 import android.text.TextUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.avos.avoscloud.AVClassName;
-import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.zx.wfm.dao.DaoSession;
 import de.greenrobot.dao.DaoException;
@@ -25,7 +22,7 @@ import com.zx.wfm.dao.TelevisionbeanDao;
 /**
  * Entity mapped to table "TELEVISIONBEAN".
  */
-@AVClassName("Televisionbean")
+ @AVClassName("Televisionbean")
 public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io.Serializable {
 
     private String objectId;
@@ -37,6 +34,7 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
     private String rating;
     private String from;
     private Long time;
+    private String playTimes;
     private String netPage;
 
     /** Used to resolve relations */
@@ -58,7 +56,7 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
         this.TelevisionId = TelevisionId;
     }
 
-    public Televisionbean(String objectId, String TelevisionId, String addressUrl, String desc, String videoName, String headUrl, String rating, String from, Long time, String netPage) {
+    public Televisionbean(String objectId, String TelevisionId, String addressUrl, String desc, String videoName, String headUrl, String rating, String from, Long time, String playTimes, String netPage) {
         this.objectId = objectId;
         this.TelevisionId = TelevisionId;
         this.addressUrl = addressUrl;
@@ -68,6 +66,7 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
         this.rating = rating;
         this.from = from;
         this.time = time;
+        this.playTimes = playTimes;
         this.netPage = netPage;
     }
 
@@ -141,6 +140,14 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
 
     public void setTime(Long time) {
         this.time = time;
+    }
+
+    public String getPlayTimes() {
+        return playTimes;
+    }
+
+    public void setPlayTimes(String playTimes) {
+        this.playTimes = playTimes;
     }
 
     public String getNetPage() {
@@ -240,6 +247,7 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
                 ", rating='" + rating + '\'' +
                 ", from='" + from + '\'' +
                 ", time=" + time +
+                ", playTimes='" + playTimes + '\'' +
                 ", netPage='" + netPage + '\'' +
                 ", daoSession=" + daoSession +
                 ", myDao=" + myDao +
@@ -259,6 +267,7 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
         out.writeString(rating);
         out.writeString(from);
         out.writeLong(time);
+        out.writeString(playTimes);
         out.writeString(netPage);
 
 //        private String objectId;
@@ -283,6 +292,7 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
         rating=in.readString();
         from=in.readString();
         time=in.readLong();
+        playTimes=in.readString();
         netPage=in.readString();
     }
 
@@ -309,7 +319,7 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
 
     @Override
     protected List<String> getField() {
-        return Arrays.asList("objectId","netPage","time","from","rating","headUrl","videoName","desc","addressUrl","TelevisionId");
+        return Arrays.asList("objectId","netPage","time","playTimes","from","rating","headUrl","videoName","desc","addressUrl","TelevisionId");
     }
     public String getObjectId() {
         if(!TextUtils.isEmpty(objectId)){
@@ -348,6 +358,7 @@ public class Televisionbean extends com.zx.wfm.bean.Basebean  implements java.io
         bean.setNetPage(getNetPage());
         bean.setRating(getRating());
         bean.setVideoName(getVideoName());
+        bean.setPlayTimes(getPlayTimes());
         return bean;
     }
 

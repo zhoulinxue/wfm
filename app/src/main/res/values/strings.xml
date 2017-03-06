@@ -33,5 +33,7 @@
     <string name="sheng">声</string>
     <string name="lorem">lorem</string>
     <string name="init_string">194093798@qq.com\n code by:zx</string>
+    <string name="action_search">搜索</string>
+    <string name="action_about">关于</string>
 
 </resources>

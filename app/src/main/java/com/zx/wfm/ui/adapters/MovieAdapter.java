@@ -31,6 +31,7 @@ public class MovieAdapter extends BaseRecycleViewAdapter<Televisionbean> {
         target.setAlpha(0f);
         animate(target).setDuration(1000).alpha(1f);
         holder.setImageNet(R.id.movie_head,data.getHeadUrl()).setText(R.id.movie_name,data.getVideoName());
+        holder.findView(R.id.name_layout).getBackground().setAlpha(150);
     }
 
     @Override

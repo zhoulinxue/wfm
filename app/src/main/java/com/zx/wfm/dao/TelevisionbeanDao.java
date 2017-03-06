@@ -32,7 +32,8 @@ public class TelevisionbeanDao extends AbstractDao<Televisionbean, String> {
         public final static Property Rating = new Property(6, String.class, "rating", false, "RATING");
         public final static Property From = new Property(7, String.class, "from", false, "FROM");
         public final static Property Time = new Property(8, Long.class, "time", false, "TIME");
-        public final static Property NetPage = new Property(9, String.class, "netPage", false, "NET_PAGE");
+        public final static Property PlayTimes = new Property(9, String.class, "playTimes", false, "PLAY_TIMES");
+        public final static Property NetPage = new Property(10, String.class, "netPage", false, "NET_PAGE");
     };
 
     private DaoSession daoSession;
@@ -60,7 +61,8 @@ public class TelevisionbeanDao extends AbstractDao<Televisionbean, String> {
                 "\"RATING\" TEXT," + // 6: rating
                 "\"FROM\" TEXT," + // 7: from
                 "\"TIME\" INTEGER," + // 8: time
-                "\"NET_PAGE\" TEXT);"); // 9: netPage
+                "\"PLAY_TIMES\" TEXT," + // 9: playTimes
+                "\"NET_PAGE\" TEXT);"); // 10: netPage
     }
 
     /** Drops the underlying database table. */
@@ -119,9 +121,14 @@ public class TelevisionbeanDao extends AbstractDao<Televisionbean, String> {
             stmt.bindLong(9, time);
         }
  
+        String playTimes = entity.getPlayTimes();
+        if (playTimes != null) {
+            stmt.bindString(10, playTimes);
+        }
+ 
         String netPage = entity.getNetPage();
         if (netPage != null) {
-            stmt.bindString(10, netPage);
+            stmt.bindString(11, netPage);
         }
     }
 
@@ -150,7 +157,8 @@ public class TelevisionbeanDao extends AbstractDao<Televisionbean, String> {
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // rating
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // from
             cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // time
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // netPage
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // playTimes
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10) // netPage
         );
         return entity;
     }
@@ -167,7 +175,8 @@ public class TelevisionbeanDao extends AbstractDao<Televisionbean, String> {
         entity.setRating(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setFrom(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setTime(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
-        entity.setNetPage(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setPlayTimes(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setNetPage(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
      }
     
     /** @inheritdoc */

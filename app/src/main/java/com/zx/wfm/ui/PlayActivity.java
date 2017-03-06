@@ -16,6 +16,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
@@ -64,6 +65,7 @@ import com.zx.wfm.ui.view.ItemDecoration;
 import com.zx.wfm.utils.AnimUtils;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.DialogUtils;
+import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.ToastUtil;
 import com.zx.wfm.utils.UKutils;
 
@@ -204,13 +206,18 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	}
 
 
-
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+		if(webview!=null)
+		webview.saveState(outState);
+	}
 	private boolean isRuning=false;
 	Runnable gotoMainRunable=new Runnable() {
 		@Override
 		public void run() {
 //			Log.e("toolbar",second+"");
-			if(second>=30*1000) {
+			if(second>=10*1000) {
 				isRuning=false;
 				mHandler.removeCallbacks(null);
 				toobar.setVisibility(View.GONE);
@@ -276,13 +283,16 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 	@Override
 	protected void onPause() {
 		super.onPause();
+		if(webview!=null)
 		webview.onPause();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		webview.onResume();
+		if(webview!=null) {
+			webview.onResume();
+		}
 	}
 	@SuppressLint("JavascriptInterface")
 	private void initWeb() {
@@ -575,17 +585,18 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 				Element element=elements.get(0);
 				final Element ele= element.getElementById("link4");
 				String str= ele.attr("value");
-//				final	String url=str.replace("height=498","height="+(PhoneUtils.getScreenHight(WebActivity.this))).replace("width=510","width="+PhoneUtils.getScreenWidth(WebActivity.this));
-				int start=str.indexOf("src");
-				int end=str.indexOf("frameborder");
-				final  String url=str.substring(start+5,end-2);
-				for(Element element1:elements){
-					Log.i("内容",element1.html());
-				}
+				final	String url=str.replace("height=498","height="+(PhoneUtils.getScreenHight(PlayActivity.this))).replace("width=510","width="+ PhoneUtils.getScreenWidth(PlayActivity.this));
+//				int start=str.indexOf("src");
+//				int end=str.indexOf("frameborder");
+//				final  String url=str.substring(start+5,end-2);
+//				for(Element element1:elements){
+
+//				}
 
 				mHandler.postDelayed(new Runnable() {
 					@Override
 					public void run() {
+						Log.i("播放地址","播放地址："+url);
 						webview.loadUrl(url);
 //						webview.loadData(url,"text/html","utf-8");
 					}
@@ -709,14 +720,16 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 
 		@Override
 		public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-			index++;
-			url = url.toLowerCase();
-			if((index%7==0||index%11==0)&&!url.equals("http://player.youku.com/h5player/img/xplayerv4.png")) {
-				Log.i("广告",index+"  url"+url);
-				isShowMenu=true;
-				return new WebResourceResponse(null, null, null);
+			if(Build.VERSION.SDK_INT<23) {
+				index++;
+				url = url.toLowerCase();
+				if ((index % 7 == 0 || index % 11 == 0) && !url.equals("http://player.youku.com/h5player/img/xplayerv4.png")) {
+					Log.i("广告", index + "  url" + url);
+					isShowMenu = true;
+					return new WebResourceResponse(null, null, null);
+				}
+				isShowMenu = false;
 			}
-			isShowMenu=false;
 			return super.shouldInterceptRequest(view, url);
 		}
 

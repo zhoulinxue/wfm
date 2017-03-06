@@ -19,6 +19,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,10 +45,14 @@ public class UKutils {
             Log.e("Jsoup", "dot==null");
             return null;
         }
-        Elements divs_info = doc.getElementsByClass("p_link");// 视频专辑url，如电视剧
-        Elements desc_info = doc.getElementsByClass("p_desc");// 视频描述
-        Elements link_info = doc.getElementsByClass("p_panels");// 视频集数
+        Elements divs_info = doc.getElementsByClass("p-thumb");// 视频专辑url，如电视剧
+        Elements desc_info = doc.getElementsByClass("actor");// 视频描述
+        Elements times = doc.getElementsByClass("info-list");// 视频描述
+        Elements link_info = doc.getElementsByClass("ibg");// 视频集数
         Elements rating_info = doc.getElementsByClass("ranking");// 视频评分
+        Elements head_info = doc.getElementsByClass("quic");// 头像
+
+
         if (divs_info != null) {
             Log.d(TAG,desc_info.size()+"#"+link_info.size()+"@"+divs_info.size());
             if (divs_info.size() <= 0) {
@@ -58,12 +63,22 @@ public class UKutils {
                 for (int i=0;i<urls.size();i++) {
                    Element urlElement=urls.get(i);
                     Televisionbean bean=new Televisionbean();
+                    bean.setHeadUrl(head_info.get(i).absUrl("src"));
                     bean.setTime(System.currentTimeMillis());
-                    if(desc_info!=null&&desc_info.size()!=0) {
+                    if(desc_info!=null&&desc_info.size()!=0&&desc_info.size()==urls.size()) {
                         bean.setDesc(desc_info.get(i).text());
+                    }else {
+                        bean.setDesc("暂无介绍");
                     }
-                            bean.setVideoName(urlElement.attr("title"));
+                    bean.setVideoName(urlElement.attr("title"));
                     bean.setAddressUrl(urlElement.attr("abs:href"));
+                    Log.e(TAG,"播放地址："+bean.getAddressUrl());
+                    for(int a=0;a<times.get(i).select("li").size();a++){
+                        Log.e(TAG,"li"+times.get(i).select("li").get(a).text());
+                        if(a==2){
+                            bean.setPlayTimes(times.get(i).select("li").get(a).text());
+                        }
+                    }
                     bean.setTelevisionId(bean.getAddressUrl());
                     bean.setNetPage(pageUrl);
                     getDetailaddres(bean);
@@ -158,7 +173,7 @@ public class UKutils {
             return null;
         }
         List<Moviebean> list=new ArrayList<>();
-        Elements link_info = doc.getElementsByClass("linkpanel");
+        Elements link_info = doc.getElementsByClass("lists");
         if(link_info!=null&&link_info.size()!=0){
             Elements urls = link_info.get(0).select("a[href]");
             for(Element e:urls) {
@@ -187,6 +202,9 @@ public class UKutils {
         String firsturl= Constants.Net.TELEVISION_URL;
         pages.add(firsturl);
         Document  doc =getDoc(firsturl);
+        if(doc==null){
+            return null;
+        }
         Elements pages_info=doc.getElementsByClass("pages");
         if(pages_info!=null){
             Elements elements=pages_info.select("a[href]");
@@ -213,7 +231,7 @@ public class UKutils {
         Log.d(TAG,url+"");
 
         try {
-           return Jsoup.connect(url).timeout(6000).get();
+           return Jsoup.connect(url).timeout(20000).get();
             // Added a maximum body response size to Jsoup.Connection, to
             // prevent running out of memory when trying to read extremely
             // large
@@ -225,4 +243,51 @@ public class UKutils {
         return null;
     }
 
+    public static void getSearchWords(final String words) {
+        List<Televisionbean> list=new ArrayList<>();
+                String url=Constants.Net.SEARCH_URL+words;
+//         WebConversation wc = new WebConversation();
+//        Document doc=null;
+//                // 向指定的URL发出请求，获取响应
+
+//            WebResponse wr = wc.getResponse(url);
+//            Log.e("unit", wr.getText());
+//           doc=  new Document(wr.getText());
+        Document doc=getDoc(url);
+
+                if (doc == null) {
+                    Log.e("Jsoup", "dot==null");
+                    return ;
+                }
+               Elements elements=doc.getElementsByClass("DIR");
+                Log.e("啥html",elements.size()+"!!@");
+                if (null != elements) {
+                    Elements adressUrls=elements.select("s_link");
+                    Elements head_info = elements.select("s_target");// 头像
+                    Elements bases=elements.select("s_info");
+                    for (int i=0;i<elements.size();i++) {
+                        Element urlElement=elements.get(i);
+                        Televisionbean bean=new Televisionbean();
+                        bean.setHeadUrl(head_info.get(i).absUrl("src"));
+//                        bean.setAddressUrl(adressUrls.attr("abs:href"));
+                        bean.setTime(System.currentTimeMillis());
+                        if(bases!=null&&bases.size()!=0&&bases.size()==elements.size()) {
+                            bean.setDesc(bases.get(i).text());
+                        }else {
+                            bean.setDesc("暂无介绍");
+                        }
+                        bean.setVideoName(urlElement.attr("title"));
+                        bean.setAddressUrl(urlElement.attr("abs:href"));
+                        Log.e(TAG,"播放地址："+bean.getAddressUrl());
+                        bean.setTelevisionId(bean.getAddressUrl());
+                        bean.setNetPage(url);
+                        getDetailaddres(bean);
+                            bean.setRating(elements.select("source").text());
+
+                        list.add(bean);
+                        Log.i(TAG,bean.toString());
+                    }
+                }
+
+    }
 }

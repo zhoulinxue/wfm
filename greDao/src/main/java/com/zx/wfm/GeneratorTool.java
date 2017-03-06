@@ -11,7 +11,7 @@ import de.greenrobot.daogenerator.Schema;
  *  
  */
 public class GeneratorTool {
-    private static final int SQL_GREAD = 1;
+    private static final int SQL_GREAD = 2;
 
     public static void main(String[] args) throws Exception {
         Schema schema = new Schema(SQL_GREAD, "com.zx.wfm.bean");
@@ -67,6 +67,7 @@ public class GeneratorTool {
         tele.addStringProperty("rating");// 评分
         tele.addStringProperty("from");// 来源
         tele.addLongProperty("time");// 保存时间
+        tele.addStringProperty("playTimes");// 保存时间
         tele.addStringProperty("netPage");// 网页上页数
 
 

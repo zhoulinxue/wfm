@@ -39,6 +39,7 @@ import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.SharedPreferencesUtil;
 import com.zx.wfm.utils.ThreadUtil;
 import com.zx.wfm.utils.ToastUtil;
+import com.zx.wfm.utils.UKutils;
 
 import java.util.List;
 
@@ -188,7 +189,7 @@ public class InitActivity extends BaseActivity{
             @Override
             public void done(AVUser avUser, AVException e) {
                 if (e == null) {
-                    Toast.makeText(InitActivity.this,"欢迎小主",Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(InitActivity.this,"欢迎小主",Toast.LENGTH_SHORT).show();
                 } else {
                     AVErrorbean errorBean= JSONObject.parseObject(e.getMessage(), AVErrorbean.class);
                     if(errorBean.getCode()==211||"Could not find user".equals(errorBean.getError())){
@@ -223,6 +224,7 @@ public class InitActivity extends BaseActivity{
     @Override
     protected void onPause() {
         super.onPause();
+        mHandler.removeCallbacks(gotoMainRunable);
     }
 
     /**
@@ -246,6 +248,7 @@ public class InitActivity extends BaseActivity{
     protected void onRestart() {
         super.onRestart();
         isOnPause=false;
+        mHandler.post(gotoMainRunable);
     }
     Runnable gotoMainRunable=new Runnable() {
         @Override
