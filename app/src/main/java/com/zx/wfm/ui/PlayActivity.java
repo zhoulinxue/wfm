@@ -585,10 +585,10 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 				Element element=elements.get(0);
 				final Element ele= element.getElementById("link4");
 				String str= ele.attr("value");
-				final	String url=str.replace("height=498","height="+(PhoneUtils.getScreenHight(PlayActivity.this))).replace("width=510","width="+ PhoneUtils.getScreenWidth(PlayActivity.this));
-//				int start=str.indexOf("src");
-//				int end=str.indexOf("frameborder");
-//				final  String url=str.substring(start+5,end-2);
+//				final	String url=str.replace("height=498","height="+(PhoneUtils.getScreenHight(PlayActivity.this))).replace("width=510","width="+ PhoneUtils.getScreenWidth(PlayActivity.this));
+				int start=str.indexOf("src");
+				int end=str.indexOf("frameborder");
+				final  String url=str.substring(start+5,end-2);
 //				for(Element element1:elements){
 
 //				}
@@ -598,6 +598,7 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 					public void run() {
 						Log.i("播放地址","播放地址："+url);
 						webview.loadUrl(url);
+
 //						webview.loadData(url,"text/html","utf-8");
 					}
 				},0);

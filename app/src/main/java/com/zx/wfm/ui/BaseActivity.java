@@ -56,7 +56,6 @@ public class BaseActivity extends AppCompatActivity implements EasyPermissions.P
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
-    @AfterPermissionGranted(Constants.Request_Code.RC_CAMERA_AND_WIFI)
     private void methodRequiresTwoPermission() {
         String[] perms = {Manifest.permission.CAMERA, Manifest.permission.CHANGE_WIFI_STATE};
         if (EasyPermissions.hasPermissions(this, perms)) {

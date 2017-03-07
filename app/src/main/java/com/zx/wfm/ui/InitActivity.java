@@ -90,7 +90,7 @@ public class InitActivity extends BaseActivity{
         RequiresPermissionMethod();
     }
     private void RequiresPermissionMethod() {
-        String[] perms = {Manifest.permission.READ_PHONE_STATE};
+        String[] perms = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.ACCESS_FINE_LOCATION};
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
             // ...
