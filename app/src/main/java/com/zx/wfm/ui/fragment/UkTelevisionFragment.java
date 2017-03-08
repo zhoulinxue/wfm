@@ -60,13 +60,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
     private int page=0;
     private int pageNum;
     private int netPage=0;
-    public static Fragment newInstance(int type) {
-        TwitterRecyclerFragment fragment = new TwitterRecyclerFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt("LAYOUT_MANAGER_TYPE", type);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
+
     public UkTelevisionFragment() {
     }
 

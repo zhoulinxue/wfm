@@ -3,7 +3,6 @@ package com.zx.wfm;
 import android.support.v4.app.Fragment;
 
 import com.aspsine.fragmentnavigator.FragmentNavigatorAdapter;
-import com.zx.wfm.ui.fragment.NavGoogleFragment;
 import com.zx.wfm.ui.fragment.NavJDFragment;
 import com.zx.wfm.ui.fragment.NavJavaCodeFragment;
 import com.zx.wfm.ui.fragment.NavTwitterFragment;
@@ -21,7 +20,7 @@ public class MainFragmentAdapter implements FragmentNavigatorAdapter {
                 return NavTwitterFragment.newInstance();
 
             case 1:
-                return NavGoogleFragment.newInstance();
+                return NavYalantisFragment.newInstance();
 
             case 2:
                 return NavYalantisFragment.newInstance();

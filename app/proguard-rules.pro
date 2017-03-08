@@ -16,7 +16,7 @@
 #   public *;
 -optimizationpasses 5  #指定代码的压缩级别 0 - 7
 -dontusemixedcaseclassnames  #是否使用大小写混合
-#-dontskipnonpubliclibraryclasses  #如果应用程序引入的有jar包，并且想混淆jar包里面的class
+-dontskipnonpubliclibraryclasses  #如果应用程序引入的有jar包，并且想混淆jar包里面的class
 -dontpreverify  #混淆时是否做预校验（可去掉加快混淆速度）
 -verbose #混淆时是否记录日志（混淆后生产映射文件 map 类名 -> 转化后类名的映射
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*  #淆采用的算法
@@ -40,9 +40,6 @@
 -keep public class * extends android.support.v4.**
 -keep public class * extends android.app.Fragment
 
--keep class com.czlapp.lingyu.czlapp.util.PhoneUtils.**{*;}
--keep class com.czlapp.lingyu.czlapp.service.**
--keep class com.czlapp.lingyu.czlapp.service.**{*;}
 -dontnote android.app.**
 -keep class android.app.**
 
@@ -159,6 +156,11 @@
 -keep class org.apache.harmony.xnet.provider.jsse.OpenSSLSocketImpl.**
 -keep class org.apache.harmony.xnet.provider.jsse.OpenSSLSocketImpl.**{*;}
 
+-dontwarn com.google.**
+-dontnote com.google.**
+-keep class com.google.**
+-keep class com.google.**{*;}
+
 #极光代码混淆
 -dontoptimize
 -dontpreverify
@@ -167,6 +169,7 @@
 -keep class cn.jpush.** { *; }
 # bugly
 -dontwarn com.tencent.bugly.**
+-dontnote com.tencent.bugly.**
 -keep class com.tencent.bugly.**
 -keep class com.tencent.bugly.**{*;}
 -keep class com.tencent.bugly.crashreport.**
@@ -192,13 +195,19 @@
 -keep class de.greenrobot.dao.internal.**
 -keep class de.greenrobot.dao.internal.**{*;}
 -keep class de.greenrobot.dao.internal.DaoConfig.**{*;}
+-keep class de.greenrobot.daogenerator.**
+-keep class de.greenrobot.daogenerator.**{*;}
+-keep class de.greenrobot.daogenerator.DaoGenerator.**
+-keep class de.greenrobot.daogenerator.DaoGenerator.**{*;}
+
 -keepclassmembers class * extends de.greenrobot.dao.AbstractDao {
     public static java.lang.String TABLENAME;
 }
 -keep class **$Properties
--keep class com.czlapp.lingyu.czlapp.database.**
--keep class com.czlapp.lingyu.czlapp.database.**{*;}
-
+-dontwarn javax.servlet.**
+-dontnote javax.servlet.**
+-keep class javax.servlet.**
+-keep class javax.servlet.**{*;}
 ## ----------------------------------
 ##   ########## Gson混淆    ##########
 ## ----------------------------------
@@ -293,139 +302,161 @@
 -keep class com.bumptech.glide.Glide.**
 -keep class com.bumptech.glide.Glide.**{*;}
 
-# 讯飞语音
--dontwarn com.iflytek.**
--keep class com.iflytek.**
--keep class com.iflytek.** {*;}
--keep class com.iflytek.thirdparty.**
--keep class com.iflytek.thirdparty.**{*;}
--keep class com.iflytek.thirdparty.a.**
--keep class com.iflytek.thirdparty.b.**
--keep class com.iflytek.thirdparty.e.**
--keep class com.iflytek.thirdparty.h.**
--keep class com.iflytek.thirdparty.a.**{*;}
--keep class com.iflytek.thirdparty.b.**{*;}
--keep class com.iflytek.thirdparty.e.**{*;}
--keep class com.iflytek.thirdparty.h.**{*;}
--keep class com.iflytek.common.**
--keep class com.iflytek.common.**{*;}
--keep class com.iflytek.common.c.**
--keep class com.iflytek.common.c.**{*;}
--keep class com.iflytek.common.push.impl.PushImpl.**
--keep class com.iflytek.common.push.impl.PushImpl.**{*;}
+-dontwarn com.zx.wfm.bean.**
+-keep class com.zx.wfm.bean.**
+-keep class com.zx.wfm.bean.**{*;}
+-dontwarn com.zx.wfm.dao.**
+-keep class com.zx.wfm.dao.**
+-keep class com.zx.wfm.dao.**{*;}
+-keep class com.zx.wfm.dao.**{*;}
+-dontwarn com.zx.wfm.GeneratorTool.**
+-keep class com.zx.wfm.GeneratorTool.**{*;}
 
-#netty
--dontwarn io.netty.**
--dontwarn org.jboss.**
--dontnote org.jboss.**
--keep class org.jboss.**
--keep class org.jboss.**{*;}
--keep class io.netty.**
--keep class io.netty.**{*;}
--keep class com.czlapp.lingyu.czlapp.socket.**
--keep class com.czlapp.lingyu.czlapp.socket.**{*;}
--keep class com.czlapp.lingyu.czlapp.socket.SocketLoginMannager.**
--keep class com.czlapp.lingyu.czlapp.socket.SocketLoginMannager.**{*;}
--keep class com.czlapp.lingyu.czlapp.socket.SocketNSHandler.**
--keep class com.czlapp.lingyu.czlapp.socket.SocketNSHandler.**{*;}
--keep class com.czlapp.lingyu.czlapp.socket.SocketNSManager.**
--keep class com.czlapp.lingyu.czlapp.socket.SocketNSManager.**{*;}
--keep class com.czlapp.lingyu.czlapp.util.UpdateUtil.**
--keep class com.czlapp.lingyu.czlapp.util.UpdateUtil.**{*;}
--keep class com.czlapp.lingyu.czlapp.socket.SocketSendService.**
--keep class com.czlapp.lingyu.czlapp.socket.SocketSendService.**{*;}
--keep class com.czlapp.lingyu.czlapp.socket.SimpleSocketLisenter.**
--keep class com.czlapp.lingyu.czlapp.socket.SimpleSocketLisenter.**{*;}
-
--dontwarn com.czlapp.lingyu.czlapp.database.**
--keep class com.czlapp.lingyu.czlapp.database.**
--keep class com.czlapp.lingyu.czlapp.database.**{*;}
--dontwarn com.czlapp.lingyu.czlapp.domain.**
--keep class com.czlapp.lingyu.czlapp.domain.**
--keep class com.czlapp.lingyu.czlapp.domain.**{*;}
--keep class com.czlapp.lingyu.czlapp.database.**{*;}
-
-#-keep class com.czlapp.lingyu.czlapp.api.**
-#-keep class com.czlapp.lingyu.czlapp.api.**{*;}
-#-keep class com.czlapp.lingyu.czlapp.api.ApiManager.**
-#-keep class com.czlapp.lingyu.czlapp.api.ApiManager.**{*;}
-
--keepclasseswithmembers class io.netty.** { *;}
--keep class io.netty.util.**
--keep class io.netty.util.internal.**
--keep class io.netty.util.internal.ConcurrentCircularArrayQueue.**
--keep class io.netty.util.internal.ConcurrentCircularArrayQueue.**{*;}
--keep class io.netty.util.internal.JavassistTypeParameterMatcherGenerator.**
--keep class io.netty.util.internal.JavassistTypeParameterMatcherGenerator.**{*;}
--keep class io.netty.util.internal.MpscArrayQueueConsumerField.**
--keep class io.netty.util.internal.MpscArrayQueueConsumerField.**{*;}
--keepclasseswithmembers class org.jboss.netty.util.internal.LinkedTransferQueue$Node {*;}
-
--keepclasseswithmembers class org.jboss.netty.util.internal.LinkedTransferQueue {
-    volatile transient org.jboss.netty.util.internal.LinkedTransferQueue$Node head;
-    volatile transient org.jboss.netty.util.internal.LinkedTransferQueue$Node tail;
-    volatile transient int sweepVotes;
-}
-# sharesdk 项目
--dontwarn com.czlapp.lingyu.sharesdk.**
--keep class com.czlapp.lingyu.sharesdk.**
--keep class com.czlapp.lingyu.sharesdk.**{*;}
--keep class assets.**{*;}
-# 友盟
--dontwarn com.umeng.**
--keep class com.umeng.** {*; }
--keep class com.mob.**
--keep class com.umeng.analytics.b.**
--keep class com.umeng.analytics.b.** {*;}
--keep class com.mob.**{*;}
--keep class com.mob.commons.**
--keep class com.mob.commons.** {*; }
--keep class cn.sharesdk.**
--keep class cn.sharesdk.**{*;}
--keep class cn.sharesdk.tencent.qq.**
--keep class cn.sharesdk.tencent.qq.**{*;}
--keep class cn.sharesdk.framwork.**
--keep class cn.sharesdk.framwork.**{*;}
--keep class cn.sharesdk.sina.weibo.**
--keep class cn.sharesdk.sina.weibo.**{*;}
--keep class cn.sharesdk.wechat.friends.**
--keep class cn.sharesdk.wechat.friends.**{*;}
--keep class cn.sharesdk.wechat.utils.**{*;}
--keep class cn.sharesdk.wechat.favorite.**
--keep class cn.sharesdk.wechat.favorite.**{*;}
--keep class cn.sharesdk.wechat.moments.**
--keep class cn.sharesdk.wechat.moments.**{*;}
--keep class cn.sharesdk.framework.**
--keep class cn.sharesdk.framework.**{*;}
-#3D 地图
--dontwarn  com.amap.api.**
--dontnote  com.amap.api.**
--keep   class com.amap.api.services.**
--keep   class com.amap.api.services.**{*;}
--keep   class com.**
--keep   class com.autonavi.**
--keep   class com.autonavi.**{*;}
--keep   class com.autonavi.amap.mapcore.MapCore.**
--keep   class com.autonavi.amap.mapcore.MapCore.**{*;}
--keep   class com.amap.api.**
--keep   class com.amap.api.**{*;}
--keep   class com.amap.api.**{*;}
--keep class assets.**{*;}
-# zxing
--dontwarn com.google.zxing.**
--keep  class com.google.zxing.client.android.**
--keep  class com.google.zxing.client.android.**{*;}
--keep  class com.google.zxing.**{*;}
--keep  class com.journeyapps.barcodescanner.**
--keep  class com.journeyapps.barcodescanner.**{*;}
 # ptr
--dontwarn com.chanven.lib.cptr.**
--keep  class com.chanven.lib.cptr.**
--keep  class com.chanven.lib.cptr.**{*;}
-# Mp3
--dontwarn com.buihha.audiorecorder.**
--keep  class com.buihha.audiorecorder.**
--keep  class com.buihha.audiorecorder.**{*;}
+-dontwarn com.aspsine.swipetoloadlayout.**
+-keep  class com.aspsine.swipetoloadlayout.**
+-keep  class com.aspsine.swipetoloadlayout.**{*;}
+
+-dontwarn com.avos.**
+-dontnote com.avos.**
+-keep class com.avos.**
+-keep class com.avos.**{*;}
+-keep class com.avos.avoscloud.**
+-keep class com.avos.avoscloud.**{*;}
+
+-dontwarn org.**
+-keep class org.**
+-keep class org.**{*;}
+-keep class org.jaxen.**
+-keep class org.jaxen.**{*;}
+-dontnote org.apache.**
+-keep class org.apache.**
+-keep class org.apache.**{*;}
+-keep class org.apache.commons.**
+-keep class org.apache.log4j.**
+-keep class org.apache.log4j.**{*;}
+-dontnote org.apache.commons.**
+-keep class org.apache.commons.**{*;}
+
+-dontwarn com.loopj.**
+-keep class com.loopj.**
+-keep  class com.loopj.**{*;}
+
+-dontwarn org.jivesoftware.smack.**
+-keep class org.jivesoftware.smack.**
+-keep class org.jivesoftware.smack.**{*;}
+
+-dontnote android.net.http.SslError
+-dontnote android.webkit.WebViewClient
+-keep public class android.net.http.SslError
+-keep public class android.webkit.WebViewClient
+
+-dontwarn sun.security.**
+-keep class sun.security.** { *; }
+
+-dontwarn com.jcraft.jzlib.**
+-keep class com.jcraft.jzlib.**{*;}
+
+-dontwarn sun.misc.**
+-keep class sun.misc.**{*;}
+
+
+-dontwarn org.slf4j.**
+-keep class org.slf4j.**
+-keep class org.slf4j.**{*;}
+-dontwarn org.dom4j.**
+-keep class org.dom4j.**
+-keep class org.dom4j.**{*;}
+
+-dontwarn org.xbill.**
+-keep class org.xbill.**
+-keep class org.xbill.**{*;}
+-dontwarn org.apache.log4j.**
+-keep class org.apache.log4j.**
+-keep class org.apache.log4j.**{*;}
+
+-dontwarn freemarker.**
+-keep class freemarker.**{*;}
+-dontwarn freemarker.ext.**
+-keep class freemarker.ext.**
+-keep class freemarker.ext.**{*;}
+
+-dontnote com.gongwen.**
+-keep class com.gongwen.**
+-keep class com.gongwen.**{*;}
+-keep class com.gongwen.marqueen.MarqueeFactory.**
+-keep class com.gongwen.marqueen.MarqueeFactory.**{*;}
+-dontnote org.jsoup.**
+-dontwarn org.jsoup.**
+-keep class org.jsoup.**
+-keep class org.jsoup.**{*;}
+
+-dontwarn com.romainpiel.shimmer.**
+-dontwarn com.romainpiel.**
+-keep class com.romainpiel.**
+-keep class com.romainpiel.**{*;}
+-keep class com.romainpiel.shimmer.**
+-keep class com.romainpiel.shimmer.**{*;}
+-keep class com.romainpiel.shimmer.Shimmer.**
+-keep class com.romainpiel.shimmer.Shimmer.**{*;}
+
+-dontwarn butterknife.internal.**
+-dontwarn butterknife.ButterKnife.**
+-dontnote butterknife.ButterKnife.**
+-keep class butterknife.ButterKnife.**
+-keep class butterknife.ButterKnife.**{*;}
+-keep class butterknife.BindView.**
+-keep class butterknife.BindView.**{*;}
+-dontnote butterknife.internal.**
+-keep class butterknife.internal.**
+-keep class butterknife.internal.**{*;}
+-keep class butterknife.** { *; }
+-dontwarn butterknife.internal.**
+-keep class **$$ViewBinder { *; }
+-keepclasseswithmembernames class * {
+    @butterknife.* <fields>;
+}
+-keepclasseswithmembernames class * {
+    @butterknife.* <methods>;
+}
+-dontwarn com.yalantis.contextmenu.lib.**
+-keep class com.yalantis.contextmenu.lib.**
+-keep class com.yalantis.contextmenu.lib.**{*;}
+
+-dontwarn com.nineoldandroids.**
+-dontwarn com.nineoldandroids.animation.**
+-keep class com.nineoldandroids.**
+-keep class com.nineoldandroids.**{*;}
+-keep class com.nineoldandroids.animation.**
+-keep class com.nineoldandroids.animation.**{*;}
+
+-dontwarn com.tencent.**
+-keep class com.tencent.**
+-keep class com.tencent.**{*;}
+
+-dontwarn android.webkit.WebView
+-dontwarn android.net.http.SslError
+-dontwarn android.webkit.WebViewClient
+
+-dontwarn pub.devrel.easypermissions.**
+-keep class pub.devrel.easypermissions.EasyPermissions.**
+-keep class pub.devrel.easypermissions.EasyPermissions.**{*;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

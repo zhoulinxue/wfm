@@ -60,10 +60,6 @@ public class NavTwitterFragment extends BaseNavPagerFragment {
             fragment = new UkCartoonFragment();
         }else if (title.equals("综艺")) {
             fragment = new UkVarietyFragment();
-        }else if (title.equals("明星")) {
-            fragment = new TwitterGridViewFragment();
-        } else if (title.equals("音乐")) {
-            fragment = TwitterRecyclerFragment.newInstance(TwitterRecyclerFragment.TYPE_LINEAR);
         }
         return fragment;
     }

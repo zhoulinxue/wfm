@@ -7,9 +7,6 @@ import android.os.Build;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.aspsine.swipetoloadlayout.BuildConfig;
 
 
@@ -22,7 +19,6 @@ public class App extends Application {
     public static SharedPreferences preferences;
     public static SharedPreferences.Editor editor;
     public static App wfmApplication;
-    private static RequestQueue sRequestQueue;
     private static Context sContext;
 
 
@@ -39,12 +35,6 @@ public class App extends Application {
         if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
             StrictMode.enableDefaults();
         }
-    }
-    public static RequestQueue getRequestQueue() {
-        if (sRequestQueue == null) {
-            sRequestQueue = Volley.newRequestQueue(sContext);
-        }
-        return sRequestQueue;
     }
 
     @Override

@@ -52,13 +52,7 @@ public class UkCartoonFragment extends BaseFragment implements OnRefreshListener
     private int page=0;
     private int pageNum;
     private int netPage=0;
-    public static Fragment newInstance(int type) {
-        TwitterRecyclerFragment fragment = new TwitterRecyclerFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt("LAYOUT_MANAGER_TYPE", type);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
+
     public UkCartoonFragment() {
         // Required empty public constructor
     }
