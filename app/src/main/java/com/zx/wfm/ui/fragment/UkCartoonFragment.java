@@ -162,7 +162,7 @@ public class UkCartoonFragment extends BaseFragment implements OnRefreshListener
         if (NetWorkUtils.isNetworkConnected(getActivity())) {
             server.getTeleVisionDataFromNet(Constants.Net.CARTOON_URL);
         } else {
-            refreshCompelete(swipeToLoadLayout, movieAdapter.getmList());
+            refreshCompelete(swipeToLoadLayout,null);
         }
     }
 
@@ -178,7 +178,7 @@ public class UkCartoonFragment extends BaseFragment implements OnRefreshListener
     @Override
     public void OnGetTelevisionFromLeadCload(List<Televisionbean> list, String url) {
         movieAdapter.addAll(DBManager.getInstance().getTelevisionList(url));
-        refreshCompelete(swipeToLoadLayout, movieAdapter.getmList());
+        refreshCompelete(swipeToLoadLayout, null);
     }
 
     @Override
@@ -186,12 +186,12 @@ public class UkCartoonFragment extends BaseFragment implements OnRefreshListener
 
         DBManager.getInstance().saveTelevisions(list);
         movieAdapter.addAll(DBManager.getInstance().getTelevisionList(url));
-        refreshCompelete(swipeToLoadLayout, movieAdapter.getmList());
+        refreshCompelete(swipeToLoadLayout, list);
     }
 
     @Override
     public void onParseUrlError(Exception e) {
-        refreshCompelete(swipeToLoadLayout, movieAdapter.getmList());
+        refreshCompelete(swipeToLoadLayout, null);
     }
 
     @Override

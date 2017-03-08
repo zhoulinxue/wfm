@@ -165,7 +165,7 @@ public class UkVarietyFragment extends BaseFragment implements OnRefreshListener
         if (NetWorkUtils.isNetworkConnected(getActivity())) {
             server.getTeleVisionDataFromNet(Constants.Net.VARIETY_URL);
         } else {
-            refreshCompelete(swipeToLoadLayout, movieAdapter.getmList());
+            refreshCompelete(swipeToLoadLayout, null);
         }
     }
 
@@ -185,14 +185,14 @@ public class UkVarietyFragment extends BaseFragment implements OnRefreshListener
 
     @Override
     public void onParsrTelevisionUrlCallback(List<Televisionbean> list, String url) {
-        refreshCompelete(swipeToLoadLayout, null);
         DBManager.getInstance().saveTelevisions(list);
         movieAdapter.addAll(DBManager.getInstance().getTelevisionList(url));
+        refreshCompelete(swipeToLoadLayout, list);
     }
 
     @Override
     public void onParseUrlError(Exception e) {
-        refreshCompelete(swipeToLoadLayout, movieAdapter.getmList());
+        refreshCompelete(swipeToLoadLayout,null);
     }
 
     @Override
