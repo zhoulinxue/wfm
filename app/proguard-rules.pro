@@ -20,7 +20,7 @@
 -dontpreverify  #混淆时是否做预校验（可去掉加快混淆速度）
 -verbose #混淆时是否记录日志（混淆后生产映射文件 map 类名 -> 转化后类名的映射
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*  #淆采用的算法
-#-ignorewarnings
+-ignorewarnings
 -keep public class * extends android.app.Activity  #所有activity的子类不要去混淆
 -keep public class * extends android.app.Application
 -keep public class * extends android.app.Service

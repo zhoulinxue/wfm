@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import com.aspsine.fragmentnavigator.FragmentNavigator;
 import com.zx.wfm.ui.BaseActivity;
 import com.zx.wfm.ui.fragment.BaseToolbarFragment;
+import com.zx.wfm.utils.ToastUtil;
 import com.zx.wfm.utils.UKutils;
 
 import java.util.Arrays;
@@ -71,7 +72,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public void openDrawer() {
-        drawerLayout.openDrawer(GravityCompat.START);
+//        drawerLayout.openDrawer(GravityCompat.START);
+        ToastUtil.showToastShort(this,"敬请期待");
     }
 
     @Override
