@@ -47,7 +47,7 @@ public class BaseActivity extends AppCompatActivity implements EasyPermissions.P
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
         super.setContentView(layoutResID);
-        ButterKnife.inject(this);
+
     }
 
     @Override

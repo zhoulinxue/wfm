@@ -91,7 +91,7 @@ public class BaseFragment extends Fragment implements ParseUrlServer {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this,view);
+        ButterKnife.bind(this,view);
         preferences= PreferenceManager.getDefaultSharedPreferences(getActivity());
         editor=preferences.edit();
     }

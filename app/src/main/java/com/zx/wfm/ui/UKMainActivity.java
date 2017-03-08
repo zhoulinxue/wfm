@@ -30,15 +30,15 @@ import com.zx.wfm.utils.ThreadUtil;
 import com.zx.wfm.utils.ToastUtil;
 import com.zx.wfm.utils.UKutils;
 
-import butterknife.InjectView;
+import butterknife.BindView;
 
 
 public class UKMainActivity extends BaseActivity implements OnRefreshListener, OnLoadMoreListener,BaseRecycleViewAdapter.OnItemClickListener {
     private List<Televisionbean> list;
-    @InjectView(R.id.swipe_target)
+    @BindView(R.id.swipe_target)
     protected RecyclerView mRecyclerView;
     protected MovieAdapter movieAdapter;
-    @InjectView(R.id.swipeToLoadLayout)
+    @BindView(R.id.swipeToLoadLayout)
     protected SwipeToLoadLayout swipeToLoadLayout;
     private int page=0;
     private int pageNum;

@@ -6,28 +6,19 @@ import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
-import com.bartoszlipinski.recyclerviewheader.RecyclerViewHeader;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.zx.wfm.Application.App;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.bean.Televisionbean;
@@ -35,17 +26,14 @@ import com.zx.wfm.dao.DBManager;
 import com.zx.wfm.ui.adapters.BaseRecycleViewAdapter;
 import com.zx.wfm.ui.adapters.MovieItemAdapter;
 import com.zx.wfm.ui.view.ItemDecoration;
-import com.zx.wfm.ui.view.RecycleViewDivider;
 import com.zx.wfm.utils.Constants;
-import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.ThreadUtil;
-import com.zx.wfm.utils.UKutils;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.InjectView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
@@ -54,51 +42,54 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
  * Created by zhouxue on 2016/7/29.
  * Company czl_zva
  */
-public class VideoDetailActivity extends BaseActivity implements View.OnClickListener ,BaseRecycleViewAdapter.OnItemClickListener,AppBarLayout.OnOffsetChangedListener{
-    @InjectView(R.id.video_numn_recycal)
-     RecyclerView mRecyclerView;
-    @InjectView(R.id.main_collapsing)
-    CollapsingToolbarLayout collapsingToolbarLayout;
-    @InjectView(R.id.head_img)
+public class VideoDetailActivity extends BaseActivity implements View.OnClickListener, BaseRecycleViewAdapter.OnItemClickListener, AppBarLayout.OnOffsetChangedListener {
+
+    @BindView(R.id.head_img)
     ImageView headimg;
-    @InjectView(R.id.circleImageView_head)
+    @BindView(R.id.circleImageView_head)
     CircleImageView circleimageview;
-    @InjectView(R.id.main_appbar)
-    AppBarLayout appBarLayout;
-    @InjectView(R.id.video_desc)
+    @BindView(R.id.video_desc)
     TextView descTv;
-    MovieItemAdapter movieItemAdapter;
-    @InjectView(R.id.header_layout)
+    @BindView(R.id.header_layout)
     LinearLayout headerLayout;
-    @InjectView(R.id.main_toolbar)
-    Toolbar toolbar ;
+    @BindView(R.id.main_toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.main_collapsing)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.main_appbar)
+    AppBarLayout appBarLayout;
+    @BindView(R.id.video_numn_recycal)
+    RecyclerView mRecyclerView;
     private Televisionbean videobean;
     private int mMaxScrollSize;
     private static final int PERCENTAGE_TO_ANIMATE_AVATAR = 20;
     private boolean mIsAvatarShown = true;
+    private MovieItemAdapter movieItemAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_coordinator);
-        Intent intent=getIntent();
-        videobean= (Televisionbean) intent.getExtras().getParcelable(Constants.VIDEO_OBJ);
-        final List<Moviebean> list= DBManager.getInstance().getMovieListByTeleId(videobean.getTelevisionId());
-        if(list==null||list.size()==0){
+        ButterKnife.bind(this);
+        Intent intent = getIntent();
+        videobean = (Televisionbean) intent.getExtras().getParcelable(Constants.VIDEO_OBJ);
+        final List<Moviebean> list = DBManager.getInstance().getMovieListByTeleId(videobean.getTelevisionId());
+        if (list == null || list.size() == 0) {
             server.getMovieDataFromNet(videobean);
         }
         appBarLayout.addOnOffsetChangedListener(this);
         Glide.with(this).load(videobean.getHeadUrl()).bitmapTransform(new BlurTransformation(this, 50)).into(headimg);
         Glide.with(this).load(videobean.getHeadUrl()).into(circleimageview);
         descTv.setText(videobean.getDesc());
-        movieItemAdapter=new MovieItemAdapter(this,list,R.layout.video_num_item_layout);
+        movieItemAdapter = new MovieItemAdapter(this, list, R.layout.video_num_item_layout);
         movieItemAdapter.setColumnNum(4);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         mRecyclerView.addItemDecoration(new ItemDecoration());
         collapsingToolbarLayout.setTitle(videobean.getVideoName());
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.style_color_primary_dark));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 onBackPressed();
             }
         });
@@ -107,26 +98,26 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void postToserver() {
-      final   List<Moviebean> list=movieItemAdapter.getmList();
-        List<Moviebean> objList=null;
-        if(list!=null&&list.size()!=0){
-            objList=new ArrayList<>();
-        }else {
+        final List<Moviebean> list = movieItemAdapter.getmList();
+        List<Moviebean> objList = null;
+        if (list != null && list.size() != 0) {
+            objList = new ArrayList<>();
+        } else {
             return;
         }
-        for(Moviebean bean:list){
-            Moviebean mbean=(Moviebean)bean.toAVObject();
+        for (Moviebean bean : list) {
+            Moviebean mbean = (Moviebean) bean.toAVObject();
 //            mbean.setObjectId("");
             objList.add(mbean);
         }
-        if(list!=null&&list.size()!=0) {
+        if (list != null && list.size() != 0) {
             final List<Moviebean> finalObjList = objList;
             AVObject.saveAllInBackground(objList, new SaveCallback() {
                 @Override
                 public void done(AVException e) {
-                    if(e==null) {
+                    if (e == null) {
                         DBManager.getInstance().saveMoveBean(finalObjList);
-                    }else {
+                    } else {
                         e.printStackTrace();
                         Log.e("保存数据", e.getMessage());
                     }
@@ -155,8 +146,8 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void OnItemClickListener(View view, final int position) {
         movieItemAdapter.setCurrentPosition(position);
-        final ProgressBar bar= (ProgressBar) view.findViewById(R.id.progressbar);
-        final  TextView tv= (TextView) view.findViewById(R.id.video_num_tv);
+        final ProgressBar bar = (ProgressBar) view.findViewById(R.id.progressbar);
+        final TextView tv = (TextView) view.findViewById(R.id.video_num_tv);
         tv.setVisibility(View.GONE);
         bar.setVisibility(View.VISIBLE);
         ThreadUtil.runOnUiThread(new Runnable() {
@@ -164,12 +155,12 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
             public void run() {
                 bar.setVisibility(View.GONE);
                 tv.setVisibility(View.VISIBLE);
-                Intent intent=new Intent(VideoDetailActivity.this,PlayActivity.class);
+                Intent intent = new Intent(VideoDetailActivity.this, PlayActivity.class);
                 intent.putParcelableArrayListExtra(Constants.VIDEO_OBJ_LIST, (ArrayList<? extends Parcelable>) movieItemAdapter.getmList());
-                intent.putExtra(Constants.VIDEO_OBJ_POS,position);
+                intent.putExtra(Constants.VIDEO_OBJ_POS, position);
                 startActivity(intent);
             }
-        },200);
+        }, 200);
 
 
     }
@@ -199,53 +190,6 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
             mIsAvatarShown = false;
             headerLayout.animate().scaleY(0).scaleX(0).setDuration(500).start();
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         if (percentage <= PERCENTAGE_TO_ANIMATE_AVATAR && !mIsAvatarShown) {

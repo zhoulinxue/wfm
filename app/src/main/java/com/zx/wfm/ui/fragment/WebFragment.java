@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.InjectView;
+import butterknife.BindView;
 
 import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 
@@ -56,7 +56,7 @@ import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
  */
 
 public class WebFragment extends BaseFragment {
-    @InjectView(R.id.webview)
+    @BindView(R.id.webview)
     WebView webview;
     private ProgressDialog mDialog;
     private Context mContext;
@@ -68,16 +68,16 @@ public class WebFragment extends BaseFragment {
     private int index=0;
     private boolean hasPress = false;
     private long firstTouchBackBt;
-    @InjectView(R.id.right_bottom_view)
+    @BindView(R.id.right_bottom_view)
     TextView rightbottomView;
-    @InjectView(R.id.fresh_video)
+    @BindView(R.id.fresh_video)
     Button refreshbtn;
 
-    @InjectView(R.id.marqueeView)
+    @BindView(R.id.marqueeView)
     MarqueeView marqueeView;
-    @InjectView(R.id.marqueeView_left)
+    @BindView(R.id.marqueeView_left)
     MarqueeView marqueeViewLeft;
-    @InjectView(R.id.marqueeView_right)
+    @BindView(R.id.marqueeView_right)
     MarqueeView marqueeViewRight;
 
     private Paint paint;
@@ -96,11 +96,6 @@ public class WebFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mContext = getActivity();
-//        List<Moviebean> beans= (List<Moviebean>) getIntent().getSerializableExtra(Constants.VIDEO_ITEM_OBJ);
-//        if(beans==null||beans.size()==0){
-//            return;
-//        }
-//        home= beans.get(0).getItemUrl();
         SharedPreferences share = PreferenceManager
                 .getDefaultSharedPreferences(mContext);
         mDialog = new ProgressDialog(mContext);

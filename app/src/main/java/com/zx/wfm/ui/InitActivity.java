@@ -44,7 +44,7 @@ import com.zx.wfm.utils.UKutils;
 import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 import pub.devrel.easypermissions.EasyPermissions;
 
 import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
@@ -57,18 +57,18 @@ public class InitActivity extends BaseActivity{
     private static final long DURATION_TIME =1250 ;
     private Handler mHandler;
     private  int second=0;
-    @InjectView(R.id.roundProgressBar)
+    @BindView(R.id.roundProgressBar)
     protected RoundProgressBar bar;
     boolean isOnPause=false;
-    @InjectView(R.id.sui)
+    @BindView(R.id.sui)
     TextView suitv;
-    @InjectView(R.id.yue)
+    @BindView(R.id.yue)
     TextView yuetv;
-    @InjectView(R.id.liu)
+    @BindView(R.id.liu)
     TextView liutv;
-    @InjectView(R.id.sheng)
+    @BindView(R.id.sheng)
     TextView sheng;
-    @InjectView(R.id.shimmer_tv)
+    @BindView(R.id.shimmer_tv)
     ShimmerTextView shimmerTextView;
     private int width;
     private int hight;
@@ -80,6 +80,7 @@ public class InitActivity extends BaseActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.init_layout);
+        ButterKnife.bind(this);
         service=new NetWorkServerImpl();
         mHandler=new Handler();
         width=PhoneUtils.getScreenWidth(this);

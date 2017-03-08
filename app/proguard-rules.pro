@@ -20,7 +20,7 @@
 -dontpreverify  #混淆时是否做预校验（可去掉加快混淆速度）
 -verbose #混淆时是否记录日志（混淆后生产映射文件 map 类名 -> 转化后类名的映射
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*  #淆采用的算法
--ignorewarnings
+#-ignorewarnings
 -keep public class * extends android.app.Activity  #所有activity的子类不要去混淆
 -keep public class * extends android.app.Application
 -keep public class * extends android.app.Service
@@ -124,11 +124,6 @@
 }
 #对WebView的简单说明下：经过实战检验,做腾讯QQ登录，如果引用他们提供的jar，若不加防止WebChromeClient混淆的代码，oauth认证无法回调，反编译基代码后可看到他们有用到WebChromeClient，加入此代码即可。
 
--dontwarn net.sourceforge.pinyin4j.**
--keep class net.sourceforge.pinyin4j.**{*;}
--keep class net.sourceforge.pinyin4j.format.**{*;}
--keep class net.sourceforge.pinyin4j.format.exception.**{*;}
-
 -dontwarn com.alibaba.fastjson.**
 -dontnote com.alibaba.fastjson.**
 -keep class com.alibaba.fastjson.**
@@ -143,16 +138,11 @@
 -keep class com.alibaba.fastjson.util.** { *; }
 
 -keep class com.chinaMoblie.** { *; }
--keep class com.iflytek.** { *; }
--keep class io.netty.** { *; }
 -keep class com.alibaba.** { *; }
 -keep class vi.com.gdi.bgl.android.**{*;}
 -keep class com.ut.device.UTDevice.**
 -keep class com.ut.device.UTDevice.**{*;}
 -keep class com.google.gson.**{*;}
--keep class com.android.volley.**{*;}
--keepclasseswithmembers class io.netty.** {*;}
--keepnames class io.netty.** { *;}
 -keep class org.apache.harmony.xnet.provider.jsse.OpenSSLSocketImpl.**
 -keep class org.apache.harmony.xnet.provider.jsse.OpenSSLSocketImpl.**{*;}
 
@@ -160,13 +150,6 @@
 -dontnote com.google.**
 -keep class com.google.**
 -keep class com.google.**{*;}
-
-#极光代码混淆
--dontoptimize
--dontpreverify
-
--dontwarn cn.jpush.**
--keep class cn.jpush.** { *; }
 # bugly
 -dontwarn com.tencent.bugly.**
 -dontnote com.tencent.bugly.**
@@ -174,8 +157,8 @@
 -keep class com.tencent.bugly.**{*;}
 -keep class com.tencent.bugly.crashreport.**
 -keep class com.tencent.bugly.crashreport.**{*;}
-
-
+-dontwarn com.tencent.tinker.**
+-keep class com.tencent.tinker.**{*;}
 
 
 #glide
@@ -211,7 +194,6 @@
 ## ----------------------------------
 ##   ########## Gson混淆    ##########
 ## ----------------------------------
--keep class sun.misc.Unsafe { *; }
 -keep class com.google.gson.examples.Android.model.** { *; }
 # OkHttp3
 -dontwarn com.squareup.okhttp3.**
@@ -378,8 +360,20 @@
 -dontwarn freemarker.**
 -keep class freemarker.**{*;}
 -dontwarn freemarker.ext.**
+
 -keep class freemarker.ext.**
 -keep class freemarker.ext.**{*;}
+-dontwarn freemarker.ext.jsp.**
+-keep class  freemarker.ext.jsp.**
+-keep class  freemarker.ext.jsp.**{*;}
+-keep class  freemarker.ext.jython.**{*;}
+-keep class  freemarker.ext.rhino.**{*;}
+-dontwarn freemarker.template.**
+-keep class  freemarker.template.**{*;}
+-dontwarn freemarker.core.**
+-dontnote freemarker.core.**
+-keep class freemarker.core.**
+-keep class freemarker.core.**{*;}
 
 -dontnote com.gongwen.**
 -keep class com.gongwen.**
@@ -437,8 +431,11 @@
 -dontwarn android.webkit.WebView
 -dontwarn android.net.http.SslError
 -dontwarn android.webkit.WebViewClient
-
--dontwarn pub.devrel.easypermissions.**
+-dontwarn pub.devrel.**
+-keep class pub.devrel.**
+-keep class pub.devrel.**{*;}
+-keep class pub.devrel.easypermissions.**
+-keep class pub.devrel.easypermissions.**{*;}
 -keep class pub.devrel.easypermissions.EasyPermissions.**
 -keep class pub.devrel.easypermissions.EasyPermissions.**{*;}
 
