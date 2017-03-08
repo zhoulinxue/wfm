@@ -178,14 +178,15 @@ public class UkCartoonFragment extends BaseFragment implements OnRefreshListener
     @Override
     public void OnGetTelevisionFromLeadCload(List<Televisionbean> list, String url) {
         movieAdapter.addAll(DBManager.getInstance().getTelevisionList(url));
-        refreshCompelete(swipeToLoadLayout, null);
+        refreshCompelete(swipeToLoadLayout, movieAdapter.getmList());
     }
 
     @Override
     public void onParsrTelevisionUrlCallback(List<Televisionbean> list, String url) {
-        refreshCompelete(swipeToLoadLayout, null);
+
         DBManager.getInstance().saveTelevisions(list);
         movieAdapter.addAll(DBManager.getInstance().getTelevisionList(url));
+        refreshCompelete(swipeToLoadLayout, movieAdapter.getmList());
     }
 
     @Override
