@@ -72,12 +72,6 @@
         <activity android:name=".ui.MediaPlayer"
             android:screenOrientation="portrait">
         </activity>
-        <receiver android:name="com.wilddog.client.receiver.WilddogAuthCastReceiver">
-            <intent-filter>
-                <action android:name="com.wilddog.wilddogauth.signinsuccess"/>
-                <action android:name="com.wilddog.wilddogauth.signoutsuccess"/>
-            </intent-filter>
-        </receiver>
         <receiver android:name=".service.EventBroadCastRecevier">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
