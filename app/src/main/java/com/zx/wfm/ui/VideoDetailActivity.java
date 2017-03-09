@@ -97,6 +97,7 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         movieItemAdapter.setOnItemClickListener(this);
     }
 
+
     private void postToserver() {
         final List<Moviebean> list = movieItemAdapter.getmList();
         List<Moviebean> objList = null;
