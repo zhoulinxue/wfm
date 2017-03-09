@@ -203,6 +203,7 @@ public class InitActivity extends BaseActivity{
 
     private void initBugly() {
         Beta.initDelay = 2 * 1000;
+        Beta.upgradeCheckPeriod=10*1000;
         Bugly.init(getApplicationContext(), "7a23adc558", false);
     }
 
