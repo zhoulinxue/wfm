@@ -70,6 +70,7 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_coordinator);
+        overridePendingTransition(R.anim.bottom_slid_in, R.anim.bottom_slid_out);
         ButterKnife.bind(this);
         Intent intent = getIntent();
         videobean = (Televisionbean) intent.getExtras().getParcelable(Constants.VIDEO_OBJ);
@@ -125,12 +126,6 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
                 }
             });
         }
-    }
-
-    @Override
-    public void startActivity(Intent intent) {
-        super.startActivity(intent);
-        overridePendingTransition(R.anim.bottom_slid_in, R.anim.bottom_slid_out);
     }
 
     @Override
