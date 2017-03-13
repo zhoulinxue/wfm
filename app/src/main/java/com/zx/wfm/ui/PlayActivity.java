@@ -233,14 +233,14 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
         @Override
         public void run() {
 //			Log.e("toolbar",second+"");
-            if (second >= 10 * 1000) {
+            if (second >= 5 * 1000) {
                 isRuning = false;
                 mHandler.removeCallbacks(null);
                 toobar.setVisibility(View.GONE);
             } else if (toobar.getVisibility() == View.VISIBLE) {
                 isRuning = true;
-                second += 5 * 1000;
-                mHandler.postDelayed(gotoMainRunable, 5 * 1000);
+                second += 1 * 1000;
+                mHandler.postDelayed(gotoMainRunable, 1 * 1000);
             }
         }
     };

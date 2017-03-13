@@ -38,6 +38,7 @@ public class BaseToolbarFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         if (toolbar != null) {
+            toolbar.setPopupTheme(R.style.OverflowMenuStyle);
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             final ActionBar actionbar = getSupportActionBar();
             actionbar.setHomeAsUpIndicator(R.mipmap.ic_menu);

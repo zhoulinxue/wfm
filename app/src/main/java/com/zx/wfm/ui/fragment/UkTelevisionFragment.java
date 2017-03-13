@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -62,6 +63,8 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
     private int page = 0;
     private int pageNum;
     private int netPage = 0;
+    private String currentPage=Constants.Net.TELEVISION_URL;
+    private String newPage=Constants.Net.TELEVISION_URL;
 
     public UkTelevisionFragment() {
     }
@@ -85,12 +88,7 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         if (swipeToLoadLayout == null) {
             return;
         }
-        swipeToLoadLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeToLoadLayout.setRefreshing(true);
-            }
-        });
+        postRefresh(currentPage);
     }
 
     @Override
@@ -98,8 +96,8 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         super.onViewCreated(view, savedInstanceState);
         pageNum = preferences.getInt(Constants.PAGE_NUM, Constants.PAGE_MIN_NUM);
         netPage = preferences.getInt(Constants.NET_PAGE_NUM, 0);
-        list = DBManager.getInstance().getTelevisionList(Constants.Net.TELEVISION_URL);
-//        Log.i("下一页", UKutils.getNextPageUrl(Constants.Net.TELEVISION_URL));
+        list = DBManager.getInstance().getTelevisionList(currentPage);
+//        Log.i("下一页", UKutils.getNextPageUrl(currentPage));
         movieAdapter = new MovieAdapter(getActivity(), list, R.layout.movie_item);
         movieAdapter.setColumnNum(2);
         movieAdapter.setOnItemClickListener(this);
@@ -139,17 +137,12 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
                 }
             }
         });
-
-        swipeToLoadLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeToLoadLayout.setRefreshing(true);
-            }
-        });
+         postRefresh(currentPage);
     }
 
     @Override
     public void onLoadMore() {
+        page++;
         List<Televisionbean> currentlist = movieAdapter.getmList();
         final String urlpage = UKutils.getNextPageUrl(currentlist.get(currentlist.size() - 1).getNetPage());
         final List<Televisionbean> list = DBManager.getInstance().getTelevisionList(urlpage);
@@ -165,25 +158,12 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
     public void onRefresh() {
         page = 0;
         if (NetWorkUtils.isNetworkConnected(getActivity())) {
-            server.getTeleVisionDataFromNet(Constants.Net.TELEVISION_URL);
+            server.getTeleVisionDataFromNet(newPage);
         } else {
             refreshCompelete(swipeToLoadLayout,null);
         }
 
     }
-
-//    private void loadMoreCompelete() {
-//        if(mContext==null){
-//            return;
-//        }
-//        mContext.runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                if(swipeToLoadLayout!=null)
-//                    swipeToLoadLayout.setLoadingMore(false);
-//            }
-//        });
-//    }
 
     @Override
     public void OnItemClickListener(View view, int position) {
@@ -198,7 +178,12 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
 
     @Override
     public void OnGetTelevisionFromLeadCload(List<Televisionbean> list, String url) {
-        movieAdapter.addAll(DBManager.getInstance().getTelevisionList(url));
+        if(currentPage.equals(url)||page!=0) {
+            movieAdapter.addAll(DBManager.getInstance().getTelevisionList(url));
+        }else {
+            currentPage=url;
+            movieAdapter.setmList(DBManager.getInstance().getTelevisionList(url));
+        }
         refreshCompelete(swipeToLoadLayout, null);
     }
 
@@ -219,4 +204,17 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
         super.onDestroyView();
 //        ButterKnife.unBindView(this);
     }
+    @Override
+    public boolean postRefresh(String url){
+        newPage=url;
+        swipeToLoadLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeToLoadLayout.setRefreshing(true);
+            }
+        });
+        return true;
+    }
+
+
 }

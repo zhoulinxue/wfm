@@ -4,10 +4,12 @@ package com.zx.wfm.ui.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.zx.wfm.R;
+import com.zx.wfm.utils.Constants;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,32 +39,53 @@ public class NavTwitterFragment extends BaseNavPagerFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setTitle("优酷视频");
+        setTitle("电视剧");
     }
 
     @Override
     protected String[] getTitles() {
-        return new String[]{"电视剧","电影","动漫","综艺"
-//                , "明星",
-//                "音乐"
-        };
+        return new String[]{"优酷"};
     }
 
     @Override
     protected Fragment getFragment(int position) {
         String title = getTitles()[position];
         Fragment fragment = null;
-        if(title.equals("电视剧")){
+        if(title.equals("优酷")){
             fragment=new UkTelevisionFragment();
-        }else if (title.equals("电影")) {
-            fragment = new UkMoveFragment();
-        } else if (title.equals("动漫")) {
-            fragment = new UkCartoonFragment();
-        }else if (title.equals("综艺")) {
-            fragment = new UkVarietyFragment();
         }
         return fragment;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        setTitle(getTitiFromUrl(item.getItemId()));
+        switch (item.getItemId()){
+            case R.id.action_television:
+               return  ((BaseFragment)mAdapter.getItem(viewPager.getCurrentItem())).postRefresh(Constants.Net.TELEVISION_URL);
+            case R.id.action_movie:
+                return  ((BaseFragment)mAdapter.getItem(viewPager.getCurrentItem())).postRefresh(Constants.Net.MOVIE_URL);
 
+            case R.id.action_cartoon:
+                return ((BaseFragment)mAdapter.getItem(viewPager.getCurrentItem())).postRefresh(Constants.Net.CARTOON_URL);
+            case R.id.action_varty:
+                return  ((BaseFragment)mAdapter.getItem(viewPager.getCurrentItem())).postRefresh(Constants.Net.VARIETY_URL);
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    public String getTitiFromUrl(int id) {
+        switch (id){
+            case R.id.action_cartoon:
+                return  "动漫";
+            case R.id.action_television:
+                return  "电视剧";
+            case R.id.action_varty:
+                return  "综艺";
+            case R.id.action_movie:
+                return  "电影";
+
+        }
+        return "优酷";
+    }
 }

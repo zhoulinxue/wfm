@@ -149,4 +149,7 @@ public class BaseFragment extends Fragment implements ParseUrlServer {
     public void onNetWorkServerCreat(NetWorkServer server){
 
     }
+     public boolean  postRefresh(String url){
+        return true;
+     };
 }

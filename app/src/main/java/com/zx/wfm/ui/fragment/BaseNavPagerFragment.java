@@ -21,9 +21,9 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public abstract class BaseNavPagerFragment extends BaseNavigationFragment {
-    private ViewPager viewPager;
+    protected ViewPager viewPager;
     private TabLayout tabLayout;
-    private Adapter mAdapter;
+    protected Adapter mAdapter;
     private String[] titles;
 
     public BaseNavPagerFragment() {

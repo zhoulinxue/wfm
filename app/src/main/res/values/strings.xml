@@ -35,5 +35,9 @@
     <string name="init_string">194093798@qq.com\n code by:zx</string>
     <string name="action_search">搜索</string>
     <string name="action_about">关于</string>
+    <string name="television">电视剧</string>
+    <string name="movie">电影</string>
+    <string name="cartoon">动漫</string>
+    <string name="varty">综艺</string>
 
 </resources>

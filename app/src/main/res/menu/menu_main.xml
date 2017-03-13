@@ -1,12 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <!--<item-->
-        <!--android:id="@+id/action_settings"-->
-        <!--android:orderInCategory="100"-->
-        <!--android:title="@string/action_settings"-->
-        <!--app:showAsAction="never" />-->
-
     <item
         android:id="@+id/action_search"
         android:title="输入视频名字"
@@ -14,6 +7,32 @@
         android:icon="@mipmap/ic_action_search"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/action_television"
+        android:orderInCategory="90"
+        android:title="@string/television"
+        android:actionLayout="@layout/action_item"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_movie"
+        android:orderInCategory="100"
+        android:title="@string/movie"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_cartoon"
+        android:orderInCategory="110"
+        android:title="@string/cartoon"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_varty"
+        android:orderInCategory="110"
+        android:title="@string/varty"
+        app:showAsAction="never"
         />
 
 </menu>
