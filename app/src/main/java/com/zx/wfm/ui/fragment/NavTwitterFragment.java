@@ -39,8 +39,9 @@ public class NavTwitterFragment extends BaseNavPagerFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setTitle("电视剧");
+        setTitle("优酷视频");
     }
+
 
     @Override
     protected String[] getTitles() {
@@ -59,13 +60,11 @@ public class NavTwitterFragment extends BaseNavPagerFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        setTitle(getTitiFromUrl(item.getItemId()));
         switch (item.getItemId()){
             case R.id.action_television:
                return  ((BaseFragment)mAdapter.getItem(viewPager.getCurrentItem())).postRefresh(Constants.Net.TELEVISION_URL);
             case R.id.action_movie:
                 return  ((BaseFragment)mAdapter.getItem(viewPager.getCurrentItem())).postRefresh(Constants.Net.MOVIE_URL);
-
             case R.id.action_cartoon:
                 return ((BaseFragment)mAdapter.getItem(viewPager.getCurrentItem())).postRefresh(Constants.Net.CARTOON_URL);
             case R.id.action_varty:
@@ -73,19 +72,5 @@ public class NavTwitterFragment extends BaseNavPagerFragment {
 
         }
         return super.onOptionsItemSelected(item);
-    }
-    public String getTitiFromUrl(int id) {
-        switch (id){
-            case R.id.action_cartoon:
-                return  "动漫";
-            case R.id.action_television:
-                return  "电视剧";
-            case R.id.action_varty:
-                return  "综艺";
-            case R.id.action_movie:
-                return  "电影";
-
-        }
-        return "优酷";
     }
 }

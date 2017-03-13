@@ -213,8 +213,22 @@ public class UkTelevisionFragment extends BaseFragment implements OnRefreshListe
                 swipeToLoadLayout.setRefreshing(true);
             }
         });
+        ((NavTwitterFragment)getParentFragment()).setTitle(getTitiFromUrl(newPage));
         return true;
     }
 
+    public String getTitiFromUrl(String url) {
+        switch (url){
+            case Constants.Net.CARTOON_URL:
+               return  "动漫";
+            case Constants.Net.TELEVISION_URL:
+                return  "电视剧";
+            case Constants.Net.VARIETY_URL:
+                return  "综艺";
+            case Constants.Net.MOVIE_URL:
+                return  "电影";
 
+        }
+        return "优酷";
+    }
 }
