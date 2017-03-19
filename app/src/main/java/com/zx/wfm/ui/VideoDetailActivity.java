@@ -1,6 +1,8 @@
 package com.zx.wfm.ui;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
@@ -190,10 +192,12 @@ public class VideoDetailActivity extends BaseActivity implements BaseRecycleView
                 LoadCompelete();
                 DBManager.getInstance().upDateTeleMsg(finalBean);
                 if(e==null&& finalIsZan){
-                    fbutton.setBackgroundColor(getResources().getColor(R.color.white));
-                    fbutton.setBackgroundResource(R.mipmap.ic_thumb_up_black);
+                    fbutton.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+                    fbutton.setImageResource(R.mipmap.ic_thumb_up_black);
                     ToastUtil.showToastShort(VideoDetailActivity.this,"点赞成功");
                 }else if(e==null&&!finalIsZan){
+                    fbutton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.style_color_primary_dark)));
+                    fbutton.setImageResource(R.mipmap.ic_thumb_up_white);
                     ToastUtil.showToastShort(VideoDetailActivity.this,"取消赞");
                 }else {
                     ToastUtil.showToastShort(VideoDetailActivity.this,"操作失败");

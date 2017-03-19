@@ -88,7 +88,6 @@
 		android:layout_width="wrap_content"
 		android:layout_margin="@dimen/activity_horizontal_margin"
 		android:src="@mipmap/ic_thumb_up_white"
-
 		app:layout_anchor="@id/main_appbar"
 		app:layout_anchorGravity="bottom|right|end"
 		/>
