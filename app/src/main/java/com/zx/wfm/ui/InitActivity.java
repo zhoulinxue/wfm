@@ -14,10 +14,13 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVInstallation;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
+import com.avos.avoscloud.PushService;
+import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.SignUpCallback;
 import com.nineoldandroids.animation.Animator;
 import com.romainpiel.shimmer.Shimmer;
@@ -28,6 +31,7 @@ import com.zx.wfm.MainActivity;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.AVErrorbean;
 import com.zx.wfm.bean.Moviebean;
+import com.zx.wfm.bean.TeleMsgbean;
 import com.zx.wfm.bean.Televisionbean;
 import com.zx.wfm.bean.Userbean;
 import com.zx.wfm.dao.DBManager;
@@ -168,10 +172,24 @@ public class InitActivity extends BaseActivity{
             }
         });
         animateView(suitv);
+        AVObject.registerSubclass(TeleMsgbean.class);
         AVObject.registerSubclass(Televisionbean.class);
         AVObject.registerSubclass(Moviebean.class);
         AVOSCloud.initialize(InitActivity.this,"2zBSbem5VbsxPa1dou5nH8EQ-gzGzoHsz","ra2GN4GM8uypJQ8khu7H2wqg");
         AVOSCloud.setDebugLogEnabled(true);
+        AVInstallation.getCurrentInstallation().saveInBackground(new SaveCallback() {
+            public void done(AVException e) {
+                if (e == null) {
+                    // 保存成功
+                    String installationId = AVInstallation.getCurrentInstallation().getInstallationId();
+                    // 关联  installationId 到用户表等操作……
+                } else {
+                    // 保存失败，输出错误信息
+                }
+            }
+        });
+        PushService.setDefaultPushCallback(this, InitActivity.class);
+
         DownLoadDataToLocal();
     }
 

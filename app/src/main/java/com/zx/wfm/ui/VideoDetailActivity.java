@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,10 +19,12 @@ import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SaveCallback;
 import com.bumptech.glide.Glide;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.Moviebean;
+import com.zx.wfm.bean.TeleMsgbean;
 import com.zx.wfm.bean.Televisionbean;
 import com.zx.wfm.dao.DBManager;
 import com.zx.wfm.ui.adapters.BaseRecycleViewAdapter;
@@ -28,12 +32,14 @@ import com.zx.wfm.ui.adapters.MovieItemAdapter;
 import com.zx.wfm.ui.view.ItemDecoration;
 import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.ThreadUtil;
+import com.zx.wfm.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
@@ -42,7 +48,7 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
  * Created by zhouxue on 2016/7/29.
  * Company czl_zva
  */
-public class VideoDetailActivity extends BaseActivity implements View.OnClickListener, BaseRecycleViewAdapter.OnItemClickListener, AppBarLayout.OnOffsetChangedListener {
+public class VideoDetailActivity extends BaseActivity implements BaseRecycleViewAdapter.OnItemClickListener, AppBarLayout.OnOffsetChangedListener {
 
     @BindView(R.id.head_img)
     ImageView headimg;
@@ -61,6 +67,8 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     @BindView(R.id.video_numn_recycal)
     RecyclerView mRecyclerView;
     private Televisionbean videobean;
+    @BindView(R.id.zan_view)
+    FloatingActionButton fbutton;
     private int mMaxScrollSize;
     private static final int PERCENTAGE_TO_ANIMATE_AVATAR = 20;
     private boolean mIsAvatarShown = true;
@@ -96,8 +104,8 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         });
         mRecyclerView.setAdapter(movieItemAdapter);
         movieItemAdapter.setOnItemClickListener(this);
-    }
 
+    }
 
     private void postToserver() {
         final List<Moviebean> list = movieItemAdapter.getmList();
@@ -133,10 +141,65 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         super.finish();
         overridePendingTransition(R.anim.bottom_slid_in, R.anim.bottom_slid_out);
     }
+    @OnClick({R.id.zan_view})
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.zan_view:
+                onLoadingViewShow(Constants.Request_Code.ZAN);
+                break;
+        }
+    }
 
     @Override
-    public void onClick(View v) {
+    protected void onStartNetWork(int netCode) {
+        super.onStartNetWork(netCode);
+        switch (netCode){
+            case Constants.Request_Code.ZAN:
+                zanNetWork(videobean);
+                break;
+        }
+    }
 
+    private void zanNetWork(Televisionbean videobean) {
+        boolean isZan=true;
+        TeleMsgbean bean=DBManager.getInstance().getTeleMsgBean(videobean);
+        if(bean==null){
+           bean=new TeleMsgbean();
+//            bean.setUserid(AVUser.getCurrentUser());
+            bean.setIsZan("1");
+            bean.setTelevisionId(videobean.getTelevisionId());
+            bean.setPlayNum("0");
+            if(movieItemAdapter.getmList()!=null) {
+                bean.setTotal(movieItemAdapter.getmList().size()+"");
+            }
+        }else {
+            if("1".equals(bean.getIsZan())) {
+                isZan = false;
+                bean.setIsZan("");
+            }else {
+                isZan = true;
+                bean.setIsZan("1");
+            }
+
+        };
+        final boolean finalIsZan = isZan;
+        final TeleMsgbean finalBean = bean;
+        ((TeleMsgbean)bean.toAVObject()).saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                LoadCompelete();
+                DBManager.getInstance().upDateTeleMsg(finalBean);
+                if(e==null&& finalIsZan){
+                    fbutton.setBackgroundColor(getResources().getColor(R.color.white));
+                    fbutton.setBackgroundResource(R.mipmap.ic_thumb_up_black);
+                    ToastUtil.showToastShort(VideoDetailActivity.this,"点赞成功");
+                }else if(e==null&&!finalIsZan){
+                    ToastUtil.showToastShort(VideoDetailActivity.this,"取消赞");
+                }else {
+                    ToastUtil.showToastShort(VideoDetailActivity.this,"操作失败");
+                }
+            }
+        });
     }
 
     @Override

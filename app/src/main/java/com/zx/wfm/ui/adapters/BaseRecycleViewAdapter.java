@@ -30,7 +30,7 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Rec
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_NORMAL = 1;
     private OnItemClickListener onItemClickListener;
-    private int currentPosition;
+    private int currentPosition=-1;
     protected int columnNum=1;
 
     public BaseRecycleViewAdapter(Context mContext, List<T> mDatas, int mLayoutId) {

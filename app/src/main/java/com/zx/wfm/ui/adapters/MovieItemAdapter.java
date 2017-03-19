@@ -48,7 +48,6 @@ public class MovieItemAdapter extends BaseRecycleViewAdapter<Moviebean> {
                 holder.itemView.setBackgroundResource(R.drawable.shape_bottom_start_radus_nomal);
             }else if(position%columnNum==0) {
                     holder.itemView.setBackgroundResource(R.drawable.shape_right_radus_nomal);
-
             } else if((position+1)%columnNum==0){
                 if(position+1==columnNum) {
                     holder.itemView.setBackgroundResource(R.drawable.shape_bottom_end_radus_nomal);

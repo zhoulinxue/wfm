@@ -27,6 +27,10 @@ public class Constants {
         public static  final  int RC_READ_PHONE_STATE=1002;
         public static final int INTERNET=1003;
         public static final int RC_LOCATION_CONTACTS_PERM = 1004;
+        // 加载视频
+        public final static int LOAD_VIDEO=10000;
+        //点赞
+        public final static int ZAN=10001;
     }
 
     public static class Net {

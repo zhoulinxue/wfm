@@ -121,8 +121,6 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
     @BindView(R.id.id_drawerlayout2)
     DrawerLayout mDrawerLayout;
     private FragmentManager mFragmentMannager;
-
-    private ProgressDialog mDialog;
     private Context mContext;
     private View customView;
     String home = "http://player.youku.com/embed/XMTg4NTkzNDg4";
@@ -338,36 +336,6 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
         }
         videoName.setText(beans.get(pos).getVideoName());
         itemsTv.setText("(共" + beans.size() + "集)");
-        final AnimationDrawable drawable = AnimUtils.getFramDrawable(this, new int[]{R.mipmap.loading_1,
-                R.mipmap.loading_2, R.mipmap.loading_3,
-                R.mipmap.loading_4, R.mipmap.loading_5, R.mipmap.loading_6,
-                R.mipmap.loading_7, R.mipmap.loading_8, R.mipmap.loading_9, R.mipmap.loading_10,
-                R.mipmap.loading_11, R.mipmap.loading_12});
-        mDialog = new ProgressDialog(mContext, R.style.CustomProgressDialog);
-
-        mDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                drawable.stop();
-            }
-        });
-
-
-        mDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                if (framImg == null) {
-                    mDialog.setContentView(R.layout.loading_layout);
-                    framImg = (ImageView) mDialog.findViewById(R.id.loading_img);
-                    framImg.setImageDrawable(drawable);
-                }
-                Log.i("index", index + "");
-//					webview.loadUrl(home);
-                drawable.start();
-                new Thread(getRealUrl).start();
-            }
-        });
-
         webview.setVerticalScrollBarEnabled(false);
         webview.setDownloadListener(new WebViewDownLoadListener());
         webview.setWebViewClient(new WeweWebViewClient());
@@ -392,12 +360,11 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
         ws.setSupportZoom(false);
         ws.setDisplayZoomControls(false);
         ws.setSupportMultipleWindows(true);
-        mDialog.setMessage(getString(R.string.web_loading));
-        mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        if (mDialog != null && !mDialog.isShowing()) {
-            mDialog.show();
+//        mDialog.setMessage(getString(R.string.web_loading));
+//        mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        if (!isShowIng()) {
+            onLoadingViewShow(Constants.Request_Code.LOAD_VIDEO);
         }
-
         // -------------------------------------------------------------------------
         webview.addJavascriptInterface(new Object() {
             public void click() {
@@ -521,8 +488,8 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
                     @Override
                     public void onClick(View v) {
                         rightLowerMenu.close(true);
-                        if (mDialog != null) {
-                            mDialog.show();
+                        if (!isShowIng()) {
+                            onLoadingViewShow(Constants.Request_Code.LOAD_VIDEO);
                         }
                     }
                 });
@@ -631,15 +598,17 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
         movieItemAdapter.setCurrentPosition(position);
         mDrawerLayout.closeDrawers();
         home = beans.get(position).getItemUrl();
-        if (mDialog != null) {
-            if (beans.size() == 1) {
-                titleTv.setText(beans.get(position).getVideoName());
-            } else {
-                ToastUtil.showToastShort(this, "第" + (position + 1) + "集");
-                titleTv.setText(beans.get(position).getVideoName() + "(" + (position + 1) + "集)");
+            if (!isShowIng()) {
+                if (beans.size() == 1) {
+                    titleTv.setText(beans.get(position).getVideoName());
+                } else {
+                    ToastUtil.showToastShort(this, "第" + (position + 1) + "集");
+                    titleTv.setText(beans.get(position).getVideoName() + "(" + (position + 1) + "集)");
+                }
+                onLoadingViewShow(Constants.Request_Code.LOAD_VIDEO);
+
             }
-            mDialog.show();
-        }
+
 
     }
 
@@ -655,9 +624,9 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
                 noticItem("是否刷新？", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (mDialog != null) {
-                            mDialog.show();
-                        }
+                       if(!isShowIng()){
+                           onLoadingViewShow(Constants.Request_Code.LOAD_VIDEO);
+                       }
                     }
                 });
                 break;
@@ -767,26 +736,26 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            try {
-                if (mDialog != null && mDialog.isShowing())
-                    mDialog.dismiss();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            LoadCompelete();
         }
 
         @Override
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
-            try {
-                if (mDialog != null && mDialog.isShowing())
-                    mDialog.dismiss();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+           LoadCompelete();
         }
 
+    }
+
+    @Override
+    protected void onStartNetWork(int netCode) {
+        super.onStartNetWork(netCode);
+        switch (netCode){
+            case Constants.Request_Code.LOAD_VIDEO:
+                    new Thread(getRealUrl).start();
+                break;
+        }
     }
 
     Runnable freshbtnRunable = new Runnable() {
@@ -827,7 +796,9 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
                     public void onClick(View v) {
                         switch (v.getId()) {
                             case R.id.certain:
-                                mDialog.show();
+                               if(isShowIng()){
+                                   onLoadingViewShow(Constants.Request_Code.LOAD_VIDEO);
+                               }
                                 break;
                             case R.id.cancel:
                                 break;

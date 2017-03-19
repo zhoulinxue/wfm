@@ -18,7 +18,20 @@ public class GeneratorTool {
         schema.enableKeepSectionsByDefault();
         schema.setDefaultJavaPackageDao("com.zx.wfm.dao");
         Baseuserbean(schema);
+        TeleteVisionMsg(schema);
         new DaoGenerator().generateAll(schema, "../wfm/app/src/main/java");
+    }
+    private static  void TeleteVisionMsg(Schema schema){
+        Entity user = schema.addEntity("TeleMsgbean");
+        user.setSuperclass("com.zx.wfm.bean.Basebean");
+        user.implementsSerializable();
+        user.addStringProperty("objectId");
+        user.setHasKeepSections(true);
+        user.addStringProperty("TelevisionId").primaryKey();
+        user.addStringProperty("userid");
+        user.addStringProperty("playNum");
+        user.addStringProperty("total");
+        user.addStringProperty("isZan");
     }
 
     private static void Baseuserbean(Schema schema){

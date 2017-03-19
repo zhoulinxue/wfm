@@ -11,6 +11,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.LogUtil;
 import com.avos.avoscloud.SaveCallback;
 import com.zx.wfm.bean.Moviebean;
+import com.zx.wfm.bean.TeleMsgbean;
 import com.zx.wfm.bean.Televisionbean;
 import com.zx.wfm.utils.Constants;
 
@@ -31,6 +32,7 @@ public class DBManager {
     static  MoviebeanDao moviebeanDao;
     static MovieCourseDao movieCourseDao;
     static IDCardDao idCardDao;
+    static TeleMsgbeanDao telemsgDao;
 
 
     public static DBManager getInstance() {
@@ -65,6 +67,7 @@ public class DBManager {
             moviebeanDao=daoSession.getMoviebeanDao();
             movieCourseDao=daoSession.getMovieCourseDao();
             idCardDao=daoSession.getIDCardDao();
+            telemsgDao=daoSession.getTeleMsgbeanDao();
         }
     }
 
@@ -216,5 +219,28 @@ public class DBManager {
         QueryBuilder<Televisionbean> queryBuilder=getTelevisionbeanQueryBuilder();
         queryBuilder.where(TelevisionbeanDao.Properties.ObjectId.isNull());
         return  queryBuilder.list();
+    }
+
+    public boolean isZan(Televisionbean videobean) {
+        TeleMsgbean bean=getTeleMsgBean(videobean);
+        if(bean!=null){
+            return !TextUtils.isEmpty(bean.getIsZan());
+        }
+        return  false;
+    }
+
+    public TeleMsgbean getTeleMsgBean(Televisionbean videobean) {
+        QueryBuilder<TeleMsgbean> queryBuilder=telemsgDao.queryBuilder();
+        TeleMsgbean bean= queryBuilder.where(TeleMsgbeanDao.Properties.TelevisionId.eq(videobean.getTelevisionId())).unique();
+        return  bean;
+    }
+
+    public void upDateTeleMsg(TeleMsgbean finalBean) {
+        TeleMsgbean msgbean= getTeleMsgBean(new Televisionbean(finalBean.getTelevisionId()));
+        if(msgbean==null){
+            telemsgDao.insert(finalBean);
+        }else {
+            telemsgDao.update(finalBean);
+        }
     }
 }
