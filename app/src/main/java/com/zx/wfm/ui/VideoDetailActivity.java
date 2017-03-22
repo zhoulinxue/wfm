@@ -106,7 +106,15 @@ public class VideoDetailActivity extends BaseActivity implements BaseRecycleView
         });
         mRecyclerView.setAdapter(movieItemAdapter);
         movieItemAdapter.setOnItemClickListener(this);
+        alreadyzan();
+    }
 
+    private void alreadyzan() {
+       TeleMsgbean msgBean= DBManager.getInstance().getTeleMsgBean(videobean);
+        if("1".equals(msgBean.getIsZan())) {
+            fbutton.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+            fbutton.setImageResource(R.mipmap.ic_thumb_up_red);
+        }
     }
 
     private void postToserver() {
@@ -193,7 +201,7 @@ public class VideoDetailActivity extends BaseActivity implements BaseRecycleView
                 DBManager.getInstance().upDateTeleMsg(finalBean);
                 if(e==null&& finalIsZan){
                     fbutton.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
-                    fbutton.setImageResource(R.mipmap.ic_thumb_up_black);
+                    fbutton.setImageResource(R.mipmap.ic_thumb_up_red);
                     ToastUtil.showToastShort(VideoDetailActivity.this,"点赞成功");
                 }else if(e==null&&!finalIsZan){
                     fbutton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.style_color_primary_dark)));

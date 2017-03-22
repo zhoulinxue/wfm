@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -73,18 +74,39 @@ public class BaseFragment extends Fragment implements ParseUrlServer {
         }
         if(list!=null&&list.size()!=0) {
             final List<Televisionbean> finalObjList = objList;
-            AVObject.saveAllInBackground(objList, new SaveCallback() {
-                @Override
-                public void done(AVException e) {
-                    if (e != null) {
+            for(final Televisionbean bean:finalObjList){
+                if(TextUtils.isEmpty(bean.getObjectId())) {
+                    AVQuery<Televisionbean> query = new AVQuery<>("Televisionbean");
+                    query.whereEqualTo("TelevisionId", bean.getTelevisionId());
+                    query.findInBackground(new FindCallback<Televisionbean>() {
+                        @Override
+                        public void done(List<Televisionbean> list, AVException e) {
+                            if(list==null||list.size()==0){
+                                bean.saveInBackground();
+                            }
+                        }
+                    });
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
-                        Log.e("保存数据", e.getMessage());
-                    } else {
-                        Log.e("保存数据", "成功");
-                        DBManager.getInstance().saveTelevisions(finalObjList);
                     }
                 }
-            });
+            }
+
+
+//            AVObject.saveAllInBackground(objList, new SaveCallback() {
+//                @Override
+//                public void done(AVException e) {
+//                    if (e != null) {
+//                        e.printStackTrace();
+//                        Log.e("保存数据", e.getMessage());
+//                    } else {
+//                        Log.e("保存数据", "成功");
+//                        DBManager.getInstance().saveTelevisions(finalObjList);
+//                    }
+//                }
+//            });
         }
     }
 
