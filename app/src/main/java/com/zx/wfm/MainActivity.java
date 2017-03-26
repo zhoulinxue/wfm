@@ -1,7 +1,9 @@
 package com.zx.wfm;
 
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -9,10 +11,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.aspsine.fragmentnavigator.FragmentNavigator;
 import com.zx.wfm.ui.BaseActivity;
 import com.zx.wfm.ui.fragment.BaseToolbarFragment;
+import com.zx.wfm.ui.view.FlakeView;
 import com.zx.wfm.utils.ToastUtil;
 import com.zx.wfm.utils.UKutils;
 
@@ -41,28 +49,28 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
      */
     private FragmentNavigator mFragmentNavigator;
 
+    FlakeView flakeView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mFragmentNavigator = new FragmentNavigator(getSupportFragmentManager(), new MainFragmentAdapter(), R.id.container);
-
         mFragmentNavigator.setDefaultPosition(DEFAULT_POSITION);
-
         mFragmentNavigator.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView);
-
         navigationView.setNavigationItemSelectedListener(this);
-
         navigationView.setCheckedItem(IDS.get(DEFAULT_POSITION));
-
         mFragmentNavigator.showFragment(mFragmentNavigator.getCurrentPosition());
+        FrameLayout container = (FrameLayout) findViewById(R.id.icon_container);
+        flakeView = new FlakeView(this);
+        container.addView(flakeView);
+        if (Integer.parseInt(Build.VERSION.SDK) >= Build.VERSION_CODES.HONEYCOMB) {
+            flakeView.setLayerType(View.LAYER_TYPE_NONE,null);
+        }
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -91,5 +99,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             }
         }, 200);
         return true;
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        flakeView.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        flakeView.resume();
     }
 }
