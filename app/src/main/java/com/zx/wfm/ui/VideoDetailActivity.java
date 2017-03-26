@@ -111,7 +111,7 @@ public class VideoDetailActivity extends BaseActivity implements BaseRecycleView
 
     private void alreadyzan() {
        TeleMsgbean msgBean= DBManager.getInstance().getTeleMsgBean(videobean);
-        if("1".equals(msgBean.getIsZan())) {
+        if(msgBean!=null&&"1".equals(msgBean.getIsZan())) {
             fbutton.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
             fbutton.setImageResource(R.mipmap.ic_thumb_up_red);
         }
