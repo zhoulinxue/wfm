@@ -8,6 +8,8 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
 import com.aspsine.swipetoloadlayout.BuildConfig;
+import com.tencent.bugly.Bugly;
+import com.tencent.bugly.beta.Beta;
 
 
 /**
@@ -30,6 +32,7 @@ public class App extends Application {
         editor=preferences.edit();
         setStrictMode();
         sContext = getApplicationContext();
+        initBugly();
     }
     private void setStrictMode() {
         if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
@@ -41,6 +44,13 @@ public class App extends Application {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
+        Beta.installTinker();
+    }
+
+    private void initBugly() {
+        Beta.initDelay = 2 * 1000;
+        Beta.upgradeCheckPeriod=10*1000;
+        Bugly.init(getApplicationContext(), "7a23adc558", true);
     }
 
 

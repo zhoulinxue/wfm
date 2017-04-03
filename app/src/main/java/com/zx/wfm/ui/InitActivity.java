@@ -25,8 +25,6 @@ import com.avos.avoscloud.SignUpCallback;
 import com.nineoldandroids.animation.Animator;
 import com.romainpiel.shimmer.Shimmer;
 import com.romainpiel.shimmer.ShimmerTextView;
-import com.tencent.bugly.Bugly;
-import com.tencent.bugly.beta.Beta;
 import com.zx.wfm.MainActivity;
 import com.zx.wfm.R;
 import com.zx.wfm.bean.AVErrorbean;
@@ -42,8 +40,6 @@ import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.PhoneUtils;
 import com.zx.wfm.utils.SharedPreferencesUtil;
 import com.zx.wfm.utils.ThreadUtil;
-import com.zx.wfm.utils.ToastUtil;
-import com.zx.wfm.utils.UKutils;
 
 import java.util.List;
 
@@ -95,7 +91,7 @@ public class InitActivity extends BaseActivity{
         RequiresPermissionMethod();
     }
     private void RequiresPermissionMethod() {
-        String[] perms = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.ACCESS_FINE_LOCATION};
+        String[] perms = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.READ_EXTERNAL_STORAGE};
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
             // ...
@@ -165,7 +161,7 @@ public class InitActivity extends BaseActivity{
         ThreadUtil.runOnNewThread(new Runnable() {
             @Override
             public void run() {
-                initBugly();
+//                initBugly();
                 DBManager.init(InitActivity.this);
                 setnetWorkType();
                 logintoServer(name);
@@ -208,7 +204,7 @@ public class InitActivity extends BaseActivity{
             @Override
             public void done(AVUser avUser, AVException e) {
                 if (e == null) {
-//                    Toast.makeText(InitActivity.this,"欢迎小主",Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(InitActivity.this,"欢迎小主", Toast.LENGTH_SHORT).show();
                 } else {
                     AVErrorbean errorBean= JSONObject.parseObject(e.getMessage(), AVErrorbean.class);
                     if(errorBean.getCode()==211||"Could not find user".equals(errorBean.getError())){
@@ -219,11 +215,7 @@ public class InitActivity extends BaseActivity{
         });
     }
 
-    private void initBugly() {
-        Beta.initDelay = 2 * 1000;
-        Beta.upgradeCheckPeriod=10*1000;
-        Bugly.init(getApplicationContext(), "7a23adc558", false);
-    }
+
 
 
     private void registerUser() {
