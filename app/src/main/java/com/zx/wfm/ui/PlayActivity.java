@@ -16,12 +16,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -220,6 +221,7 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         // TODO Auto-generated method stub
         if (webview != null)
             webview.saveState(outState);
@@ -870,6 +872,7 @@ public class PlayActivity extends BaseActivity implements BaseRecycleViewAdapter
             customViewCallback = callback;
         }
 
+        @SuppressLint("SourceLockedOrientationActivity")
         @Override
         public void onHideCustomView() {
             if (customView == null)// 不是全屏播放状态

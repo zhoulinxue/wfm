@@ -5,10 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +13,11 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.aspsine.fragmentnavigator.FragmentNavigator;
+import com.google.android.material.navigation.NavigationView;
 import com.zx.wfm.ui.BaseActivity;
 import com.zx.wfm.ui.fragment.BaseToolbarFragment;
 import com.zx.wfm.ui.view.FlakeView;

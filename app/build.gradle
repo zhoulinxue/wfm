@@ -1,22 +1,23 @@
 apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
-apply from: 'tinker-support.gradle'
+apply plugin: 'com.jakewharton.butterknife'
+//apply from: 'tinker-support.gradle'
 android {
+    useLibrary 'org.apache.http.legacy'
     signingConfigs {
         config {
             keyAlias 'cn'
             keyPassword 'czl2016'
-            storeFile file('E:/keystore.jks')
+            storeFile file('D:\\common_api\\wfm\\app\\zhx.jks')
             storePassword 'czl2016'
         }
     }
-    compileSdkVersion 25
-    buildToolsVersion '25.0.1'
+
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "com.zx.wfm"
         minSdkVersion 17
-        targetSdkVersion 25
+        targetSdkVersion 29
         versionCode 4
         versionName "1.0.3"
         multiDexEnabled true
@@ -36,7 +37,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            signingConfig signingConfigs.config
+//            signingConfig signingConfigs.config
         }
     }
     lintOptions {
@@ -48,12 +49,12 @@ android {
     dexOptions {
         javaMaxHeapSize "4g"
     }
-    android.applicationVariants.all {
-        variant ->
-            variant.outputs.each {
-                output -> output.outputFile = new File(output.outputFile.parent, "APP." +new Date().format("MMdd", TimeZone.getTimeZone("GMT+8")) + "(" + defaultConfig.versionName + ")" + ".apk");
-            }
-    }
+//    android.applicationVariants.all {
+//        variant ->
+//            variant.outputs.each {
+//                output -> output.outputFile = new File(output.outputFile.parent, "APP." +new Date().format("MMdd", TimeZone.getTimeZone("GMT+8")) + "(" + defaultConfig.versionName + ")" + ".apk");
+//            }
+//    }
 
     packagingOptions {
          exclude 'META-INF/DEPENDENCIES'  
@@ -63,59 +64,51 @@ android {
                 exclude 'META-INF/NOTICE.txt'
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
-allprojects {
-    repositories {
-        jcenter()
-        mavenCentral()
-        maven { url 'https://jitpack.io'}
-    }
-
-}
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:recyclerview-v7:25.1.0'
-    compile 'com.android.support:design:25.1.0'
-    compile 'com.android.support:support-v4:25.1.0'
-    compile 'pub.devrel:easypermissions:0.2.1'
-    compile 'com.github.bumptech.glide:glide:3.6.1'
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.android.support:multidex:1.0.0'
-    compile project(':library')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'pub.devrel:easypermissions:0.2.1'
+    implementation 'com.github.bumptech.glide:glide:3.6.1'
+    implementation 'com.nineoldandroids:library:2.4.0'
+    implementation 'androidx.multidex:multidex:2.0.0'
+    implementation project(':library')
     // LeanCloud 基础包
-    compile 'cn.leancloud.android:avoscloud-sdk:v3.+'
+    implementation 'cn.leancloud.android:avoscloud-sdk:v3.+'
     // 推送与实时聊天需要的包
-    compile('cn.leancloud.android:avoscloud-push:v3.+@aar') { transitive = true }
+    implementation('cn.leancloud.android:avoscloud-push:v3.+@aar') { transitive = true }
     // LeanCloud 统计包
-    compile 'cn.leancloud.android:avoscloud-statistics:v3.+'
+    implementation 'cn.leancloud.android:avoscloud-statistics:v3.+'
     // LeanCloud 用户反馈包
-    compile 'cn.leancloud.android:avoscloud-feedback:v3.+@aar'
+    implementation 'cn.leancloud.android:avoscloud-feedback:v3.+@aar'
     // avoscloud-sns：LeanCloud 第三方登录包
-    compile 'cn.leancloud.android:avoscloud-sns:v3.+@aar'
+    implementation 'cn.leancloud.android:avoscloud-sns:v3.+@aar'
     // LeanCloud 应用内搜索包
-    compile 'cn.leancloud.android:avoscloud-search:v3.+@aar'
-    compile 'com.bartoszlipinski.recyclerviewheader:library:1.2.0'
-    compile 'com.tencent.bugly:crashreport_upgrade:latest.release'
+    implementation 'cn.leancloud.android:avoscloud-search:v3.+@aar'
+    implementation 'com.bartoszlipinski.recyclerviewheader:library:1.2.0'
+    implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
-    compile 'com.tencent.bugly:nativecrashreport:latest.release'
+    implementation 'com.tencent.bugly:nativecrashreport:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如
-    compile 'de.greenrobot:greendao:2.0.0'
-    compile project(':greDao')
-    compile 'com.gongwen:marqueelibrary:1.0.4'
-    compile 'com.github.Aspsine:FragmentNavigator:1.0.2'
-    compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
-    compile 'de.hdodenhof:circleimageview:2.1.0'
-    compile 'jp.wasabeef:glide-transformations:2.0.1'
-    compile 'com.romainpiel.shimmer:library:1.4.0@aar'
-    compile project(':contextMenu')
-    compile 'com.jakewharton:butterknife:8.1.0'
-    apt 'com.jakewharton:butterknife-compiler:8.0.1'
-    compile 'org.jsoup:jsoup:1.10.2'
+    implementation 'de.greenrobot:greendao:2.0.0'
+    implementation project(':greDao')
+    implementation 'com.gongwen:marqueelibrary:1.0.4'
+    implementation 'com.github.Aspsine:FragmentNavigator:1.0.2'
+    implementation 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
+    implementation 'de.hdodenhof:circleimageview:2.1.0'
+    implementation 'jp.wasabeef:glide-transformations:2.0.1'
+    implementation 'com.romainpiel.shimmer:library:1.4.0@aar'
+    implementation project(':contextMenu')
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+    implementation 'org.jsoup:jsoup:1.10.2'
 }
 

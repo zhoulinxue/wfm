@@ -13,7 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -335,6 +335,7 @@ public class WebFragment extends BaseFragment {
             customViewCallback = callback;
         }
 
+        @SuppressLint("SourceLockedOrientationActivity")
         @Override
         public void onHideCustomView() {
             if (customView == null)// 不是全屏播放状态

@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/viewpager_height">
 
-    <android.support.v4.view.ViewPager
+    <androidx.core.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/viewpager_height"></android.support.v4.view.ViewPager>
+        android:layout_height="@dimen/viewpager_height"></androidx.core.view.ViewPager>
 
     <LinearLayout
         android:id="@+id/indicators"

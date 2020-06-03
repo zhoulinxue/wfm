@@ -5,12 +5,13 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+
+import androidx.fragment.app.DialogFragment;
 
 import com.yalantis.contextmenu.lib.interfaces.OnItemClickListener;
 import com.yalantis.contextmenu.lib.interfaces.OnItemLongClickListener;

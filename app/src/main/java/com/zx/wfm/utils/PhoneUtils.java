@@ -1,12 +1,17 @@
 package com.zx.wfm.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.PowerManager;
-import android.support.v4.app.Fragment;
+
+import androidx.fragment.app.Fragment;
+
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -65,15 +70,16 @@ public class PhoneUtils {
      * @param context
      */
     public static String getImeiInfo(Context context) {
-        TelephonyManager mTm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        String imei = mTm.getDeviceId();
-        String imsi = mTm.getSubscriberId();
-        String mtype = android.os.Build.MODEL; // 手机型号
-        String mtyb = android.os.Build.BRAND;//手机品牌
-        String numer = mTm.getLine1Number(); // 手机号码，有的可得，有的不可得
-        Log.i("text", "手机IMEI号：" + imei + "手机IESI号：" + imsi + "手机型号：" + mtype + "手机品牌：" + mtyb + "手机号码" + numer);
+        String imei = getPhoneId(context);
         return imei;
     }
+
+    public static String getPhoneId(Context context) {
+        String androidID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        String id = androidID + Build.SERIAL;
+        return id;
+    }
+
 
     /**
      * 隐藏键盘
@@ -90,20 +96,21 @@ public class PhoneUtils {
 
     /**
      * 格式化数据
+     *
      * @param data
      * @return
      */
-    public static String formatTrafficByte(long data){
+    public static String formatTrafficByte(long data) {
         DecimalFormat format = new DecimalFormat("##.##");
-        if(data < 1024){
-            return data+"bytes";
-        }else if(data < 1024 * 1024){
-            return format.format(data/1024f) +"KB";
-        }else if(data < 1024 * 1024 * 1024){
-            return format.format(data/1024f/1024f) +"MB";
-        }else if(data < 1024 * 1024 * 1024 * 1024){
-            return format.format(data/1024f/1024f/1024f) +"GB";
-        }else{
+        if (data < 1024) {
+            return data + "bytes";
+        } else if (data < 1024 * 1024) {
+            return format.format(data / 1024f) + "KB";
+        } else if (data < 1024 * 1024 * 1024) {
+            return format.format(data / 1024f / 1024f) + "MB";
+        } else if (data < 1024 * 1024 * 1024 * 1024) {
+            return format.format(data / 1024f / 1024f / 1024f) + "GB";
+        } else {
             return "超出统计范围";
         }
     }

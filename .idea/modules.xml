@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/contextMenu/contextMenu.iml" filepath="$PROJECT_DIR$/contextMenu/contextMenu.iml" />
-      <module fileurl="file://$PROJECT_DIR$/greDao/greDao.iml" filepath="$PROJECT_DIR$/greDao/greDao.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
-      <module fileurl="file://$PROJECT_DIR$/wfm.iml" filepath="$PROJECT_DIR$/wfm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="wfm/app" />
+      <module fileurl="file://$PROJECT_DIR$/contextMenu/contextMenu.iml" filepath="$PROJECT_DIR$/contextMenu/contextMenu.iml" group="wfm/contextMenu" />
+      <module fileurl="file://$PROJECT_DIR$/greDao/greDao.iml" filepath="$PROJECT_DIR$/greDao/greDao.iml" group="wfm/greDao" />
+      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" group="wfm/library" />
+      <module fileurl="file://$PROJECT_DIR$/wfm.iml" filepath="$PROJECT_DIR$/wfm.iml" group="wfm" />
     </modules>
   </component>
 </project>

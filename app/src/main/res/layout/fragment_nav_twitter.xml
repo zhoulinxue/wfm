@@ -31,7 +31,7 @@
             app:tabIndicatorColor="@color/style_color_primary_light" />
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
+    <androidx.core.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

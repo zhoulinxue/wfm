@@ -4,12 +4,13 @@ import java.io.Serializable;
 import java.util.List;
 
 import android.content.Intent;
-import android.support.v4.view.ViewCompat;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
+
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
@@ -27,7 +28,6 @@ import com.zx.wfm.utils.Constants;
 import com.zx.wfm.utils.NetWorkUtils;
 import com.zx.wfm.utils.SpacesItemDecoration;
 import com.zx.wfm.utils.ThreadUtil;
-import com.zx.wfm.utils.ToastUtil;
 import com.zx.wfm.utils.UKutils;
 
 import butterknife.BindView;
@@ -71,7 +71,7 @@ public class UKMainActivity extends BaseActivity implements OnRefreshListener, O
                 manager.invalidateSpanAssignments(); //防止第一行到顶部有空白区域
                 if (newState == RecyclerView.SCROLL_STATE_IDLE ){
                     Glide.with(UKMainActivity.this).resumeRequests();
-                    if (!ViewCompat.canScrollVertically(recyclerView, 1)){
+                    if (!recyclerView.canScrollVertically(1)){
                         swipeToLoadLayout.setLoadingMore(true);
                     }
                 }else {

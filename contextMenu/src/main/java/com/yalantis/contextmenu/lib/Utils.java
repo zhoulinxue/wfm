@@ -1,11 +1,11 @@
 package com.yalantis.contextmenu.lib;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 public class Utils {
 
@@ -42,7 +44,7 @@ public class Utils {
 
         itemTextView.setTextColor(ContextCompat.getColor(context, textColor));
 
-        int styleResId = menuItem.getMenuTextAppearanceStyle() > 0
+        @SuppressLint("ResourceType") int styleResId = menuItem.getMenuTextAppearanceStyle() > 0
                 ? menuItem.getMenuTextAppearanceStyle()
                 : R.style.TextView_DefaultStyle;
 

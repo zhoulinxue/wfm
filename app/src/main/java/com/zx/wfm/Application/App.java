@@ -6,7 +6,9 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.support.multidex.MultiDex;
+
+import androidx.multidex.MultiDex;
+
 import com.aspsine.swipetoloadlayout.BuildConfig;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
@@ -44,7 +46,7 @@ public class App extends Application {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
-        Beta.installTinker();
+//        Beta.installTinker();
     }
 
     private void initBugly() {

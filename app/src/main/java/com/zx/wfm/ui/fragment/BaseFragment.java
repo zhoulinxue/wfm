@@ -4,27 +4,22 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
-import com.avos.avoscloud.SaveCallback;
 import com.zx.wfm.bean.Moviebean;
 import com.zx.wfm.bean.Televisionbean;
-import com.zx.wfm.dao.DBManager;
 import com.zx.wfm.service.Impl.NetWorkServerImpl;
 import com.zx.wfm.service.NetWorkServer;
 import com.zx.wfm.service.ParseUrlServer;
-import com.zx.wfm.utils.Constants;
-import com.zx.wfm.utils.ThreadUtil;
-import com.zx.wfm.utils.UKutils;
 
 import java.util.ArrayList;
 import java.util.List;

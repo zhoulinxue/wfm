@@ -1,8 +1,9 @@
 package com.zx.wfm.utils;
 
 import android.content.Context;  
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.View;
 import java.util.ArrayList;
 /**
@@ -11,7 +12,7 @@ import java.util.ArrayList;
  *   邮箱：194093798@qq.com
  *  
  */
-public class ViewpagerTrans implements ViewPager.PageTransformer {  
+public class ViewpagerTrans implements ViewPager.PageTransformer {
             private static final float MIN_ALPHA = 0.0f;    //最小透明度  
           
             public void transformPage(View view, float position) {  
